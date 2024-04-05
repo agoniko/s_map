@@ -1,0 +1,5 @@
+<launch>
+    <!-- My Package launch file -->
+    <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
+    </node>
+</launch>
