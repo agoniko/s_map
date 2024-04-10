@@ -1,11 +1,18 @@
 #! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+import sys
 
+# Add the directory containing your ROS package's generated message Python files to sys.path
+sys.path.append("/Users/nicoloagostara/catkin_ws/src/s_map/msg")
 # ros packages
 import rospy
 import rospkg
 from sensor_msgs.msg import Image, LaserScan
 from cv_bridge import CvBridge
-from geometry_msgs.msg import Pose
+from visualization_msgs.msg import Marker
+from geometry_msgs.msg import Point, PointStamped
+from s_map.msg import Detection
+
+# from s_map.msg import Detection, Box, Mask
 
 # others
 # import cv2
@@ -15,116 +22,143 @@ import supervision as sv
 import numpy as np
 import time
 from ctypes import *
-from geometric_transformations import Transformer, CameraPoseEstimator
-import math
-import cv2
 from collections import deque
+
+RGB_TOPIC = "/realsense/rgb/image_raw"
+DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+SCAN_TOPIC = "/scan"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
 
 
 class Node(object):
+
+    __slots__ = [
+        "cv_bridge",
+        "device",
+        "detector",
+        "mask_annotator",
+        "label_annotator",
+        "box_annotator",
+        "image_sub",
+        "depth_sub",
+        "laser_sub",
+        "annotated_image",
+        "annotated_image_pub",
+        "result",
+        "results_pub",
+        "synchronizer",
+        "pub_timer",
+    ]
+    cv_bridge: CvBridge
+    device: torch.device
+    detector: YOLO
+    mask_annotator: sv.MaskAnnotator
+    label_annotator: sv.LabelAnnotator
+    box_annotator: sv.BoxCornerAnnotator
+    detections_dict: dict
+    image_sub: rospy.Subscriber
+    annotated_images: Image
+    annotated_image_pub: rospy.Publisher
+    results: Detection
+    results_pub: rospy.Publisher
+    pub_timer: rospy.Timer
+
     def __init__(self):
         """
-        Initializes a ROS node for object detection and laser scan processing.
-
-        This class sets up the necessary ROS subscriptions and publishers for processing image data from the RealSense camera and laser scan data from the robot. It loads a pre-trained YOLOv8 model for object detection, and uses the Supervision library for annotating the detected objects on the image. The class also handles the transformation of the laser scan data based on the robot's pose.
+        Initializes a ROS node for object segmentation and laser scan processing.
+        It synchronize messages from the RGB camera, the depth camera and the LaserScan, performs detection and publish the results.
+        Results are then processed by mapping module to create a 3D semantic map.
         """
         rospy.init_node("detection")
-        self.bridge = CvBridge()
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps")
+        self.cv_bridge = CvBridge()
+        self.device = (
+            torch.device("cuda") if torch.cuda.is_available() else torch.device("mps")
+        )
         rospy.loginfo(f"Using {self.device} device for detection")
 
-        # find models path inside package with rospy
-        model_path = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
-        rospy.loginfo(f"Model path: {model_path}")
-        self.detector = YOLO(model_path)
-        self.detectot = self.detector.to(self.device)
+        # segmentation and detection model
+        self.detector = YOLO(MODEL_PATH)
+        self.detector = self.detector.to(self.device)
 
+        # Using supervision library for easier annotation
         self.mask_annotator = sv.MaskAnnotator()
         self.label_annotator = sv.LabelAnnotator()
         self.box_annotator = sv.BoxCornerAnnotator()
 
-        # pub_sub for detection
-        rospy.Subscriber(
-            "/realsense/rgb/image_raw", Image, self.detection_callback, queue_size=1
+        # subscribers
+        self.image_sub = rospy.Subscriber(
+            RGB_TOPIC, Image, self.detection_callback, queue_size=1
         )
-        self.pub = rospy.Publisher(
+
+        # publishers
+        # One to show the annotated image (for testing purposes)
+        # One to publish the results of the detection (boxes, masks, labels, synch. depth image)
+        self.annotated_image_pub = rospy.Publisher(
             "/s_map/detection/image_annotated", Image, queue_size=1
         )
-
-        # pub_sub for scan
-        rospy.Subscriber("/b_scan", LaserScan, self.scan_callback, queue_size=1)
-        self.pub_scan = rospy.Publisher("/s_map/scan", LaserScan, queue_size=1)
-        self.transformer = Transformer()
-
-        # sub for robot orientation
-        self.pose_sub = rospy.Subscriber(
-            "/robot_pose", Pose, self.pose_callback, queue_size=1
-        )
-        # sub for depth image
-        rospy.Subscriber(
-            "/realsense/aligned_depth_to_color/image_raw",
-            Image,
-            self.depth_callback,
-            queue_size=1,
+        self.results_pub = rospy.Publisher(
+            "/s_map/detection/results", Detection, queue_size=1
         )
 
-        self.camera_fx = 614.9791259765625
-        self.camera_fy = 615.01416015625
-        self.camera_cx = 430.603271484375
-        self.camera_cy = 237.27053833007812
+        self.annotated_image = None
+        self.result = None
 
-        self.robot_position = None
-        self.robot_orientation = None
-        self.depth_dict = dict()
+        self.pub_timer = rospy.Timer(rospy.Duration(1.0 / 40.0), self.publish_results)
+
         rospy.spin()
 
-    def pose_callback(self, msg):
-        self.robot_orientation = msg.orientation
-        self.robot_position = msg.position
+    def publish_results(self, event):
+        """
+        Publish annotated images and detection results
+        """
+        if self.annotated_image is not None:
+            annotated_image_msg = self.cv_bridge.cv2_to_imgmsg(
+                self.annotated_image, "rgb8"
+            )
+            self.annotated_image_pub.publish(annotated_image_msg)
+            self.annotated_image = None
 
-    def detection_callback(self, msg):
-        frame = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        #if self.result:
+        #    self.results_pub.publish(self.result)
+        #    self.result = None
+
+    def detection_callback(self, image_msg):
+        frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
+        start = time.time()
         results = next(
             self.detector(
-                frame, device=self.device, stream=True, conf=0.4, verbose=False
+                frame, device=self.device, stream=True, conf=0.5, verbose=False
             )
         )
-        for res in results:
-            detections = sv.Detections.from_ultralytics(res)
+        end = time.time()
+        print("Detection time: ", end - start)
+
+        # remember that YOLO rescale output to 384, 640 while frame has a different dimension
+        # for this reason we take the normalized coordinates
+        # CameraPoseEstimator handle this issue
+        if results:
+            detections = sv.Detections.from_ultralytics(results)
+            boxes = results.boxes.xyxyn
+            masks = detections.mask
+            conf_scores = detections.confidence
+            labels = detections.data["class_name"]
+
             frame = self.mask_annotator.annotate(frame, detections)
             frame = self.label_annotator.annotate(frame, detections)
             frame = self.box_annotator.annotate(frame, detections)
 
-        annotated_image_msg = self.bridge.cv2_to_imgmsg(frame, "bgr8")
-        self.pub.publish(annotated_image_msg)
+            self.annotated_image = frame
 
-        if msg.header.stamp in self.depth_dict:
-            depth_image = self.depth_dict[msg.header.stamp]
-            # it returns a generator but it only contains one element
-            for boxes, mask, conf_score, _, _, class_name in detections[0] if results else []:
-                if conf_score > 0.5:
-                    # get the bounding box
-                    x1, y1, x2, y2 = boxes
-                    # get the center of the bounding box
-                    x_center = (x1 + x2) / 2
-                    y_center = (y1 + y2) / 2
-                    # get the depth value at the center of the bounding box
-                    depth = depth_image[int(y_center), int(x_center)] / 1000
-                    if depth > 0:
-                        rospy.loginfo(f"Distance to object {class_name}: {depth} m")
+            res = Detection()
+            res.header = image_msg.header
+            res.boxes = boxes.cpu().numpy().flatten()
+            res.masks = masks.flatten()
+            res.labels = labels
 
-    def depth_callback(self, msg):
-        # depth image contains values ranging from 0.0 to 2999.0, those are the mm per pixel
-        depth_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
-        depth_image = np.array(depth_image, dtype=np.float32)
-        # Idea: use a dict to keep track of images for synchronization:
-        # images = {seqN / timestamp: image}
-        # with depth you just access the data in O(1) time with the key
-        # to be considered: 30FPS -> the dict should be cleared after a certain dimension
-        self.depth_dict[msg.header.stamp] = depth_image
+            self.result = res
 
-    def scan_callback(self, msg):
-        pass
+            end = time.time()
+            print("Callback time: ", end - start)
 
 
 if __name__ == "__main__":
