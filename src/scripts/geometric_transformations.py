@@ -89,7 +89,7 @@ from geometry_msgs.msg import PointStamped
 from tf2_geometry_msgs import do_transform_point
 
 class TransformHelper:
-    def __init__(self, cache_time=30.0):
+    def __init__(self, cache_time=60.0):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 

@@ -25,7 +25,32 @@ from collections import deque
 
 RESULT_TOPIC = "/s_map/detection/results"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+RGB_TOPIC = "/realsense/rgb/image_raw"
+CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 SCAN_TOPIC = "/scan"
+MARKERS_TOPIC = "/s_map/objects"
+
+WORLD_FRAME = "world"
+CAMERA_FRAME = "realsense_rgb_optical_frame"
+
+
+def create_marker() -> Marker:
+    marker_msg = Marker()
+    marker_msg.header.frame_id = (
+        WORLD_FRAME  # Specify the frame in which the point is defined
+    )
+    marker_msg.ns = "my_namespace"
+    marker_msg.type = Marker.POINTS
+    marker_msg.action = Marker.ADD
+    marker_msg.pose.orientation.w = 1.0
+    marker_msg.scale.x = 0.2  # Size of the points
+    marker_msg.scale.y = 0.2
+    marker_msg.scale.z = 0.2
+    marker_msg.color.a = 1.0  # Alpha (transparency)
+    marker_msg.color.r = 0.0
+    marker_msg.color.g = 0.0
+    marker_msg.color.b = 0.0
+    return marker_msg
 
 
 class Mapper(object):
@@ -35,15 +60,19 @@ class Mapper(object):
         "laser_subscriber",
         "depth_subscriber",
         "transformer",
+        "pose_estimator",
         "syncronizer",
-        "pub",
+        "marker_pub",
+        "objects_dict",
     ]
     cv_bridge: CvBridge
     result_subscriber: Subscriber
     laser_subscriber: Subscriber
     depth_subscriber: Subscriber
     transformer: TransformHelper
-    pub: rospy.Publisher
+    pose_estimator: CameraPoseEstimator
+    marker_pub: rospy.Publisher
+    objects_dict: dict
 
     def __init__(self):
         """
@@ -56,7 +85,7 @@ class Mapper(object):
         self.result_subscriber = Subscriber(RESULT_TOPIC, Detection)
         self.depth_subscriber = Subscriber(DEPTH_TOPIC, Image)
         self.syncronizer = TimeSynchronizer(
-            [self.result_subscriber, self.depth_subscriber], 1
+            [self.result_subscriber, self.depth_subscriber], 1000
         )
         self.syncronizer.registerCallback(self.mapping_callback)
 
@@ -66,20 +95,99 @@ class Mapper(object):
         # )
 
         self.transformer = TransformHelper()
-        self.pub = rospy.Publisher("/s_map/test", Image, queue_size=1)
+        self.pose_estimator = CameraPoseEstimator(CAMERA_INFO_TOPIC)
+        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, Marker, queue_size=1)
+
+        # stores id->List[Point], so that we can update the position of the object in the map
+        self.objects_dict = dict()
         rospy.spin()
 
-    def mapping_callback(self, det_msg: Detection, depth_msg: Image):
-        pass
-        #print(det_msg.header.stamp)
-        #print(depth_msg.header.stamp)
-        # start = time.time()
-        # header = msg.header
-        # labels = np.array(msg.labels)
-        # n = len(labels)
-        # boxes = np.array(msg.boxes).reshape(n, 4)
-        # masks = np.array(msg.masks).reshape(n, msg.height, msg.width)
-        # depth_image = np.array(msg.depth_image).reshape(msg.height, msg.width).astype("uint16")
+    def register_position(self, id: int, point: Point):
+        if id in self.objects_dict:
+            self.objects_dict[id].append(point)
+        else:
+            self.objects_dict[id] = [point]
+
+    def get_position(self, id: int) -> Point | None:
+        """returns the median Point or None if the id is not found"""
+        if id in self.objects_dict:
+            points = np.array(
+                [[point.x, point.y, point.z] for point in self.objects_dict[id]]
+            )
+            median = np.median(points, axis=0)
+            return Point(median[0], median[1], median[2])
+        return None
+
+    def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
+        start = time.time()
+        header = detection_msg.header
+        labels = np.array(detection_msg.labels)
+        n = len(labels)
+        boxes = np.array(detection_msg.boxes).reshape(n, 4)
+        ids = np.array(detection_msg.ids)
+        # TODO: masks
+        depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
+
+        marker_msg = create_marker()
+        marker_msg.header.stamp = header.stamp
+
+        for id, box, label in zip(ids, boxes, labels):
+            marker_msg.id = id
+            x1, y1, x2, y2 = box
+            x1 = int(x1 * depth_image.shape[1])
+            x2 = int(x2 * depth_image.shape[1])
+            y1 = int(y1 * depth_image.shape[0])
+            y2 = int(y2 * depth_image.shape[0])
+
+            # checking median depth value (in meters) inside the bounding box excluding zeros
+            values = depth_image[y1:y2, x1:x2][depth_image[y1:y2, x1:x2] != 0]
+            if len(values) == 0:
+                continue
+
+            depth = np.median(values) / 1000
+            x_center = (x1 + x2) / 2
+            y_center = (y1 + y2) / 2
+            x_3d, y_3d = self.pose_estimator.pixel_to_3d(x_center, y_center, depth)
+
+            point_source = PointStamped()
+            point_source.header.frame_id = CAMERA_FRAME
+            point_source.point.x = x_3d
+            point_source.point.y = y_3d
+            point_source.point.z = depth
+
+            transformed_point = (
+                self.transformer.lookup_transform_and_transform_coordinates(
+                    CAMERA_FRAME, WORLD_FRAME, point_source, header.stamp
+                )
+            )
+
+            if transformed_point is None:
+                rospy.logwarn(
+                    f"[Mapping] Point is None even if depth was found\n{x_center, y_center, depth}"
+                )
+                continue
+
+            point = transformed_point.point
+            self.register_position(id, point)
+
+            point = self.get_position(id)
+            marker_msg.points.append(point)
+
+            if label.lower() == "person":
+                marker_msg.color.r = 1.0
+            elif label.lower() == "chair":
+                marker_msg.color.g = 1.0
+            elif label.lower() == "laptop":
+                marker_msg.color.b = 1.0
+            elif label.lower() == "dining table":
+                marker_msg.color.r = 1.0
+                marker_msg.color.b = 1.0
+            elif label.lower() == "tv":
+                marker_msg.color.g = 1.0
+                marker_msg.color.b = 1.0
+            self.marker_pub.publish(marker_msg)
+            marker_msg.points = []
+            rospy.loginfo("[Mapping] Published object")
 
 
 #

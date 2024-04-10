@@ -42,9 +42,9 @@ class Node(object):
         "image_sub",
         "depth_sub",
         "laser_sub",
-        "annotated_image",
+        "annotated_images",
         "annotated_image_pub",
-        "result",
+        "results",
         "results_pub",
         "synchronizer",
         "pub_timer",
@@ -57,9 +57,9 @@ class Node(object):
     box_annotator: sv.BoxCornerAnnotator
     detections_dict: dict
     image_sub: rospy.Subscriber
-    annotated_images: Image
+    annotated_images: deque
     annotated_image_pub: rospy.Publisher
-    results: Detection
+    results: deque
     results_pub: rospy.Publisher
     pub_timer: rospy.Timer
 
@@ -100,10 +100,10 @@ class Node(object):
             "/s_map/detection/results", Detection, queue_size=1
         )
 
-        self.annotated_image = None
-        self.result = None
+        self.annotated_images = deque(maxlen=30)
+        self.results = deque(maxlen=30)
 
-        self.pub_timer = rospy.Timer(rospy.Duration(1.0 / 40.0), self.publish_results)
+        self.pub_timer = rospy.Timer(rospy.Duration(1.0 / 30.0), self.publish_results)
 
         rospy.spin()
 
@@ -111,27 +111,34 @@ class Node(object):
         """
         Publish annotated images and detection results
         """
-        if self.annotated_image is not None:
+        start = time.time()
+        if self.annotated_images:
             annotated_image_msg = self.cv_bridge.cv2_to_imgmsg(
-                self.annotated_image, "rgb8"
+                self.annotated_images.popleft(), "rgb8"
             )
             self.annotated_image_pub.publish(annotated_image_msg)
-            self.annotated_image = None
 
-        #if self.result:
-        #    self.results_pub.publish(self.result)
-        #    self.result = None
+        if self.results:
+            self.results_pub.publish(self.results.popleft())
+
+        end = time.time()
+        # print("Publish time: ", end - start)
 
     def detection_callback(self, image_msg):
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
         start = time.time()
         results = next(
-            self.detector(
-                frame, device=self.device, stream=True, conf=0.5, verbose=False
+            self.detector.track(
+                frame,
+                device=self.device,
+                stream=True,
+                conf=0.5,
+                verbose=False,
+                persist=True,
             )
         )
         end = time.time()
-        print("Detection time: ", end - start)
+        # print("Detection time: ", end - start)
 
         # remember that YOLO rescale output to 384, 640 while frame has a different dimension
         # for this reason we take the normalized coordinates
@@ -139,6 +146,8 @@ class Node(object):
         if results:
             detections = sv.Detections.from_ultralytics(results)
             boxes = results.boxes.xyxyn
+            ids = results.boxes.id.cpu().numpy().astype(np.int32).tolist()
+            print(ids)
             masks = detections.mask
             conf_scores = detections.confidence
             labels = detections.data["class_name"]
@@ -147,18 +156,19 @@ class Node(object):
             frame = self.label_annotator.annotate(frame, detections)
             frame = self.box_annotator.annotate(frame, detections)
 
-            self.annotated_image = frame
+            self.annotated_images.append(frame)
 
             res = Detection()
             res.header = image_msg.header
             res.boxes = boxes.cpu().numpy().flatten()
-            res.masks = masks.flatten()
+            res.ids = ids
+            # res.masks = masks.flatten()
             res.labels = labels
 
-            self.result = res
+            self.results.append(res)
 
             end = time.time()
-            print("Callback time: ", end - start)
+            # print("Callback time: ", end - start)
 
 
 if __name__ == "__main__":
