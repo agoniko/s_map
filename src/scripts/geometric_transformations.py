@@ -85,28 +85,46 @@ class Transformer:
         res_z = transformed.pose.position.z
         return res_x, res_y, res_z
 
+
 from geometry_msgs.msg import PointStamped
 from tf2_geometry_msgs import do_transform_point
+
 
 class TransformHelper:
     def __init__(self, cache_time=60.0):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-    def lookup_transform_and_transform_coordinates(self, source_frame, target_frame, point_source, stamp):
+    def lookup_transform_and_transform_coordinates(
+        self, source_frame, target_frame, point_source, stamp
+    ):
+        """
+        point source is a list [x, y, z]
+        """
         try:
-            transform = self.tf_buffer.lookup_transform(target_frame, source_frame, stamp)
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            transform = self.tf_buffer.lookup_transform(
+                target_frame, source_frame, stamp
+            )
+        except (
+            tf2_ros.LookupException,
+            tf2_ros.ConnectivityException,
+            tf2_ros.ExtrapolationException,
+        ) as e:
             rospy.logerr("Failed to lookup transform: %s", str(e))
             return None
 
-        point_source.header.stamp = stamp
+        point_source_stamped = PointStamped()
+        point_source_stamped.header.frame_id = source_frame
+        point_source_stamped.header.stamp = stamp
+        point_source_stamped.point.x = point_source[0]
+        point_source_stamped.point.y = point_source[1]
+        point_source_stamped.point.z = point_source[2]
+
         try:
-            point_target = do_transform_point(point_source, transform)
-            rospy.loginfo("Transformed coordinates: (%f, %f, %f) in frame: %s",
-                          point_target.point.x, point_target.point.y, point_target.point.z, target_frame)
+            point_target = do_transform_point(point_source_stamped, transform)
+            # rospy.loginfo("Transformed coordinates: (%f, %f, %f) in frame: %s",
+            #              point_target.point.x, point_target.point.y, point_target.point.z, target_frame)
             return point_target
         except Exception as e:
             rospy.logerr("Failed to transform coordinates: %s", str(e))
             return None
-

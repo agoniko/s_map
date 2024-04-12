@@ -23,7 +23,6 @@ from geometric_transformations import Transformer, CameraPoseEstimator, Transfor
 import math
 import cv2
 from collections import deque
-from world import Obj, World
 
 RESULT_TOPIC = "/s_map/detection/results"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
@@ -55,14 +54,6 @@ def create_marker() -> Marker:
     return marker_msg
 
 
-def create_point_msg(x, y, z):
-    point = Point()
-    point.x = x
-    point.y = y
-    point.z = z
-    return point
-
-
 class Mapper(object):
     __slots__ = [
         "cv_bridge",
@@ -73,7 +64,7 @@ class Mapper(object):
         "pose_estimator",
         "syncronizer",
         "marker_pub",
-        "world",
+        "objects_dict",
     ]
     cv_bridge: CvBridge
     result_subscriber: Subscriber
@@ -82,7 +73,7 @@ class Mapper(object):
     transformer: TransformHelper
     pose_estimator: CameraPoseEstimator
     marker_pub: rospy.Publisher
-    world: World
+    objects_dict: dict
 
     def __init__(self):
         """
@@ -109,8 +100,61 @@ class Mapper(object):
         self.marker_pub = rospy.Publisher(MARKERS_TOPIC, Marker, queue_size=1)
 
         # stores id->List[Point, label, confidence_score], so that we can update the position of the object in the map
-        self.world = World()
+        self.objects_dict = dict()
         rospy.spin()
+
+    def register_object(
+        self, id: int, point: Point, label: str, confidence_score: float
+    ):
+        if id in self.objects_dict:
+            self.objects_dict[id]["points"].append(point)
+            self.objects_dict[id]["labels"].append(label)
+            self.objects_dict[id]["scores"].append(confidence_score)
+        else:
+            self.objects_dict[id] = {
+                "points": [point],
+                "labels": [label],
+                "scores": [confidence_score],
+            }
+
+    def best_label(self, labels, confidence_scores) -> int:
+        """
+        Returns the index of the best label as a function of both confidence scores and confidence score
+        """
+        # freqs = Counter(labels)
+        # if len(freqs) == 1:
+        #    return 0
+        # scores = [np.mean(confidence_scores[label == labels]) for label in freqs.keys()]
+        ## apply min_max normalization to both confidence scores and frequencies
+        # min_conf, max_conf = min(scores), max(scores)
+        # min_freq, max_freq = min(list(freqs.values())), max(list(freqs.values()))
+        # norm_conf = [(conf - min_conf) / (max_conf - min_conf) for conf in scores]
+        # norm_freq = [
+        #    (freq - min_freq) / (max_freq - min_freq + 1e-08) for freq in freqs.values()
+        # ]
+        #
+        ## compute the score as a weighted sum of the two normalized values
+        # scores = [conf * freq for conf, freq in zip(norm_conf, norm_freq)]
+        # return np.argmax(scores)
+        return np.argmax(confidence_scores)
+
+    def get_object(self, id: int) -> tuple[Point, str] | None:
+        """returns the median Point and the best label or None if the id is not found"""
+        if id in self.objects_dict:
+            points = np.array(
+                [
+                    [point.x, point.y, point.z]
+                    for point in self.objects_dict[id]["points"]
+                ]
+            )
+            median = np.median(points, axis=0)
+            labels = self.objects_dict[id]["labels"]
+            confidence_scores = self.objects_dict[id]["scores"]
+            idx = self.best_label(labels, confidence_scores)
+            label = labels[idx]
+            return Point(median[0], median[1], median[2]), label
+
+        return None
 
     def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
         header = detection_msg.header
@@ -126,66 +170,48 @@ class Mapper(object):
         marker_msg.header.stamp = header.stamp
 
         for id, box, label, score in zip(ids, boxes, labels, scores):
-            xmin, ymin, xmax, ymax = box
+            marker_msg.id = id
+            x1, y1, x2, y2 = box
 
             # scaling coordinates to depth image size (it is the same of the rgb image size)
-            xmin = int(xmin * depth_image.shape[1])
-            xmax = int(xmax * depth_image.shape[1])
-            ymin = int(ymin * depth_image.shape[0])
-            ymax = int(ymax * depth_image.shape[0])
+            x1 = int(x1 * depth_image.shape[1])
+            x2 = int(x2 * depth_image.shape[1])
+            y1 = int(y1 * depth_image.shape[0])
+            y2 = int(y2 * depth_image.shape[0])
 
             # checking median depth value (in meters) inside the bounding box excluding zeros
-            values = depth_image[ymin:ymax, xmin:xmax][
-                depth_image[ymin:ymax, xmin:xmax] != 0
-            ]
+            values = depth_image[y1:y2, x1:x2][depth_image[y1:y2, x1:x2] != 0]
             if len(values) == 0:
                 continue
-            zmin, zmax = np.min(values) / 1000, np.max(values) / 1000  # depth in meters
+            depth = np.median(values) / 1000
+            
+            x_center = (x1 + x2) / 2
+            y_center = (y1 + y2) / 2
+            x_3d, y_3d = self.pose_estimator.pixel_to_3d(x_center, y_center, depth)
 
-            # those points refers to meters coordinate of a 3d bounding box w.r.t the camera frame
-            point_min = [*self.pose_estimator.pixel_to_3d(xmin, ymin, zmin), zmin]
-            point_max = [*self.pose_estimator.pixel_to_3d(xmax, ymax, zmax), zmax]
+            point_source = PointStamped()
+            point_source.header.frame_id = CAMERA_FRAME
+            point_source.point.x = x_3d
+            point_source.point.y = y_3d
+            point_source.point.z = depth
 
-            # enlarging the bounding box by 0.5 meters for testing purposes
-            point_min -= np.array([2.0] * 3)
-            point_max += np.array([2.0] * 3)
-
-            point_min_world = (
+            transformed_point = (
                 self.transformer.lookup_transform_and_transform_coordinates(
-                    CAMERA_FRAME, WORLD_FRAME, point_min, header.stamp
-                )
-            )
-            point_max_world = (
-                self.transformer.lookup_transform_and_transform_coordinates(
-                    CAMERA_FRAME, WORLD_FRAME, point_max, header.stamp
+                    CAMERA_FRAME, WORLD_FRAME, point_source, header.stamp
                 )
             )
 
-            if point_min_world is None or point_max_world is None:
-                rospy.logwarn(f"[Mapping] Point is None even if depth was found")
+            if transformed_point is None:
+                rospy.logwarn(
+                    f"[Mapping] Point is None even if depth was found\n{x_center, y_center, depth}"
+                )
                 continue
 
-            point_min_world = [
-                point_min_world.point.x,
-                point_min_world.point.y,
-                point_min_world.point.z,
-            ]
-            point_max_world = [
-                point_max_world.point.x,
-                point_max_world.point.y,
-                point_max_world.point.z,
-            ]
-            bbox_3d = np.array([point_min_world, point_max_world])
-            object = Obj(bbox_3d, label, score)
-            # overwriting id in case it has changed (e.g. object was already registered in the world)
-            self.world.register_object(id, object)
+            point = transformed_point.point
+            self.register_object(id, point, label, score)
 
-            object, id = self.world.get_object(id)
-            centroid = np.median(object.points, axis=0)
-            label = object.label
-
-            marker_msg.points.append(create_point_msg(*centroid))
-            marker_msg.id = id
+            point, label = self.get_object(id)
+            marker_msg.points.append(point)
 
             if label.lower() == "person":
                 marker_msg.color.r = 1.0
@@ -201,7 +227,7 @@ class Mapper(object):
                 marker_msg.color.b = 1.0
             self.marker_pub.publish(marker_msg)
             marker_msg.points = []
-            # rospy.loginfo("[Mapping] Published object")
+            rospy.loginfo("[Mapping] Published object")
 
 
 if __name__ == "__main__":

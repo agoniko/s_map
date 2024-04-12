@@ -87,14 +87,14 @@ class Node(object):
 
         # subscribers
         self.image_sub = rospy.Subscriber(
-            RGB_TOPIC, Image, self.detection_callback, queue_size=1
+            RGB_TOPIC, Image, self.detection_callback, queue_size=10
         )
 
         # publishers
         # One to show the annotated image (for testing purposes)
         # One to publish the results of the detection (boxes, masks, labels, synch. depth image)
         self.annotated_image_pub = rospy.Publisher(
-            "/s_map/detection/image_annotated", Image, queue_size=1
+            "/s_map/detection/image_annotated", Image, queue_size=10
         )
         self.results_pub = rospy.Publisher(
             "/s_map/detection/results", Detection, queue_size=1
@@ -146,8 +146,11 @@ class Node(object):
         if results:
             detections = sv.Detections.from_ultralytics(results)
             boxes = results.boxes.xyxyn
-            ids = results.boxes.id.cpu().numpy().astype(np.int32).tolist()
-            print(ids)
+            ids = (
+                results.boxes.id.cpu().numpy().astype(np.int32).tolist()
+                if results.boxes.id is not None
+                else []
+            )
             masks = detections.mask
             conf_scores = detections.confidence
             labels = detections.data["class_name"]
@@ -162,6 +165,7 @@ class Node(object):
             res.header = image_msg.header
             res.boxes = boxes.cpu().numpy().flatten()
             res.ids = ids
+            res.scores = conf_scores
             # res.masks = masks.flatten()
             res.labels = labels
 
