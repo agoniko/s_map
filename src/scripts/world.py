@@ -74,7 +74,7 @@ class World:
 
     def exist(
         self, current_id: int, object: Obj, IoU_thr: float = 0.0
-    ) -> tuple[bool, int]:
+    ):
         """
         based on object coordinates it returns true if the object is already in the world.
         This search is based on volume overlap. If we have a volume overlap > threshold we consider the object as the same.
@@ -89,7 +89,7 @@ class World:
                 return True, world_id
         return False, -1
 
-    def get_object(self, id: int, check_existence: int = 30) -> Obj:
+    def get_object(self, id: int, check_existence: int = 30):
         """
         Get the object with the given id
         """
