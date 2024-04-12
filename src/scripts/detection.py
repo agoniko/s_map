@@ -27,7 +27,7 @@ from collections import deque
 RGB_TOPIC = "/realsense/rgb/image_raw"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
 SCAN_TOPIC = "/scan"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
 
 
 class Node(object):

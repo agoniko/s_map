@@ -11,6 +11,7 @@ from geometry_msgs.msg import Point, PointStamped
 from s_map.msg import Detection
 from message_filters import TimeSynchronizer, Subscriber
 from collections import Counter
+from tf.transformations import quaternion_from_euler
 
 
 # others
@@ -42,7 +43,7 @@ def create_marker() -> Marker:
         WORLD_FRAME  # Specify the frame in which the point is defined
     )
     marker_msg.ns = "my_namespace"
-    marker_msg.type = Marker.POINTS
+    marker_msg.type = Marker.CUBE
     marker_msg.action = Marker.ADD
     marker_msg.pose.orientation.w = 1.0
     marker_msg.scale.x = 0.2  # Size of the points
@@ -146,10 +147,6 @@ class Mapper(object):
             point_min = [*self.pose_estimator.pixel_to_3d(xmin, ymin, zmin), zmin]
             point_max = [*self.pose_estimator.pixel_to_3d(xmax, ymax, zmax), zmax]
 
-            # enlarging the bounding box by 0.5 meters for testing purposes
-            point_min -= np.array([2.0] * 3)
-            point_max += np.array([2.0] * 3)
-
             point_min_world = (
                 self.transformer.lookup_transform_and_transform_coordinates(
                     CAMERA_FRAME, WORLD_FRAME, point_min, header.stamp
@@ -175,30 +172,60 @@ class Mapper(object):
                 point_max_world.point.y,
                 point_max_world.point.z,
             ]
+
             bbox_3d = np.array([point_min_world, point_max_world])
             object = Obj(bbox_3d, label, score)
             # overwriting id in case it has changed (e.g. object was already registered in the world)
             self.world.register_object(id, object)
 
             object, id = self.world.get_object(id)
-            centroid = np.median(object.points, axis=0)
-            label = object.label
+            # centroid = np.median(object.points, axis=0)
+            # label = object.label
+            #
+            # marker_msg.points.append(create_point_msg(*centroid))
+            # marker_msg.id = id
+            point_min = object.points[0]
+            point_max = object.points[1]
 
-            marker_msg.points.append(create_point_msg(*centroid))
+            marker_msg.pose.position.x = (point_min[0] + point_max[0]) / 2
+            marker_msg.pose.position.y = (point_min[1] + point_max[1]) / 2
+            marker_msg.pose.position.z = (point_min[2] + point_max[2]) / 2
+            marker_msg.scale.x = point_max[0] - point_min[0]
+            marker_msg.scale.y = point_max[1] - point_min[1]
+            marker_msg.scale.z = point_max[2] - point_min[2]
+            marker_msg.pose.orientation.w = 1.0
+
             marker_msg.id = id
+
+            # print(label)
+            # print("Point min: ", point_min)
+            # print("Point max: ", point_max)
+            # print("______________________")
 
             if label.lower() == "person":
                 marker_msg.color.r = 1.0
+                marker_msg.color.g = 0.0
+                marker_msg.color.b = 0.0
             elif label.lower() == "chair":
+                marker_msg.color.r = 0.0
                 marker_msg.color.g = 1.0
+                marker_msg.color.b = 0.0
             elif label.lower() == "laptop":
+                marker_msg.color.r = 0.0
+                marker_msg.color.g = 0.0
                 marker_msg.color.b = 1.0
             elif label.lower() == "dining table":
+                # yellow
                 marker_msg.color.r = 1.0
-                marker_msg.color.b = 1.0
+                marker_msg.color.g = 1.0
+                marker_msg.color.b = 0.0
             elif label.lower() == "tv":
+                # aqua
+                marker_msg.color.r = 0.0
                 marker_msg.color.g = 1.0
                 marker_msg.color.b = 1.0
+            else:
+                continue
             self.marker_pub.publish(marker_msg)
             marker_msg.points = []
             # rospy.loginfo("[Mapping] Published object")
