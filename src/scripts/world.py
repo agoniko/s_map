@@ -5,10 +5,7 @@ import rospy
 class Obj:
     """
     Object class: Each object is characterized by 3d bboxes, label, and confidence score
-    In this domain points should be a 2x3 numpy array expressed in world frame coordinates.
-    x1_y1_z1, x2_y2_z2
-    #Due to points transformation from camera frame to world frame, we loose the min/max relationship between the points.
-    #For this reason, we need to store the points as they are and calculate the min/max when needed.
+    In this domain points should be stored as 8x3 array where each row is a point in the 3d space.
     """
 
     __slots__ = ["points", "label", "score"]
@@ -17,42 +14,34 @@ class Obj:
     score: float
 
     def __init__(self, points: np.ndarray, label: str, score: float):
-        assert points.shape == (2, 3)
+        assert points.shape == (8, 3)
         self.points = points
         self.label = label
         self.score = score
 
-    def IoU(self, other) -> float:
-        """
-        Check if the object overlaps with another object.
-        Each box has shape (2, 3) where the first row is the min coordinates and the second row is the max coordinates.
-        """
+    def _calculate_box_area(self, vertices):
+        # Calculate the area of the box deined by its vertices
+        min_point = np.min(vertices, axis=0)
+        max_point = np.max(vertices, axis=0)
+        side_lengths = max_point - min_point
+        area = side_lengths[0] * side_lengths[1] * side_lengths[2]
+        return area
 
-        # extract min and max coordinates since the points are not ordered (WORLD FRAME COORDINATES)
-        xmin, ymin, zmin = np.min(self.points, axis=0)
-        xmax, ymax, zmax = np.max(self.points, axis=0)
+    def _calculate_intersection_area(self, vertices1, vertices2):
+        # Calculate the intersection area between two boxes
+        min_point = np.maximum(np.min(vertices1, axis=0), np.min(vertices2, axis=0))
+        max_point = np.minimum(np.max(vertices1, axis=0), np.max(vertices2, axis=0))
+        side_lengths = np.maximum(0, max_point - min_point)
+        intersection_area = side_lengths[0] * side_lengths[1] * side_lengths[2]
+        return intersection_area
 
-        other_xmin, other_ymin, other_zmin = np.min(other.points, axis=0)
-        other_xmax, other_ymax, other_zmax = np.max(other.points, axis=0)
-
-        x_overlap = max(0, min(xmax, other_xmax) - max(xmin, other_xmin))
-        y_overlap = max(0, min(ymax, other_ymax) - max(ymin, other_ymin))
-        z_overlap = max(0, min(zmax, other_zmax) - max(zmin, other_zmin))
-
-        intersection_volume = x_overlap * y_overlap * z_overlap
-
-        volume1 = (xmax - xmin) * (ymax - ymin) * (zmax - zmin)
-        volume2 = (
-            (other_xmax - other_xmin)
-            * (other_ymax - other_ymin)
-            * (other_zmax - other_zmin)
-        )
-
-        union_volume = volume1 + volume2 - intersection_volume
-
-        IoU = intersection_volume / union_volume if union_volume > 0 else 0.0
-
-        return intersection_volume
+    def IoU(self, other):
+        # Calculate the IoU between two bounding boxes
+        intersection_area = self._calculate_intersection_area(self.points, other.points)
+        area1 = self._calculate_box_area(self.points)
+        area2 = self._calculate_box_area(other.points)
+        iou = intersection_area / (area1 + area2 - intersection_area)
+        return iou
 
 
 class World:
@@ -72,9 +61,7 @@ class World:
         self.objects = dict()
         self.id2world = dict()
 
-    def exist(
-        self, current_id: int, object: Obj, IoU_thr: float = 0.0
-    ):
+    def exist(self, current_id: int, object: Obj, IoU_thr: float = 0.0):
         """
         based on object coordinates it returns true if the object is already in the world.
         This search is based on volume overlap. If we have a volume overlap > threshold we consider the object as the same.
@@ -89,7 +76,7 @@ class World:
                 return True, world_id
         return False, -1
 
-    def get_object(self, id: int, check_existence: int = 30):
+    def get_object(self, id: int, check_existence: int = 50):
         """
         Get the object with the given id
         """
@@ -128,13 +115,7 @@ class World:
             )
             label = self.objects[world_id]["history"][label_idx].label
             median = np.median(points, axis=0)
-
-            # restoring actual coordinates as min, max coordinates
-            xmin, ymin, zmin = np.min(median, axis=0)
-            xmax, ymax, zmax = np.max(median, axis=0)
-            bbox_3d = np.array([[xmin, ymin, zmin], [xmax, ymax, zmax]])
-
-            self.objects[world_id]["actual"] = Obj(bbox_3d, label, 1.0)
+            self.objects[world_id]["actual"] = Obj(median, label, 1.0)
 
     def register_object(self, id, object: Obj):
         """

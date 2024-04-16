@@ -8,7 +8,7 @@ project(s_map)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp rospy std_msgs message_generation
+  roscpp rospy std_msgs sensor_msgs message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -67,7 +67,7 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
+  std_msgs sensor_msgs  # Or other packages containing msgs
 )
 
 ################################################

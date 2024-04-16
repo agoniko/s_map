@@ -122,9 +122,11 @@ class TransformHelper:
 
         try:
             point_target = do_transform_point(point_source_stamped, transform)
-            # rospy.loginfo("Transformed coordinates: (%f, %f, %f) in frame: %s",
-            #              point_target.point.x, point_target.point.y, point_target.point.z, target_frame)
-            return point_target
+            x = point_target.point.x
+            y = point_target.point.y
+            z = point_target.point.z
+            
+            return x, y, z
         except Exception as e:
             rospy.logerr("Failed to transform coordinates: %s", str(e))
             return None

@@ -37,31 +37,149 @@ WORLD_FRAME = "world"
 CAMERA_FRAME = "realsense_rgb_optical_frame"
 
 
-def create_marker() -> Marker:
-    marker_msg = Marker()
-    marker_msg.header.frame_id = (
+def create_marker(point_min, point_max, label, id, stamp) -> Marker:
+    marker = Marker()
+    marker.header.frame_id = (
         WORLD_FRAME  # Specify the frame in which the point is defined
     )
-    marker_msg.ns = "my_namespace"
-    marker_msg.type = Marker.CUBE
-    marker_msg.action = Marker.ADD
-    marker_msg.pose.orientation.w = 1.0
-    marker_msg.scale.x = 0.2  # Size of the points
-    marker_msg.scale.y = 0.2
-    marker_msg.scale.z = 0.2
-    marker_msg.color.a = 1.0  # Alpha (transparency)
-    marker_msg.color.r = 0.0
-    marker_msg.color.g = 0.0
-    marker_msg.color.b = 0.0
-    return marker_msg
+    marker.id = id
+    marker.header.stamp = stamp
+
+    marker.ns = "my_namespace"
+    marker.type = Marker.CUBE
+    marker.action = Marker.ADD
+    marker.pose.orientation.w = 1.0
+
+    marker.color.a = 1.0
+
+    marker.pose.position.x = (point_min[0] + point_max[0]) / 2
+    marker.pose.position.y = (point_min[1] + point_max[1]) / 2
+    marker.pose.position.z = (point_min[2] + point_max[2]) / 2
+    marker.scale.x = point_max[0] - point_min[0]
+    marker.scale.y = point_max[1] - point_min[1]
+    marker.scale.z = point_max[2] - point_min[2]
+
+    # quaternion = np.random.rand(4)
+    quaternion = calculate_orientation_quaternion(*point_min, *point_max)
+    marker.pose.orientation.x = quaternion[0]
+    marker.pose.orientation.y = quaternion[1]
+    marker.pose.orientation.z = quaternion[2]
+    marker.pose.orientation.w = quaternion[3]
+
+    if label.lower() == "person":
+        marker.color.r = 1.0
+        marker.color.g = 0.0
+        marker.color.b = 0.0
+    elif label.lower() == "chair":
+        marker.color.r = 0.0
+        marker.color.g = 1.0
+        marker.color.b = 0.0
+    elif label.lower() == "laptop":
+        marker.color.r = 0.0
+        marker.color.g = 0.0
+        marker.color.b = 1.0
+    elif label.lower() == "dining table":
+        # yellow
+        marker.color.r = 1.0
+        marker.color.g = 1.0
+        marker.color.b = 0.0
+    elif label.lower() == "tv":
+        # aqua
+        marker.color.r = 0.0
+        marker.color.g = 1.0
+        marker.color.b = 1.0
+    else:
+        return None
+
+    return marker
 
 
-def create_point_msg(x, y, z):
-    point = Point()
-    point.x = x
-    point.y = y
-    point.z = z
-    return point
+def create_marker_vertices(vertices, label, id, stamp) -> Marker:
+    marker = Marker()
+    marker.header.frame_id = (
+        WORLD_FRAME  # Specify the frame in which the point is defined
+    )
+    marker.id = id
+    marker.header.stamp = stamp
+
+    marker.ns = "my_namespace"
+    marker.type = Marker.LINE_LIST
+    marker.action = Marker.ADD
+    marker.color.a = 1.0
+    marker.scale.x = 0.05
+
+    # create the lines of the bounding box
+    # bottom face
+    marker.points.append(Point(*vertices[0]))
+    marker.points.append(Point(*vertices[1]))
+    marker.points.append(Point(*vertices[1]))
+    marker.points.append(Point(*vertices[3]))
+    marker.points.append(Point(*vertices[3]))
+    marker.points.append(Point(*vertices[2]))
+    marker.points.append(Point(*vertices[2]))
+    marker.points.append(Point(*vertices[0]))
+
+    # top face
+    marker.points.append(Point(*vertices[4]))
+    marker.points.append(Point(*vertices[5]))
+    marker.points.append(Point(*vertices[5]))
+    marker.points.append(Point(*vertices[7]))
+    marker.points.append(Point(*vertices[7]))
+    marker.points.append(Point(*vertices[6]))
+    marker.points.append(Point(*vertices[6]))
+    marker.points.append(Point(*vertices[4]))
+
+    # vertical lines
+    marker.points.append(Point(*vertices[0]))
+    marker.points.append(Point(*vertices[4]))
+    marker.points.append(Point(*vertices[1]))
+    marker.points.append(Point(*vertices[5]))
+    marker.points.append(Point(*vertices[2]))
+    marker.points.append(Point(*vertices[6]))
+    marker.points.append(Point(*vertices[3]))
+    marker.points.append(Point(*vertices[7]))
+
+    if label.lower() == "person":
+        marker.color.r = 1.0
+        marker.color.g = 0.0
+        marker.color.b = 0.0
+    elif label.lower() == "chair":
+        marker.color.r = 0.0
+        marker.color.g = 1.0
+        marker.color.b = 0.0
+    elif label.lower() == "laptop":
+        marker.color.r = 0.0
+        marker.color.g = 0.0
+        marker.color.b = 1.0
+    elif label.lower() == "dining table":
+        # yellow
+        marker.color.r = 1.0
+        marker.color.g = 1.0
+        marker.color.b = 0.0
+    elif label.lower() == "tv":
+        # aqua
+        marker.color.r = 0.0
+        marker.color.g = 1.0
+        marker.color.b = 1.0
+    else:
+        return None
+
+    return marker
+
+
+def get_vercitces(point_min, point_max):
+    vertices = [
+        #     X             Y             Z
+        [point_min[0], point_min[1], point_min[2]],
+        [point_max[0], point_min[1], point_min[2]],
+        [point_min[0], point_max[1], point_min[2]],
+        [point_max[0], point_max[1], point_min[2]],
+        [point_min[0], point_min[1], point_max[2]],
+        [point_max[0], point_min[1], point_max[2]],
+        [point_min[0], point_max[1], point_max[2]],
+        [point_max[0], point_max[1], point_max[2]],
+    ]
+    return vertices
 
 
 class Mapper(object):
@@ -100,11 +218,6 @@ class Mapper(object):
         )
         self.syncronizer.registerCallback(self.mapping_callback)
 
-        # pub_sub for scan
-        # self.laser_subscriber = rospy.Subscriber(
-        #    "/scan", LaserScan, self.scan_callback, queue_size=1
-        # )
-
         self.transformer = TransformHelper()
         self.pose_estimator = CameraPoseEstimator(CAMERA_INFO_TOPIC)
         self.marker_pub = rospy.Publisher(MARKERS_TOPIC, Marker, queue_size=1)
@@ -113,32 +226,46 @@ class Mapper(object):
         self.world = World()
         rospy.spin()
 
-    def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
-        header = detection_msg.header
-        labels = np.array(detection_msg.labels)
+    def preprocess_msg(self, msg: Detection):
+        header = msg.header
+        labels = np.array(msg.labels)
         n = len(labels)
-        boxes = np.array(detection_msg.boxes).reshape(n, 4)
-        scores = np.array(detection_msg.scores)
-        ids = np.array(detection_msg.ids)
-        # TODO: masks
+        boxes = np.array(msg.boxes).reshape(n, 4)
+        scores = np.array(msg.scores)
+        ids = np.array(msg.ids)
+
+        masks = self.cv_bridge.imgmsg_to_cv2(msg.masks)
+        if len(masks.shape) == 2:
+            masks = np.expand_dims(masks, axis=2)
+        masks = np.moveaxis(masks, 2, 0)
+        masks = masks.astype(np.uint8)
+
+        if masks.shape[0] != n:
+            masks = [None] * n
+
+        return header, boxes, labels, scores, ids, masks
+
+    def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
+        header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection_msg)
         depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
 
-        marker_msg = create_marker()
-        marker_msg.header.stamp = header.stamp
+        for id, box, label, mask, score in zip(ids, boxes, labels, masks, scores):
+            xmin, ymin, xmax, ymax = box  # already scaled to the image size
 
-        for id, box, label, score in zip(ids, boxes, labels, scores):
-            xmin, ymin, xmax, ymax = box
+            # TODO: check why sometimes mask number is different from boxes number,
+            # For now if mask is none we extract depth from bbox
+            if mask is not None:
+                filtered_depth = depth_image * mask
+                values = filtered_depth[filtered_depth != 0]
+            else:
+                rospy.logwarn(
+                    "[Mapping] Mask is None, extracting depth from bounding box"
+                )
+                # checking median depth value (in meters) inside the bounding box excluding zeros
+                values = depth_image[ymin:ymax, xmin:xmax][
+                    depth_image[ymin:ymax, xmin:xmax] != 0
+                ]
 
-            # scaling coordinates to depth image size (it is the same of the rgb image size)
-            xmin = int(xmin * depth_image.shape[1])
-            xmax = int(xmax * depth_image.shape[1])
-            ymin = int(ymin * depth_image.shape[0])
-            ymax = int(ymax * depth_image.shape[0])
-
-            # checking median depth value (in meters) inside the bounding box excluding zeros
-            values = depth_image[ymin:ymax, xmin:xmax][
-                depth_image[ymin:ymax, xmin:xmax] != 0
-            ]
             if len(values) == 0:
                 continue
             zmin, zmax = np.min(values) / 1000, np.max(values) / 1000  # depth in meters
@@ -147,88 +274,33 @@ class Mapper(object):
             point_min = [*self.pose_estimator.pixel_to_3d(xmin, ymin, zmin), zmin]
             point_max = [*self.pose_estimator.pixel_to_3d(xmax, ymax, zmax), zmax]
 
-            point_min_world = (
+            # Extracting the 3d bounding box in the world frame, we cannot use only min max points because we lose orientation
+            vertices_camera_frame = get_vercitces(point_min, point_max)
+            vertices_world_frame = [
                 self.transformer.lookup_transform_and_transform_coordinates(
-                    CAMERA_FRAME, WORLD_FRAME, point_min, header.stamp
+                    CAMERA_FRAME, WORLD_FRAME, vertex, header.stamp
                 )
-            )
-            point_max_world = (
-                self.transformer.lookup_transform_and_transform_coordinates(
-                    CAMERA_FRAME, WORLD_FRAME, point_max, header.stamp
-                )
-            )
+                for vertex in vertices_camera_frame
+            ]
+            vertices_world_frame = np.array(vertices_world_frame)
 
-            if point_min_world is None or point_max_world is None:
-                rospy.logwarn(f"[Mapping] Point is None even if depth was found")
+            if None in vertices_world_frame:
+                rospy.logwarn(
+                    "[Mapping] One of the vertices is None even if depth was found"
+                )
                 continue
 
-            point_min_world = [
-                point_min_world.point.x,
-                point_min_world.point.y,
-                point_min_world.point.z,
-            ]
-            point_max_world = [
-                point_max_world.point.x,
-                point_max_world.point.y,
-                point_max_world.point.z,
-            ]
-
-            bbox_3d = np.array([point_min_world, point_max_world])
-            object = Obj(bbox_3d, label, score)
+            object = Obj(vertices_world_frame, label, score)
             # overwriting id in case it has changed (e.g. object was already registered in the world)
             self.world.register_object(id, object)
-
             object, id = self.world.get_object(id)
-            # centroid = np.median(object.points, axis=0)
-            # label = object.label
-            #
-            # marker_msg.points.append(create_point_msg(*centroid))
-            # marker_msg.id = id
-            point_min = object.points[0]
-            point_max = object.points[1]
 
-            marker_msg.pose.position.x = (point_min[0] + point_max[0]) / 2
-            marker_msg.pose.position.y = (point_min[1] + point_max[1]) / 2
-            marker_msg.pose.position.z = (point_min[2] + point_max[2]) / 2
-            marker_msg.scale.x = point_max[0] - point_min[0]
-            marker_msg.scale.y = point_max[1] - point_min[1]
-            marker_msg.scale.z = point_max[2] - point_min[2]
-            marker_msg.pose.orientation.w = 1.0
+            marker = create_marker_vertices(
+                object.points, object.label, id, header.stamp
+            )
 
-            marker_msg.id = id
-
-            # print(label)
-            # print("Point min: ", point_min)
-            # print("Point max: ", point_max)
-            # print("______________________")
-
-            if label.lower() == "person":
-                marker_msg.color.r = 1.0
-                marker_msg.color.g = 0.0
-                marker_msg.color.b = 0.0
-            elif label.lower() == "chair":
-                marker_msg.color.r = 0.0
-                marker_msg.color.g = 1.0
-                marker_msg.color.b = 0.0
-            elif label.lower() == "laptop":
-                marker_msg.color.r = 0.0
-                marker_msg.color.g = 0.0
-                marker_msg.color.b = 1.0
-            elif label.lower() == "dining table":
-                # yellow
-                marker_msg.color.r = 1.0
-                marker_msg.color.g = 1.0
-                marker_msg.color.b = 0.0
-            elif label.lower() == "tv":
-                # aqua
-                marker_msg.color.r = 0.0
-                marker_msg.color.g = 1.0
-                marker_msg.color.b = 1.0
-            else:
-                continue
-            self.marker_pub.publish(marker_msg)
-            marker_msg.points = []
-            # rospy.loginfo("[Mapping] Published object")
+            if marker is not None:
+                self.marker_pub.publish(marker)
 
 
 if __name__ == "__main__":

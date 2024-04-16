@@ -97,7 +97,7 @@ class Node(object):
             "/s_map/detection/image_annotated", Image, queue_size=10
         )
         self.results_pub = rospy.Publisher(
-            "/s_map/detection/results", Detection, queue_size=1
+            "/s_map/detection/results", Detection, queue_size=10
         )
 
         self.annotated_images = deque(maxlen=30)
@@ -124,9 +124,37 @@ class Node(object):
         end = time.time()
         # print("Publish time: ", end - start)
 
+    def preprocess_msg(self, detections, header):
+        """
+        Preprocess the detection message to be published from supervision detection
+        """
+        try:
+            boxes = detections.xyxy.astype(np.int32)
+            boxes = boxes.flatten()  # already rescaled to the original image size
+            labels = detections.data["class_name"]
+            track_id = detections.tracker_id.astype(np.int32)
+            conf = detections.confidence
+
+            masks = detections.mask
+            masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
+            mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
+
+            res = Detection()
+            res.header = header
+            res.boxes = boxes
+            res.ids = track_id
+            res.scores = conf
+            res.masks = mask_msg
+            res.labels = labels
+
+            return res
+        except:
+            return None
+
     def detection_callback(self, image_msg):
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
-        start = time.time()
+
+        # performing object detection/segmentation with YOLO
         results = next(
             self.detector.track(
                 frame,
@@ -135,44 +163,32 @@ class Node(object):
                 conf=0.5,
                 verbose=False,
                 persist=True,
+                tracker="bytetrack.yaml",
             )
         )
-        end = time.time()
-        # print("Detection time: ", end - start)
-
         # remember that YOLO rescale output to 384, 640 while frame has a different dimension
         # for this reason we take the normalized coordinates
         # CameraPoseEstimator handle this issue
         if results:
             detections = sv.Detections.from_ultralytics(results)
-            boxes = results.boxes.xyxyn
-            ids = (
-                results.boxes.id.cpu().numpy().astype(np.int32).tolist()
-                if results.boxes.id is not None
-                else []
-            )
-            masks = detections.mask
-            conf_scores = detections.confidence
             labels = detections.data["class_name"]
+            track_ids = detections.tracker_id
 
+            if track_ids is None or labels is None:
+                return
+
+            labels = [
+                f"{track_id}: {label}" for track_id, label in zip(track_ids, labels)
+            ]
+            # annotating frame for testing purposes
             frame = self.mask_annotator.annotate(frame, detections)
-            frame = self.label_annotator.annotate(frame, detections)
+            frame = self.label_annotator.annotate(frame, detections, labels)
             frame = self.box_annotator.annotate(frame, detections)
-
             self.annotated_images.append(frame)
 
-            res = Detection()
-            res.header = image_msg.header
-            res.boxes = boxes.cpu().numpy().flatten()
-            res.ids = ids
-            res.scores = conf_scores
-            # res.masks = masks.flatten()
-            res.labels = labels
-
-            self.results.append(res)
-
-            end = time.time()
-            # print("Callback time: ", end - start)
+            detection_msg = self.preprocess_msg(detections, image_msg.header)
+            if detection_msg:
+                self.results.append(detection_msg)
 
 
 if __name__ == "__main__":
