@@ -4,6 +4,7 @@ import tf
 import cv2 as cv
 from geometry_msgs.msg import Pose, PoseStamped
 from sensor_msgs.msg import Image, CameraInfo
+from image_geometry import PinholeCameraModel
 import numpy as np
 import tf2_ros
 
@@ -18,6 +19,8 @@ class CameraPoseEstimator:
 
             def callback(self, x):
                 self.data = x
+                self.camera = PinholeCameraModel()
+                self.camera.fromCameraInfo(x)
 
         data = Dummy()
         sub = rospy.Subscriber(info_topic, CameraInfo, callback=data.callback)
@@ -32,10 +35,10 @@ class CameraPoseEstimator:
 
         fx, fy = k[0, 0], k[1, 1]
         cx, cy = k[0, 2], k[1, 2]
-        return (fx, fy), (cx, cy), (height, width)
+        return (fx, fy), (cx, cy), (height, width), data.camera
 
     def __init__(self, info_topic):
-        (self.fx, self.fy), (self.cx, self.cy), (self.height, self.width) = (
+        (self.fx, self.fy), (self.cx, self.cy), (self.height, self.width), self.camera = (
             self.receive_camera_info(info_topic)
         )
 
@@ -43,6 +46,9 @@ class CameraPoseEstimator:
         x_3d = (pix_x - self.cx) * depth_m / self.fx
         y_3d = (pix_y - self.cy) * depth_m / self.fy
         return x_3d, y_3d
+
+    def d3_to_pixel(self, x, y, z):
+        return self.camera.project3dToPixel((x, y, z))
 
     def normalized_pixel_to_3d(self, pix_x, pix_y, depth_m):
         pix_x = pix_x * self.width
@@ -125,7 +131,7 @@ class TransformHelper:
             x = point_target.point.x
             y = point_target.point.y
             z = point_target.point.z
-            
+
             return x, y, z
         except Exception as e:
             rospy.logerr("Failed to transform coordinates: %s", str(e))

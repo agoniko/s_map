@@ -15,6 +15,17 @@ class Obj:
 
     def __init__(self, points: np.ndarray, label: str, score: float):
         assert points.shape == (8, 3)
+        # Now we will sort vertices world in order to always have the same order, the keys are z then y then x
+        # (useful for subsequent perception by a different pov)
+        points = points[
+            np.lexsort(
+                (
+                    points[:, 0],
+                    points[:, 1],
+                    points[:, 2],
+                )
+            )
+        ]
         self.points = points
         self.label = label
         self.score = score
