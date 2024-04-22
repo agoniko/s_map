@@ -8,6 +8,9 @@ from image_geometry import PinholeCameraModel
 import numpy as np
 import tf2_ros
 
+from geometry_msgs.msg import PointStamped
+from tf2_geometry_msgs import do_transform_point
+
 
 class CameraPoseEstimator:
 
@@ -38,9 +41,12 @@ class CameraPoseEstimator:
         return (fx, fy), (cx, cy), (height, width), data.camera
 
     def __init__(self, info_topic):
-        (self.fx, self.fy), (self.cx, self.cy), (self.height, self.width), self.camera = (
-            self.receive_camera_info(info_topic)
-        )
+        (
+            (self.fx, self.fy),
+            (self.cx, self.cy),
+            (self.height, self.width),
+            self.camera,
+        ) = self.receive_camera_info(info_topic)
 
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         x_3d = (pix_x - self.cx) * depth_m / self.fx
@@ -57,56 +63,22 @@ class CameraPoseEstimator:
         y_3d = (pix_y - self.cy) * depth_m / self.fy
         return x_3d, y_3d
 
+class SingletonMeta(type):
+    _instances = {}
 
-class Transformer:
-    def __init__(self):
-        # Initialize a TF buffer with a longer cache time
-        tf_buffer = tf2_ros.Buffer(
-            cache_time=rospy.Duration(30.0)
-        )  # Adjust cache time as needed (e.g., 30 seconds)
-
-        # Initialize a TF listener
-        self.tf_listener = tf2_ros.TransformListener(tf_buffer)
-
-    def transform_coordinates(self, x, y, z, from_frame, to_frame, timestamp=None):
-        stamped = PoseStamped()
-        stamped.pose.position.x = x
-        stamped.pose.position.y = y
-        stamped.pose.position.z = z
-        stamped.header.frame_id = from_frame
-
-        if timestamp is None:
-            timestamp = rospy.Time(0)
-
-        stamped.header.stamp = timestamp
-
-        # self.tflistener.waitForTransform(
-        #    to_frame, from_frame, timestamp, rospy.Duration(5)
-        # )
-        self.tflistener.lookupTransform(to_frame, from_frame, timestamp)
-        transformed = self.tflistener.transformPose(to_frame, stamped)
-
-        res_x = transformed.pose.position.x
-        res_y = transformed.pose.position.y
-        res_z = transformed.pose.position.z
-        return res_x, res_y, res_z
-
-
-from geometry_msgs.msg import PointStamped
-from tf2_geometry_msgs import do_transform_point
-
-
-class TransformHelper:
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+    
+class TransformHelper(metaclass=SingletonMeta):
     def __init__(self, cache_time=60.0):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-    def lookup_transform_and_transform_coordinates(
-        self, source_frame, target_frame, point_source, stamp
-    ):
-        """
-        point source is a list [x, y, z]
-        """
+    # this function return the translation and rotation of a frame without performing any ransformation
+    def lookup_transform(self, source_frame, target_frame, stamp):
         try:
             transform = self.tf_buffer.lookup_transform(
                 target_frame, source_frame, stamp
@@ -118,21 +90,34 @@ class TransformHelper:
         ) as e:
             rospy.logerr("Failed to lookup transform: %s", str(e))
             return None
+        return transform
 
-        point_source_stamped = PointStamped()
-        point_source_stamped.header.frame_id = source_frame
-        point_source_stamped.header.stamp = stamp
-        point_source_stamped.point.x = point_source[0]
-        point_source_stamped.point.y = point_source[1]
-        point_source_stamped.point.z = point_source[2]
-
-        try:
-            point_target = do_transform_point(point_source_stamped, transform)
-            x = point_target.point.x
-            y = point_target.point.y
-            z = point_target.point.z
-
-            return x, y, z
-        except Exception as e:
-            rospy.logerr("Failed to transform coordinates: %s", str(e))
+    def transform_coordinates(self, source_frame, target_frame, points, stamp):
+        """
+        point source is a list [[x, y, z], [x, y, z], ...]
+        """
+        transform = self.lookup_transform(source_frame, target_frame, stamp)
+        if transform is None:
             return None
+
+        transformed_points = []
+        for point in points:
+            point_source_stamped = PointStamped()
+            point_source_stamped.header.frame_id = source_frame
+            point_source_stamped.header.stamp = stamp
+            point_source_stamped.point.x = point[0]
+            point_source_stamped.point.y = point[1]
+            point_source_stamped.point.z = point[2]
+
+            try:
+                point_target = do_transform_point(point_source_stamped, transform)
+                x = point_target.point.x
+                y = point_target.point.y
+                z = point_target.point.z
+
+                transformed_points.append([x, y, z])
+            except Exception as e:
+                rospy.logerr("Failed to transform coordinates: %s", str(e))
+                return None
+
+        return np.array(transformed_points)

@@ -28,6 +28,7 @@ RGB_TOPIC = "/realsense/rgb/image_raw"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
 SCAN_TOPIC = "/scan"
 MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
+QUEUE_SIZE = 100
 
 
 class Node(object):
@@ -87,17 +88,17 @@ class Node(object):
 
         # subscribers
         self.image_sub = rospy.Subscriber(
-            RGB_TOPIC, Image, self.detection_callback, queue_size=10
+            RGB_TOPIC, Image, self.detection_callback, queue_size=QUEUE_SIZE
         )
 
         # publishers
         # One to show the annotated image (for testing purposes)
         # One to publish the results of the detection (boxes, masks, labels, synch. depth image)
         self.annotated_image_pub = rospy.Publisher(
-            "/s_map/detection/image_annotated", Image, queue_size=10
+            "/s_map/detection/image_annotated", Image, queue_size=QUEUE_SIZE
         )
         self.results_pub = rospy.Publisher(
-            "/s_map/detection/results", Detection, queue_size=10
+            "/s_map/detection/results", Detection, queue_size=QUEUE_SIZE
         )
 
         self.annotated_images = deque(maxlen=30)
@@ -154,7 +155,7 @@ class Node(object):
     def detection_callback(self, image_msg):
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
 
-        # performing object detection/segmentation with YOLO
+        # performing object detection/segmentation with YOLO with tracking
         results = next(
             self.detector.track(
                 frame,
@@ -167,8 +168,7 @@ class Node(object):
             )
         )
         # remember that YOLO rescale output to 384, 640 while frame has a different dimension
-        # for this reason we take the normalized coordinates
-        # CameraPoseEstimator handle this issue
+        # for this reason we take coordinates from detection variable (from supervision) that already rescale coordinates and masks
         if results:
             detections = sv.Detections.from_ultralytics(results)
             labels = detections.data["class_name"]
