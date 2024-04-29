@@ -1,4 +1,4 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+#!/usr/bin/env python3
 import sys
 
 # Add the directory containing your ROS package's generated message Python files to sys.path
@@ -24,10 +24,12 @@ import time
 from ctypes import *
 from collections import deque
 
-RGB_TOPIC = "/realsense/rgb/image_raw"
-DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+#RGB_TOPIC = "/realsense/rgb/image_raw"
+#DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+RGB_TOPIC = "/rgb"
+DEPTH_TOPIC = "/depth"
 SCAN_TOPIC = "/scan"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 QUEUE_SIZE = 100
 
 

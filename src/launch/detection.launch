@@ -2,4 +2,5 @@
     <!-- My Package launch file -->
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen"></node>
     <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen"></node>
+    <node pkg="s_map" type="topics_conversions.py" name="rtabmap_topics_conversion"  output="screen"></node>
 </launch>

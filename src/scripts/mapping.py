@@ -1,4 +1,4 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+#!/usr/bin/env python3
 
 # ros packages
 import rospy
@@ -175,7 +175,7 @@ class Mapper(object):
             return
         header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection_msg)
         depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
-        self.still_exist(boxes, labels, header)
+        #self.still_exist(boxes, labels, header)
         # print(labels)
         # print(boxes)
 
