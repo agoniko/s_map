@@ -1,5 +1,6 @@
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point, PointStamped
+import rospy
 
 
 def create_marker(point_min, point_max, label, id, header) -> Marker:
@@ -140,6 +141,16 @@ def get_vercitces(point_min, point_max):
         [point_max[0], point_max[1], point_max[2]],
     ]
     return vertices
+
+def delete_marker(marker_id, frame):
+    marker = Marker()
+    marker.header.frame_id = frame
+    marker.header.stamp = rospy.Time.now()
+    marker.ns = "my_namespace"
+    marker.id = marker_id
+    marker.action = Marker.DELETE
+    return marker
+   
 
 
 def bbox_iou(box1, box2):

@@ -12,6 +12,7 @@ from message_filters import TimeSynchronizer, Subscriber
 from collections import Counter
 from tf.transformations import quaternion_from_euler
 from utils import create_marker_vertices, get_vercitces, bbox_iou
+from utils import delete_marker
 
 
 # others
@@ -117,11 +118,13 @@ class Mapper(object):
 
     def still_exist(self, boxes, labels, header, width=848, height=480):
         # start = time.time()
+        to_remove = []
         for id, object in self.world.objects.items():
             points = object["actual"].points
             points = self.transformer.transform_coordinates(
                 WORLD_FRAME, CAMERA_FRAME, points, header.stamp
             )
+            print(id, object["actual"].label, np.min(points, axis=0))
             if np.min(points[:, 2]) < 1:
                 # if the object is behind the camera
                 continue
@@ -150,20 +153,31 @@ class Mapper(object):
                 [max(0, xmin), max(0, ymin), min(width, xmax), min(height, ymax)],
             )
             iou = bbox_iou(bbox, visible_bbox)
-            found = False
             if iou > 0.7:
-                rospy.loginfo(f"Object {str(id)} should be visible, %visibility: {iou}")
+                # registering the last time the object should be visible in the image plane
+                object["actual"].last_checked = header.stamp
+                # rospy.loginfo(f"Object {str(id)} should be visible, %visibility: {iou}")
                 for box, label in zip(boxes, labels):
                     iou = bbox_iou(box, visible_bbox)
                     if iou > 0.1 and label == object["actual"].label:
-                        rospy.loginfo(
-                            f"Object {str(id)} is still visible, pred label:{label}, actual label:{object['actual'].label}, %match: {iou}"
-                        )
-                        found = True
+                        object["actual"].last_seen = header.stamp
+                        # rospy.loginfo(
+                        #    f"Object {str(id)} is still visible, pred label:{label}, actual label:{object['actual'].label}, %match: {iou}"
+                        # )
                         break
 
-                if not found:
-                    rospy.logwarn(f"Object {str(id)} is not visible anymore")
+                last_checked = object["actual"].last_checked
+                last_seen = object["actual"].last_seen
+                if last_checked - last_seen > rospy.Duration(5):
+                    rospy.logwarn(
+                        f"Object {str(id)}: {object['actual'].label} is not visible anymore"
+                    )
+                    to_remove.append(id)
+
+        for id in to_remove:
+            self.world.remove_object(id)
+            delete_msg = delete_marker(id, WORLD_FRAME)
+            self.marker_pub.publish(delete_msg)
 
         # end = time.time()
         # print("Time to check if objects are still in the image plane: ", end - start)
@@ -171,11 +185,11 @@ class Mapper(object):
     def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
         # start = time.time()
         if not self.pose_reliability_evaluator.evaluate(detection_msg.header.stamp):
-            #rospy.logwarn("Pose is not reliable")
+            # rospy.logwarn("Pose is not reliable")
             return
         header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection_msg)
         depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
-        self.still_exist(boxes, labels, header)
+        #self.still_exist(boxes, labels, header)
         # print(labels)
         # print(boxes)
 
@@ -208,14 +222,17 @@ class Mapper(object):
                 )
                 continue
 
-            object = Obj(vertices_world_frame, label, score)
+            object = Obj(vertices_world_frame, label, score, header.stamp)
             # overwriting id in case it has changed (e.g. object was already registered in the world)
             self.world.register_object(id, object)
-            object, id = self.world.get_object(id)
+            object, world_id = self.world.get_object(id)
+            #if id != world_id:
+            #    delete_msg = delete_marker(id, WORLD_FRAME)
+            #    self.marker_pub.publish(delete_msg)
 
             # creating marker message for rviz visualization
             marker = create_marker_vertices(
-                object.points, object.label, id, header.stamp, WORLD_FRAME
+                object.points, object.label, world_id, header.stamp, WORLD_FRAME
             )
 
             if marker is not None:

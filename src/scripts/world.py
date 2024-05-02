@@ -1,5 +1,6 @@
 import numpy as np
 import rospy
+from collections import deque
 
 
 class Obj:
@@ -8,15 +9,21 @@ class Obj:
     In this domain points should be stored as 8x3 array where each row is a point in the 3d space.
     """
 
-    __slots__ = ["points", "label", "score"]
+    __slots__ = ["points", "label", "score", "last_seen", "last_checked"]
     points: np.ndarray
     label: str
     score: float
+    last_seen: float
+    last_checked: float
 
-    def __init__(self, points: np.ndarray, label: str, score: float):
+    def __init__(self, points: np.ndarray, label: str, score: float, stamp):
         assert points.shape == (8, 3)
         # Now we will sort vertices world in order to always have the same order, the keys are z then y then x
         # (useful for subsequent perception by a different pov)
+        # The idea of last seen and last checked is the following:
+        # Last_seen: the last time the object was detected
+        # Last_checked: the last time the object was projected succesfully in the image plane
+        # They are both used to check if the object is still in the world or not.
         points = points[
             np.lexsort(
                 (
@@ -29,6 +36,8 @@ class Obj:
         self.points = points
         self.label = label
         self.score = score
+        self.last_seen = stamp
+        self.last_checked = stamp
 
     def _calculate_box_area(self, vertices):
         # Calculate the area of the box deined by its vertices
@@ -87,6 +96,19 @@ class World:
                 return True, world_id
         return False, -1
 
+    def remove_object(self, id: int):
+        """
+        Remove an object from the world
+        """
+        if id in self.id2world:
+            world_id = self.id2world[id]
+            self.objects.pop(world_id)
+            self.id2world.pop(id)
+            if id != world_id:
+                self.id2world.pop(world_id)
+        else:
+            raise ValueError("Object not found in the world")
+
     def get_object(self, id: int, check_existence: int = 50):
         """
         Get the object with the given id
@@ -106,7 +128,7 @@ class World:
                         self.objects[id]["history"]
                     )
                     self.update(world_id)
-                    del self.objects[id]
+                    self.objects.pop(id)
                     return self.objects[world_id]["actual"], world_id
 
             return obj, w_id
@@ -126,7 +148,10 @@ class World:
             )
             label = self.objects[world_id]["history"][label_idx].label
             median = np.median(points, axis=0)
-            self.objects[world_id]["actual"] = Obj(median, label, 1.0)
+            # median = np.mean(points, axis=0)
+            self.objects[world_id]["actual"] = Obj(
+                median, label, 1.0, self.objects[world_id]["history"][-1].last_seen
+            )
 
     def register_object(self, id, object: Obj):
         """
@@ -138,7 +163,9 @@ class World:
             self.update(world_id)
         else:
             self.objects[id] = {
-                "history": [object],
+                # history is a circular queue containing a maximum of 100 elements (the 100 most recent detections)
+                # this avoid too much memory usage but over-rely on detections
+                "history": deque([object], maxlen=100),
                 "actual": object,
             }
             self.update(id)

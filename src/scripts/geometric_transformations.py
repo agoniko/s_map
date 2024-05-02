@@ -77,7 +77,7 @@ class TransformHelper(metaclass=SingletonMeta):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-    # this function return the translation and rotation of a frame without performing any ransformation
+    # this function return the translation and rotation of a frame without performing any transformation
     def lookup_transform(self, source_frame, target_frame, stamp):
         try:
             transform = self.tf_buffer.lookup_transform(
