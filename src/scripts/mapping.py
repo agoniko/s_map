@@ -34,8 +34,9 @@ CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 
-WORLD_FRAME = "world"
-CAMERA_FRAME = "realsense_rgb_optical_frame"
+WORLD_FRAME = "vision"
+#WORLD_FRAME = "world"
+CAMERA_FRAME = "back_fisheye"
 RGB_FRAME = "realsense_rgb_frame"
 
 
@@ -170,9 +171,10 @@ class Mapper(object):
 
     def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
         # start = time.time()
-        if not self.pose_reliability_evaluator.evaluate(detection_msg.header.stamp):
+        #if not self.pose_reliability_evaluator.evaluate(detection_msg.header.stamp):
             #rospy.logwarn("Pose is not reliable")
-            return
+        #    return
+        rospy.logerr("Mapping callback")
         header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection_msg)
         depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
         #self.still_exist(boxes, labels, header)

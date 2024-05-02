@@ -26,8 +26,8 @@ from collections import deque
 
 #RGB_TOPIC = "/realsense/rgb/image_raw"
 #DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
-RGB_TOPIC = "/rgb"
-DEPTH_TOPIC = "/depth"
+DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+RGB_TOPIC = "/realsense/rgb/image_raw"
 SCAN_TOPIC = "/scan"
 MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 QUEUE_SIZE = 100
