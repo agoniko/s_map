@@ -1,37 +1,41 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
-import sys
-
-# Add the directory containing your ROS package's generated message Python files to sys.path
-sys.path.append("/Users/nicoloagostara/catkin_ws/src/s_map/msg")
-# ros packages
+#!/usr/bin/env python
 import rospy
 import rospkg
 from sensor_msgs.msg import Image, LaserScan
 from cv_bridge import CvBridge
-from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Point, PointStamped
+from geometry_msgs.msg import PointStamped
 from s_map.msg import Detection
-
-# from s_map.msg import Detection, Box, Mask
-
-# others
-# import cv2
 import torch
 from ultralytics import YOLO
 import supervision as sv
-import numpy as np
-import time
-from ctypes import *
 from collections import deque
 
+# Global Configuration Variables
 RGB_TOPIC = "/realsense/rgb/image_raw"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
 SCAN_TOPIC = "/scan"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
-QUEUE_SIZE = 100
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
+DETECTION_CONFIDENCE = 0.5
+TRACKER = "bytetrack.yaml"
 
 
-class Node(object):
+class Node:
+    """
+    A ROS node for object detection using YOLO, processing images and publishing results.
+
+    Attributes:
+        cv_bridge (CvBridge): Bridge between ROS Image messages and OpenCV formats.
+        device (torch.device): Device configuration for PyTorch (either CUDA or CPU).
+        detector (YOLO): Initialized YOLO model for object detection.
+        mask_annotator (sv.MaskAnnotator): Annotator for applying masks on detected objects.
+        label_annotator (sv.LabelAnnotator): Annotator for labeling detected objects.
+        box_annotator (sv.BoxCornerAnnotator): Annotator for drawing bounding boxes around detected objects.
+        image_sub (rospy.Subscriber): Subscriber to the RGB image topic.
+        depth_sub (rospy.Subscriber): Subscriber to the depth image topic.
+        laser_sub (rospy.Subscriber): Subscriber to the laser scan topic.
+        annotated_image_pub (rospy.Publisher): Publisher for annotated images.
+        results_pub (rospy.Publisher): Publisher for detection results.
+    """
 
     __slots__ = [
         "cv_bridge",
@@ -43,153 +47,100 @@ class Node(object):
         "image_sub",
         "depth_sub",
         "laser_sub",
-        "annotated_images",
         "annotated_image_pub",
-        "results",
         "results_pub",
-        "synchronizer",
-        "pub_timer",
     ]
-    cv_bridge: CvBridge
-    device: torch.device
-    detector: YOLO
-    mask_annotator: sv.MaskAnnotator
-    label_annotator: sv.LabelAnnotator
-    box_annotator: sv.BoxCornerAnnotator
-    detections_dict: dict
-    image_sub: rospy.Subscriber
-    annotated_images: deque
-    annotated_image_pub: rospy.Publisher
-    results: deque
-    results_pub: rospy.Publisher
-    pub_timer: rospy.Timer
 
     def __init__(self):
-        """
-        Initializes a ROS node for object segmentation and laser scan processing.
-        It synchronize messages from the RGB camera, the depth camera and the LaserScan, performs detection and publish the results.
-        Results are then processed by mapping module to create a 3D semantic map.
-        """
-        rospy.init_node("detection")
+        """Initialize the node, its publications, subscriptions, and model."""
+        rospy.init_node("detection_node")
         self.cv_bridge = CvBridge()
-        self.device = (
-            torch.device("cuda") if torch.cuda.is_available() else torch.device("mps")
-        )
-        rospy.loginfo(f"Using {self.device} device for detection")
-
-        # segmentation and detection model
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps")
         self.detector = YOLO(MODEL_PATH)
         self.detector = self.detector.to(self.device)
+        rospy.loginfo(f"Using device: {self.device}")
 
-        # Using supervision library for easier annotation
         self.mask_annotator = sv.MaskAnnotator()
         self.label_annotator = sv.LabelAnnotator()
         self.box_annotator = sv.BoxCornerAnnotator()
 
-        # subscribers
-        self.image_sub = rospy.Subscriber(
-            RGB_TOPIC, Image, self.detection_callback, queue_size=QUEUE_SIZE
-        )
+        # Subscribers
+        self.image_sub = rospy.Subscriber(RGB_TOPIC, Image, self.detection_callback)
+        self.depth_sub = rospy.Subscriber(DEPTH_TOPIC, Image, self.depth_callback)
+        self.laser_sub = rospy.Subscriber(SCAN_TOPIC, LaserScan, self.scan_callback)
 
-        # publishers
-        # One to show the annotated image (for testing purposes)
-        # One to publish the results of the detection (boxes, masks, labels, synch. depth image)
+        # Publishers
         self.annotated_image_pub = rospy.Publisher(
-            "/s_map/detection/image_annotated", Image, queue_size=QUEUE_SIZE
+            "annotated_images", Image, queue_size=10
         )
         self.results_pub = rospy.Publisher(
-            "/s_map/detection/results", Detection, queue_size=QUEUE_SIZE
+            "detection_results", Detection, queue_size=10
         )
 
-        self.annotated_images = deque(maxlen=30)
-        self.results = deque(maxlen=30)
-
-        self.pub_timer = rospy.Timer(rospy.Duration(1.0 / 30.0), self.publish_results)
-
-        rospy.spin()
-
-    def publish_results(self, event):
-        """
-        Publish annotated images and detection results
-        """
-        start = time.time()
-        if self.annotated_images:
-            annotated_image_msg = self.cv_bridge.cv2_to_imgmsg(
-                self.annotated_images.popleft(), "rgb8"
-            )
-            self.annotated_image_pub.publish(annotated_image_msg)
-
-        if self.results:
-            self.results_pub.publish(self.results.popleft())
-
-        end = time.time()
-        # print("Publish time: ", end - start)
-
-    def preprocess_msg(self, detections, header):
-        """
-        Preprocess the detection message to be published from supervision detection
-        """
-        try:
-            boxes = detections.xyxy.astype(np.int32)
-            boxes = boxes.flatten()  # already rescaled to the original image size
-            labels = detections.data["class_name"]
-            track_id = detections.tracker_id.astype(np.int32)
-            conf = detections.confidence
-
-            masks = detections.mask
-            masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
-            mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
-
-            res = Detection()
-            res.header = header
-            res.boxes = boxes
-            res.ids = track_id
-            res.scores = conf
-            res.masks = mask_msg
-            res.labels = labels
-
-            return res
-        except:
-            return None
-
     def detection_callback(self, image_msg):
-        frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
+        """
+        Callback for processing images received from the RGB topic.
+        Performs detection, annotations, and publishes the results.
 
-        # performing object detection/segmentation with YOLO with tracking
+        Args:
+            image_msg (Image): The incoming ROS message containing the image data.
+        """
+        frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
         results = next(
             self.detector.track(
                 frame,
                 device=self.device,
+                conf=DETECTION_CONFIDENCE,
                 stream=True,
-                conf=0.5,
-                verbose=False,
                 persist=True,
-                tracker="bytetrack.yaml",
+                tracker=TRACKER,
+                verbose=False,
             )
         )
-        # remember that YOLO rescale output to 384, 640 while frame has a different dimension
-        # for this reason we take coordinates from detection variable (from supervision) that already rescale coordinates and masks
         if results:
             detections = sv.Detections.from_ultralytics(results)
-            labels = detections.data["class_name"]
-            track_ids = detections.tracker_id
+            frame = self.annotate_frame(frame, detections, image_msg.header)
+            self.publish_results(detections, image_msg.header, frame)
 
-            if track_ids is None or labels is None:
-                return
+    def annotate_frame(self, frame, detections, header):
+        """
+        Annotates the frame with masks, labels, and boxes based on detections.
 
-            labels = [
-                f"{track_id}: {label}" for track_id, label in zip(track_ids, labels)
-            ]
-            # annotating frame for testing purposes
-            frame = self.mask_annotator.annotate(frame, detections)
-            frame = self.label_annotator.annotate(frame, detections, labels)
-            frame = self.box_annotator.annotate(frame, detections)
-            self.annotated_images.append(frame)
+        Args:
+            frame (np.array): Image frame to annotate.
+            detections (sv.Detections): Detection results.
+            header (std_msgs.msg.Header): Header from the incoming image message.
 
-            detection_msg = self.preprocess_msg(detections, image_msg.header)
-            if detection_msg:
-                self.results.append(detection_msg)
+        Returns:
+            Image: Annotated image ready for publishing.
+        """
+        frame = self.mask_annotator.annotate(frame, detections)
+        frame = self.label_annotator.annotate(frame, detections)
+        frame = self.box_annotator.annotate(frame, detections)
+        return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
+
+    def publish_results(self, detections, header, frame):
+        """
+        Publishes detection results and annotated images.
+
+        Args:
+            detections (sv.Detections): Detection results to be published.
+            header (std_msgs.msg.Header): Header from the incoming image message, used for time stamping the published messages.
+            frame (std_msgs.msg.Image): Annotated image to be published
+        """
+        detection_msg = Detection(header=header, **detections.to_dict())
+        self.results_pub.publish(detection_msg)
+        self.annotated_image_pub.publish(self.annotate_frame(frame, detections))
+
+    def depth_callback(self, msg):
+        """Placeholder for processing depth images."""
+        pass
+
+    def scan_callback(self, msg):
+        """Placeholder for processing laser scan data."""
+        pass
 
 
 if __name__ == "__main__":
     node = Node()
+    rospy.spin()
