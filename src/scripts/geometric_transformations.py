@@ -51,17 +51,10 @@ class CameraPoseEstimator:
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         x_3d = (pix_x - self.cx) * depth_m / self.fx
         y_3d = (pix_y - self.cy) * depth_m / self.fy
-        return x_3d, y_3d
+        return [x_3d, y_3d, depth_m]
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
-
-    def normalized_pixel_to_3d(self, pix_x, pix_y, depth_m):
-        pix_x = pix_x * self.width
-        pix_y = pix_y * self.height
-        x_3d = (pix_x - self.cx) * depth_m / self.fx
-        y_3d = (pix_y - self.cy) * depth_m / self.fy
-        return x_3d, y_3d
 
 class SingletonMeta(type):
     _instances = {}
@@ -77,7 +70,7 @@ class TransformHelper(metaclass=SingletonMeta):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
 
-    # this function return the translation and rotation of a frame without performing any ransformation
+    # this function return the translation and rotation of a frame without performing any transformation
     def lookup_transform(self, source_frame, target_frame, stamp):
         try:
             transform = self.tf_buffer.lookup_transform(

@@ -1,145 +1,137 @@
+from scipy.spatial import KDTree
 import numpy as np
-import rospy
+from collections import deque
+from shapely.geometry import Polygon, MultiPoint
+from utils import compute_3d_iou
 
 
 class Obj:
-    """
-    Object class: Each object is characterized by 3d bboxes, label, and confidence score
-    In this domain points should be stored as 8x3 array where each row is a point in the 3d space.
-    """
+    """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["points", "label", "score"]
-    points: np.ndarray
-    label: str
-    score: float
+    __slots__ = ["points", "label", "score", "history", "id"]
 
-    def __init__(self, points: np.ndarray, label: str, score: float):
-        assert points.shape == (8, 3)
-        # Now we will sort vertices world in order to always have the same order, the keys are z then y then x
-        # (useful for subsequent perception by a different pov)
-        points = points[
-            np.lexsort(
-                (
-                    points[:, 0],
-                    points[:, 1],
-                    points[:, 2],
-                )
-            )
-        ]
+    def __init__(self, id, points, label, score):
+        assert points.shape == (
+            8,
+            3,
+        ), "Points should be an 8x3 ndarray for 3D bounding boxes."
+        self.id = id
         self.points = points
         self.label = label
         self.score = score
+        self.history = deque([points], maxlen = 100)
 
-    def _calculate_box_area(self, vertices):
-        # Calculate the area of the box deined by its vertices
-        min_point = np.min(vertices, axis=0)
-        max_point = np.max(vertices, axis=0)
-        side_lengths = max_point - min_point
-        area = side_lengths[0] * side_lengths[1] * side_lengths[2]
-        return area
+    def update(self, other: "Obj"):
+        """Updates the object's points and score and stores the historical state."""
+        self.history.extend(other.history)
+        self.points = np.median(np.array(list(self.history)), axis=0)
+        self.label = other.label if other.score > self.score else self.label
+        self.score = np.max([self.score, other.score])
 
-    def _calculate_intersection_area(self, vertices1, vertices2):
-        # Calculate the intersection area between two boxes
-        min_point = np.maximum(np.min(vertices1, axis=0), np.min(vertices2, axis=0))
-        max_point = np.minimum(np.max(vertices1, axis=0), np.max(vertices2, axis=0))
-        side_lengths = np.maximum(0, max_point - min_point)
-        intersection_area = side_lengths[0] * side_lengths[1] * side_lengths[2]
-        return intersection_area
-
-    def IoU(self, other):
-        # Calculate the IoU between two bounding boxes
-        intersection_area = self._calculate_intersection_area(self.points, other.points)
-        area1 = self._calculate_box_area(self.points)
-        area2 = self._calculate_box_area(other.points)
-        iou = intersection_area / (area1 + area2 - intersection_area)
-        return iou
+    def get_history(self):
+        """Returns the historical data of the object."""
+        return list(self.history)
 
 
 class World:
-    """
-    It stores objects as a dictionary of object_id -> List[Obj] because the same object can be detected multiple times.
-    For this reason we need to store the history of the object in order to represent its coordinates with an estimator
-    Estimator: now median maybe in the future kalman filter
-    id is not a property of Obj class since it can change during time due to tracking
-    """
-
-    __slots__ = ["objects", "id2world"]
-
-    objects: dict
-    id2world: dict
+    """World class that uses a KDTree for efficient spatial management of objects."""
 
     def __init__(self):
-        self.objects = dict()
-        self.id2world = dict()
+        self.objects = {}
+        self.kdtree = None
+        self.points_list = []
+        self.id2index = {}
+        self.index2id = {}
 
-    def exist(self, current_id: int, object: Obj, IoU_thr: float = 0.0):
+    def add_object(self, obj):
+        """Adds a new object to the world and updates the KDTree."""
+        self.objects[obj.id] = obj
+        self.points_list.append(
+            obj.points.mean(axis=0)
+        )  # Using centroid of the bounding box
+        self.id2index[obj.id] = len(self.points_list) - 1
+        self.index2id[len(self.points_list) - 1] = obj.id
+        self._rebuild_kdtree()
+
+    def update_object(self, obj):
+        """Updates an existing object in the world."""
+        self.objects[obj.id].update(obj)
+        self.points_list[self.id2index[obj.id]] = self.objects[obj.id].points.mean(
+            axis=0
+        )
+        self._rebuild_kdtree()
+
+    def remove_object(self, obj_id):
+        """Removes an object from the world."""
+        if obj_id in self.objects:
+            self.objects.pop(obj_id)
+            self.points_list = []
+            self.id2index = {}
+            self.index2id = {}
+
+            for i, (id, obj) in enumerate(self.objects.items()):
+                self.id2index[id] = i
+                self.index2id[i] = id
+                self.points_list.append(obj.points.mean(axis=0))
+
+            self._rebuild_kdtree()
+
+    def override_object(self, old_id, obj):
+        """ """
+        old_obj = self.objects[old_id]
+        print(f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}")
+        self.objects[obj.id].update(old_obj)
+        self.remove_object(old_id)
+
+    def get_objects(self):
+        """Returns all objects in the world."""
+        return list(self.objects.values())
+
+    def query_by_distance(self, point, threshold):
+        """Queries objects within a certain distance threshold."""
+        if self.kdtree is not None:
+            indexes = self.kdtree.query_ball_point(point, r=threshold)
+            return [
+                self.objects[obj_id]
+                for obj_id in np.array(list(self.objects.keys()))[indexes]
+            ]
+        return []
+
+    def _rebuild_kdtree(self):
+        if len(self.points_list) > 0:
+            self.kdtree = KDTree(np.array(self.points_list))
+
+    def get_world_id(self, obj: Obj, distance_thr=2, iou_thr=0.0):
         """
-        based on object coordinates it returns true if the object is already in the world.
-        This search is based on volume overlap. If we have a volume overlap > threshold we consider the object as the same.
-        returns (true, id) if it exists, (false, -1) otherwise
+        Checks if the object already exists in the world by comparing 3D IoU and label of close objects
+        args:
+            obj: Object to be checked
+            distance_thr: Distance threshold for querying close objects (in meters)
+            iou_thr: IoU threshold for considering two objects as the same
+        Returns: The ID of the object in the world if it exists, otherwise the object's ID.
         """
-        for world_id, obj in self.objects.items():
+        close_objects = self.query_by_distance(obj.points.mean(axis=0), distance_thr)
+        for close_obj in close_objects:
             if (
-                world_id != current_id
-                and obj["actual"].IoU(object) > IoU_thr
-                and object.label == obj["actual"].label
+                obj.id != close_obj.id
+                and obj.label == close_obj.label
+                and compute_3d_iou(obj.points, close_obj.points) > iou_thr
             ):
-                return True, world_id
-        return False, -1
+                return close_obj.id
 
-    def get_object(self, id: int, check_existence: int = 50):
-        """
-        Get the object with the given id
-        """
-        if id in self.id2world:
-            w_id = self.id2world[id]
-            obj = self.objects[w_id]["actual"]
+        return obj.id
 
-            if w_id == id and len(self.objects[id]["history"]) < check_existence:
-                already_exists, world_id = self.exist(id, obj)
-                if already_exists:
-                    self.id2world[id] = world_id
-                    rospy.loginfo(
-                        f"{self.objects[world_id]['actual'].label} with track id: {id} already exists in the world as {world_id}"
-                    )
-                    self.objects[world_id]["history"].extend(
-                        self.objects[id]["history"]
-                    )
-                    self.update(world_id)
-                    del self.objects[id]
-                    return self.objects[world_id]["actual"], world_id
+    def manage_object(self, obj: Obj):
 
-            return obj, w_id
+        if obj.id in self.objects:
+            self.update_object(obj)
+            # taking the updated object
+            obj = self.objects[obj.id]
         else:
-            raise ValueError("Object not found in the world")
+            self.add_object(obj)
 
-    def update(self, id: int) -> np.ndarray:
-        """
-        Update the world_id object with the median position of the history of the object i the world
-        """
-        if id in self.id2world:
-            world_id = self.id2world[id]
-            points = np.array([obj.points for obj in self.objects[world_id]["history"]])
-            # extract label with highest score
-            label_idx = np.argmax(
-                [obj.score for obj in self.objects[world_id]["history"]]
-            )
-            label = self.objects[world_id]["history"][label_idx].label
-            median = np.median(points, axis=0)
-            self.objects[world_id]["actual"] = Obj(median, label, 1.0)
+        world_id = self.get_world_id(obj)
+        if world_id != obj.id:
+            self.override_object(world_id, obj)
 
-    def register_object(self, id, object: Obj):
-        """
-        Register an object in the world. If the object already exists it updates the object coordinates
-        """
-        if id in self.id2world:
-            world_id = self.id2world[id]
-            self.objects[world_id]["history"].append(object)
-            self.update(world_id)
-        else:
-            self.objects[id] = {
-                "history": [object],
-                "actual": object,
-            }
-            self.update(id)
-            self.id2world[id] = id
+        return self.objects[obj.id]

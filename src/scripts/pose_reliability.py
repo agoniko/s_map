@@ -13,12 +13,14 @@ class ReliabilityEvaluator:
         self.target_frame = target_frame
         self.transformer = TransformHelper(cache_time)
         self.last_transform = None
+        self.last_update = None
 
     def evaluate(self, stamp):
         if self.last_transform is None:
             self.last_transform = self.transformer.lookup_transform(
                 self.source_frame, self.target_frame, stamp
             )
+            self.last_update = stamp
             return False
 
         transform = self.transformer.lookup_transform(
@@ -36,9 +38,9 @@ class ReliabilityEvaluator:
         last_z = self.last_transform.transform.translation.z
 
         diff = abs(x - last_x) + abs(y - last_y) + abs(z - last_z)
-        # considering 20 FPS as the running of the detection node, 0.2 correspond to a maximum linear velocity of 4 m/s (about 15km/h)
         self.last_transform = transform
-        if diff > 0.2:
+        # considering 20 FPS as the running of the detection node, 0.2 correspond to a maximum linear velocity of 4 m/s (about 15km/h)
+        if diff > 0.1:
             return False
         else:
             return True
