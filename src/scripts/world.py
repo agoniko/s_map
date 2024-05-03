@@ -101,7 +101,7 @@ class World:
         if len(self.points_list) > 0:
             self.kdtree = KDTree(np.array(self.points_list))
 
-    def get_world_id(self, obj: Obj, distance_thr=2, iou_thr=0.1):
+    def get_world_id(self, obj: Obj, distance_thr=2, iou_thr=0.0):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
