@@ -51,17 +51,10 @@ class CameraPoseEstimator:
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         x_3d = (pix_x - self.cx) * depth_m / self.fx
         y_3d = (pix_y - self.cy) * depth_m / self.fy
-        return x_3d, y_3d
+        return [x_3d, y_3d, depth_m]
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
-
-    def normalized_pixel_to_3d(self, pix_x, pix_y, depth_m):
-        pix_x = pix_x * self.width
-        pix_y = pix_y * self.height
-        x_3d = (pix_x - self.cx) * depth_m / self.fx
-        y_3d = (pix_y - self.cy) * depth_m / self.fy
-        return x_3d, y_3d
 
 class SingletonMeta(type):
     _instances = {}

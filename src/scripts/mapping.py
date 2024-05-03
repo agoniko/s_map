@@ -1,33 +1,29 @@
 #! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
 
-# ros packages
+# ROS packages
 import rospy
-import rospkg
 from sensor_msgs.msg import Image, LaserScan
 from cv_bridge import CvBridge
-from geometry_msgs.msg import Pose
-from visualization_msgs.msg import Marker
-from s_map.msg import Detection
 from message_filters import TimeSynchronizer, Subscriber
-from collections import Counter
-from tf.transformations import quaternion_from_euler
-from utils import create_marker_vertices, get_vercitces, bbox_iou
-from utils import delete_marker
+from visualization_msgs.msg import MarkerArray
+from s_map.msg import Detection
 
-
-# others
-# import cv2
+# Local modules
+from utils import (
+    create_marker_array,
+    get_vercitces,
+    bbox_iou,
+    create_delete_marker,
+    delete_marker,
+)
 import supervision as sv
 import numpy as np
-import time
-from ctypes import *
 from geometric_transformations import CameraPoseEstimator, TransformHelper
-import math
-import cv2
-from collections import deque
-from world import Obj, World
+from world import World, Obj
 from pose_reliability import ReliabilityEvaluator
 
+
+# Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
 RGB_TOPIC = "/realsense/rgb/image_raw"
@@ -35,57 +31,35 @@ CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 
+# Frame constants
 WORLD_FRAME = "world"
 CAMERA_FRAME = "realsense_rgb_optical_frame"
-RGB_FRAME = "realsense_rgb_frame"
 
 
 class Mapper(object):
-    __slots__ = [
-        "cv_bridge",
-        "result_subscriber",
-        "laser_subscriber",
-        "depth_subscriber",
-        "transformer",
-        "pose_estimator",
-        "syncronizer",
-        "marker_pub",
-        "world",
-        "pose_reliability_evaluator",
-    ]
-    cv_bridge: CvBridge
-    result_subscriber: Subscriber
-    laser_subscriber: Subscriber
-    depth_subscriber: Subscriber
-    transformer: TransformHelper
-    pose_estimator: CameraPoseEstimator
-    marker_pub: rospy.Publisher
-    world: World
-    pose_reliability_evaluator: ReliabilityEvaluator
-
     def __init__(self):
-        """
-        Initializes a ROS node for computing semantic map
-        """
-        rospy.init_node("mapping")
+        rospy.init_node("mapping", anonymous=True)
         self.cv_bridge = CvBridge()
-        self.world = World()
-
-        # synchronized subscriber for detection and depth
-        self.result_subscriber = Subscriber(RESULT_TOPIC, Detection)
-        self.depth_subscriber = Subscriber(DEPTH_TOPIC, Image)
-        self.syncronizer = TimeSynchronizer(
-            [self.result_subscriber, self.depth_subscriber], 1000
-        )
-        self.syncronizer.registerCallback(self.mapping_callback)
-
-        self.transformer = TransformHelper()
+        self.init_subscribers()
+        self.init_publishers()
         self.pose_estimator = CameraPoseEstimator(CAMERA_INFO_TOPIC)
-        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, Marker, queue_size=1)
+        self.transformer = TransformHelper()
+        self.world = World()
         self.pose_reliability_evaluator = ReliabilityEvaluator(
             CAMERA_FRAME, WORLD_FRAME
         )
-        rospy.spin()
+
+    def init_subscribers(self):
+        self.result_subscriber = Subscriber(RESULT_TOPIC, Detection)
+        self.depth_subscriber = Subscriber(DEPTH_TOPIC, Image)
+        self.laser_subscriber = Subscriber(SCAN_TOPIC, LaserScan)
+        self.synchronizer = TimeSynchronizer(
+            [self.result_subscriber, self.depth_subscriber], 1000
+        )
+        self.synchronizer.registerCallback(self.process_data)
+
+    def init_publishers(self):
+        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
 
     def preprocess_msg(self, msg: Detection):
         header = msg.header
@@ -116,130 +90,48 @@ class Mapper(object):
 
         return header, boxes, labels, scores, ids, masks
 
-    def still_exist(self, boxes, labels, header, width=848, height=480):
-        # start = time.time()
-        to_remove = []
-        for id, object in self.world.objects.items():
-            points = object["actual"].points
-            points = self.transformer.transform_coordinates(
-                WORLD_FRAME, CAMERA_FRAME, points, header.stamp
-            )
-            print(id, object["actual"].label, np.min(points, axis=0))
-            if np.min(points[:, 2]) < 1:
-                # if the object is behind the camera
-                continue
-
-            pixels = np.array(
-                [self.pose_estimator.d3_to_pixel(*point) for point in points]
-            )
-
-            xcoords = sorted(pixels[:, 0])
-            ycoords = sorted(pixels[:, 1])
-            xmin = np.max(xcoords[:4])
-            xmax = np.min(xcoords[4:])
-            ymin = np.max(ycoords[:4])
-            ymax = np.min(ycoords[4:])
-
-            # xmin = np.min(pixels[:, 0])
-            # xmax = np.max(pixels[:, 0])
-            # ymin = np.min(pixels[:, 1])
-            # ymax = np.max(pixels[:, 1])
-
-            bbox = np.array(
-                [xmin, ymin, xmax, ymax],
-            )
-            # Idea: check if the visisble portion of the bbox has an IoU > thr with the original bbox
-            visible_bbox = np.array(
-                [max(0, xmin), max(0, ymin), min(width, xmax), min(height, ymax)],
-            )
-            iou = bbox_iou(bbox, visible_bbox)
-            if iou > 0.7:
-                # registering the last time the object should be visible in the image plane
-                object["actual"].last_checked = header.stamp
-                # rospy.loginfo(f"Object {str(id)} should be visible, %visibility: {iou}")
-                for box, label in zip(boxes, labels):
-                    iou = bbox_iou(box, visible_bbox)
-                    if iou > 0.1 and label == object["actual"].label:
-                        object["actual"].last_seen = header.stamp
-                        # rospy.loginfo(
-                        #    f"Object {str(id)} is still visible, pred label:{label}, actual label:{object['actual'].label}, %match: {iou}"
-                        # )
-                        break
-
-                last_checked = object["actual"].last_checked
-                last_seen = object["actual"].last_seen
-                if last_checked - last_seen > rospy.Duration(5):
-                    rospy.logwarn(
-                        f"Object {str(id)}: {object['actual'].label} is not visible anymore"
-                    )
-                    to_remove.append(id)
-
-        for id in to_remove:
-            self.world.remove_object(id)
-            delete_msg = delete_marker(id, WORLD_FRAME)
-            self.marker_pub.publish(delete_msg)
-
-        # end = time.time()
-        # print("Time to check if objects are still in the image plane: ", end - start)
-
-    def mapping_callback(self, detection_msg: Detection, depth_msg: Image):
-        # start = time.time()
-        if not self.pose_reliability_evaluator.evaluate(detection_msg.header.stamp):
+    def process_data(self, detection, depth):
+        start = rospy.get_time()
+        if not self.pose_reliability_evaluator.evaluate(detection.header.stamp):
             # rospy.logwarn("Pose is not reliable")
             return
-        header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection_msg)
-        depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg)
-        #self.still_exist(boxes, labels, header)
-        # print(labels)
-        # print(boxes)
+        depth_image = self.cv_bridge.imgmsg_to_cv2(depth, "passthrough")
+        header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection)
 
         for id, box, label, mask, score in zip(ids, boxes, labels, masks, scores):
-            # for more precise measurement, we extract min max coordinates from mask indices
-            xmin, ymin, xmax, ymax = box
-
-            # overlapping depth and mask
-            filtered_depth = depth_image * mask
-            values = filtered_depth[filtered_depth != 0]
-
-            if len(values) == 0:
-                continue
-
-            zmin, zmax = np.min(values) / 1000, np.max(values) / 1000  # depth in meters
-
-            # those points refers to meters coordinate of a 3d bounding box w.r.t the camera frame
-            point_min = [*self.pose_estimator.pixel_to_3d(xmin, ymin, zmin), zmin]
-            point_max = [*self.pose_estimator.pixel_to_3d(xmax, ymax, zmax), zmax]
-
-            # Extracting the 3d bounding box in the world frame, we cannot use only min max points because we lose orientation
-            vertices_camera_frame = get_vercitces(point_min, point_max)
-            vertices_world_frame = self.transformer.transform_coordinates(
-                CAMERA_FRAME, WORLD_FRAME, vertices_camera_frame, header.stamp
+            obj = self.compute_object(
+                id, box, depth_image, mask, label, score, header.stamp
             )
-
-            if vertices_world_frame is None:
-                rospy.logwarn(
-                    "[Mapping] One of the vertices is None even if depth was found"
-                )
+            if obj is None:
                 continue
+            self.world.manage_object(obj)
+        self.publish_markers(header.stamp)
+        # print("Time to process detection: ", rospy.get_time() - start)
 
-            object = Obj(vertices_world_frame, label, score, header.stamp)
-            # overwriting id in case it has changed (e.g. object was already registered in the world)
-            self.world.register_object(id, object)
-            object, world_id = self.world.get_object(id)
-            #if id != world_id:
-            #    delete_msg = delete_marker(id, WORLD_FRAME)
-            #    self.marker_pub.publish(delete_msg)
+    def compute_object(self, id, box, depth_image, mask, label, score, stamp):
+        xmin, ymin, xmax, ymax = box
+        filtered_depth = depth_image * mask
+        filtered_depth = filtered_depth[filtered_depth != 0]
+        if len(filtered_depth) == 0 or xmin < 0 or ymin < 0 or xmax > 848 or ymax > 480:
+            return None
+        zmin, zmax = np.min(filtered_depth) / 1000, np.max(filtered_depth) / 1000
+        point_min = self.pose_estimator.pixel_to_3d(xmin, ymin, zmin)
+        point_max = self.pose_estimator.pixel_to_3d(xmax, ymax, zmax)
+        vertices_camera_frame = get_vercitces(point_min, point_max)
+        vertices_world_frame = self.transformer.transform_coordinates(
+            CAMERA_FRAME, WORLD_FRAME, vertices_camera_frame, stamp
+        )
+        return Obj(id, vertices_world_frame, label, score)
 
-            # creating marker message for rviz visualization
-            marker = create_marker_vertices(
-                object.points, object.label, world_id, header.stamp, WORLD_FRAME
-            )
-
-            if marker is not None:
-                self.marker_pub.publish(marker)
-        # end = time.time()
-        # print("Time to process detection: ", end - start)
+    def publish_markers(self, stamp):
+        marker = create_delete_marker(WORLD_FRAME)
+        self.marker_pub.publish(marker)
+        objects = self.world.get_objects()
+        msg = create_marker_array(objects, WORLD_FRAME, stamp)
+        if msg:
+            self.marker_pub.publish(msg)
 
 
 if __name__ == "__main__":
-    Mapper()
+    mapper = Mapper()
+    rospy.spin()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
 import rospy
 import rospkg
 from sensor_msgs.msg import Image, LaserScan
@@ -8,15 +8,18 @@ from s_map.msg import Detection
 import torch
 from ultralytics import YOLO
 import supervision as sv
-from collections import deque
+import numpy as np
 
 # Global Configuration Variables
 RGB_TOPIC = "/realsense/rgb/image_raw"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
 SCAN_TOPIC = "/scan"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
+DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
+ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
+SUBSCRIPTION_QUEUE_SIZE = 50
 
 
 class Node:
@@ -65,17 +68,49 @@ class Node:
         self.box_annotator = sv.BoxCornerAnnotator()
 
         # Subscribers
-        self.image_sub = rospy.Subscriber(RGB_TOPIC, Image, self.detection_callback)
-        self.depth_sub = rospy.Subscriber(DEPTH_TOPIC, Image, self.depth_callback)
-        self.laser_sub = rospy.Subscriber(SCAN_TOPIC, LaserScan, self.scan_callback)
+        self.image_sub = rospy.Subscriber(
+            RGB_TOPIC,
+            Image,
+            self.detection_callback,
+            queue_size=SUBSCRIPTION_QUEUE_SIZE,
+        )
+        # self.depth_sub = rospy.Subscriber(DEPTH_TOPIC, Image, self.depth_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
+        # self.laser_sub = rospy.Subscriber(SCAN_TOPIC, LaserScan, self.scan_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
 
         # Publishers
         self.annotated_image_pub = rospy.Publisher(
-            "annotated_images", Image, queue_size=10
+            ANNOTATED_IMAGES_TOPIC, Image, queue_size=10
         )
         self.results_pub = rospy.Publisher(
-            "detection_results", Detection, queue_size=10
+            DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
+
+    def preprocess_msg(self, detections, header):
+        """
+        Preprocess the detection message to be published from supervision detection
+        """
+        try:
+            boxes = detections.xyxy.astype(np.int32)
+            boxes = boxes.flatten()  # already rescaled to the original image size
+            labels = detections.data["class_name"]
+            track_id = detections.tracker_id.astype(np.int32)
+            conf = detections.confidence
+
+            masks = detections.mask
+            masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
+            mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
+
+            res = Detection()
+            res.header = header
+            res.boxes = boxes
+            res.ids = track_id
+            res.scores = conf
+            res.masks = mask_msg
+            res.labels = labels
+
+            return res
+        except:
+            return None
 
     def detection_callback(self, image_msg):
         """
@@ -114,8 +149,22 @@ class Node:
         Returns:
             Image: Annotated image ready for publishing.
         """
+        if (
+            not detections
+            or detections.data["class_name"] is None
+            or detections.tracker_id is None
+        ):
+            return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
+
+        labels = [
+            f"{tracker_id}:{class_name}"
+            for class_name, tracker_id in zip(
+                detections.data["class_name"], detections.tracker_id
+            )
+        ]
+
         frame = self.mask_annotator.annotate(frame, detections)
-        frame = self.label_annotator.annotate(frame, detections)
+        frame = self.label_annotator.annotate(frame, detections, labels)
         frame = self.box_annotator.annotate(frame, detections)
         return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
 
@@ -128,9 +177,10 @@ class Node:
             header (std_msgs.msg.Header): Header from the incoming image message, used for time stamping the published messages.
             frame (std_msgs.msg.Image): Annotated image to be published
         """
-        detection_msg = Detection(header=header, **detections.to_dict())
-        self.results_pub.publish(detection_msg)
-        self.annotated_image_pub.publish(self.annotate_frame(frame, detections))
+        detection_msg = self.preprocess_msg(detections, header)
+        if detection_msg:
+            self.results_pub.publish(detection_msg)
+        self.annotated_image_pub.publish(frame)
 
     def depth_callback(self, msg):
         """Placeholder for processing depth images."""
