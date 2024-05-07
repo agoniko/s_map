@@ -2,34 +2,38 @@ from scipy.spatial import KDTree
 import numpy as np
 from collections import deque
 from utils import compute_3d_iou
+import open3d as o3d
 
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["points", "label", "score", "history", "id"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id"]
 
     def __init__(self, id, points, label, score):
-        assert points.shape == (
-            8,
-            3,
-        ), "Points should be an 8x3 ndarray for 3D bounding boxes."
         self.id = id
-        self.points = points
         self.label = label
         self.score = score
-        self.history = deque([points])
+        self.pcd = o3d.geometry.PointCloud()
+        self.pcd.points = o3d.utility.Vector3dVector(points)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.02)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=15, radius=0.05)
+        self.bbox = self.pcd.get_axis_aligned_bounding_box()
+        self.bbox = np.asarray(self.bbox.get_box_points())
+        
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
-        self.history.extend(other.history)
-        self.points = np.median(np.array(list(self.history)), axis=0)
+        points = np.concatenate([self.pcd.points, other.pcd.points], axis = 0)
+        self.pcd.points = o3d.utility.Vector3dVector(points)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.02)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=15, radius=0.05)
+
+        self.bbox = self.pcd.get_axis_aligned_bounding_box()
+        self.bbox = np.asarray(self.bbox.get_box_points())
+
         self.label = other.label if other.score > self.score else self.label
         self.score = np.max([self.score, other.score])
-
-    def get_history(self):
-        """Returns the historical data of the object."""
-        return list(self.history)
 
 
 class World:
@@ -46,7 +50,7 @@ class World:
         """Adds a new object to the world and updates the KDTree."""
         self.objects[obj.id] = obj
         self.points_list.append(
-            obj.points.mean(axis=0)
+            obj.pcd.points.mean(axis=0)
         )  # Using centroid of the bounding box
         self.id2index[obj.id] = len(self.points_list) - 1
         self.index2id[len(self.points_list) - 1] = obj.id
@@ -55,7 +59,7 @@ class World:
     def update_object(self, obj):
         """Updates an existing object in the world."""
         self.objects[obj.id].update(obj)
-        self.points_list[self.id2index[obj.id]] = self.objects[obj.id].points.mean(
+        self.points_list[self.id2index[obj.id]] = self.objects[obj.id].pcd.points.mean(
             axis=0
         )
         self._rebuild_kdtree()
@@ -71,7 +75,7 @@ class World:
             for i, (id, obj) in enumerate(self.objects.items()):
                 self.id2index[id] = i
                 self.index2id[i] = id
-                self.points_list.append(obj.points.mean(axis=0))
+                self.points_list.append(obj.pcd.points.mean(axis=0))
 
             self._rebuild_kdtree()
 
@@ -109,12 +113,12 @@ class World:
             iou_thr: IoU threshold for considering two objects as the same
         Returns: The ID of the object in the world if it exists, otherwise the object's ID.
         """
-        close_objects = self.query_by_distance(obj.points.mean(axis=0), distance_thr)
+        close_objects = self.query_by_distance(obj.pcd.points.mean(axis=0), distance_thr)
         for close_obj in close_objects:
             if (
                 obj.id != close_obj.id
                 and obj.label == close_obj.label
-                and compute_3d_iou(obj.points, close_obj.points) > iou_thr
+                and compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr
             ):
                 return close_obj.id
 

@@ -21,7 +21,7 @@ def create_marker_array(objects, frame, stamp):
     msg = MarkerArray()
 
     for obj in objects:
-        marker = create_marker_vertices(obj.points, obj.label, obj.id, stamp, frame)
+        marker = create_marker_vertices(obj.bbox, obj.label, obj.id, stamp, frame)
         if marker is not None:
             msg.markers.append(marker)
 
