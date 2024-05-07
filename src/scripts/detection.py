@@ -1,4 +1,6 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+#! /usr/bin/env python3
+# /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+
 import rospy
 import rospkg
 from sensor_msgs.msg import Image, LaserScan
