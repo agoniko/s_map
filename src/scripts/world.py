@@ -18,7 +18,7 @@ class Obj:
         self.points = points
         self.label = label
         self.score = score
-        self.history = deque([points], maxlen = 200)
+        self.history = deque([points])
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
