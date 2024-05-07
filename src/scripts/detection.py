@@ -11,6 +11,7 @@ import torch
 from ultralytics import YOLO
 import supervision as sv
 import numpy as np
+from geometric_transformations import CameraPoseEstimator
 
 # Global Configuration Variables
 RGB_TOPIC = "/realsense/rgb/image_raw"
@@ -22,6 +23,8 @@ MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
+CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
+
 
 
 class Node:
@@ -117,12 +120,14 @@ class Node:
     def detection_callback(self, image_msg):
         """
         Callback for processing images received from the RGB topic.
+        Received images are already rectified and aligned with the depth image.
         Performs detection, annotations, and publishes the results.
 
         Args:
             image_msg (Image): The incoming ROS message containing the image data.
         """
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
+
         results = next(
             self.detector.track(
                 frame,

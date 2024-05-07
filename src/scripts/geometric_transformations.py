@@ -49,12 +49,23 @@ class CameraPoseEstimator:
         ) = self.receive_camera_info(info_topic)
 
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
-        x_3d = (pix_x - self.cx) * depth_m / self.fx
-        y_3d = (pix_y - self.cy) * depth_m / self.fy
-        return [x_3d, y_3d, depth_m]
+        # getting the unit vector that represent the 3d ray from pixel (pix_x, pix_y) = (u, v)
+        (x, y, z) = self.camera.projectPixelTo3dRay((pix_x, pix_y))
+        
+        # scaling the unit vector by the depth to get the 3d point
+        x_3d = x * depth_m
+        y_3d = y * depth_m
+        z_3d = z * depth_m
+        
+        return [x_3d, y_3d, z_3d]
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
+    
+    def rectify_image(self, image):
+        rect = np.zeros_like(image)
+        self.camera.rectifyImage(image, rect)
+        return rect
 
 class SingletonMeta(type):
     _instances = {}
