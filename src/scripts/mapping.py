@@ -147,12 +147,11 @@ class Mapper(object):
         
         pc = self.compute_pointcloud(depth_image, mask)
         pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
-        bbox_camera_frame = self.extract_bbox_vertices_from_pointcloud(pc_camera_frame)
-
-        bbox_world_frame = self.transformer.transform_coordinates(
-            CAMERA_FRAME, WORLD_FRAME, bbox_camera_frame, stamp
+        pc_world_frame = self.transformer.transform_coordinates(
+            CAMERA_FRAME, WORLD_FRAME, pc_camera_frame, stamp
         )
-        return Obj(id, bbox_world_frame, label, score)
+
+        return Obj(id, pc_world_frame, label, score)
     
     def compute_pointcloud(self, depth_image, mask):
         pc = depth_image * mask
@@ -163,8 +162,8 @@ class Mapper(object):
 
 
     def extract_bbox_vertices_from_pointcloud(self, pointcloud):
-        path = rospkg.RosPack().get_path("s_map") + "/pointcloud.txt"
-        np.savetxt(path, pointcloud, delimiter=",")
+        #path = rospkg.RosPack().get_path("s_map") + "/pointcloud.txt"
+        #np.savetxt(path, pointcloud, delimiter=",")
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(pointcloud)
         pcd = pcd.voxel_down_sample(voxel_size=0.02)
