@@ -45,36 +45,23 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     marker.scale.x = 0.05
     marker.pose.orientation.w = 1.0
 
-    # create the lines of the bounding box
-    # bottom face
-    marker.points.append(Point(*vertices[0]))
-    marker.points.append(Point(*vertices[1]))
-    marker.points.append(Point(*vertices[1]))
-    marker.points.append(Point(*vertices[3]))
-    marker.points.append(Point(*vertices[3]))
-    marker.points.append(Point(*vertices[2]))
-    marker.points.append(Point(*vertices[2]))
-    marker.points.append(Point(*vertices[0]))
-
-    # top face
-    marker.points.append(Point(*vertices[4]))
-    marker.points.append(Point(*vertices[5]))
-    marker.points.append(Point(*vertices[5]))
-    marker.points.append(Point(*vertices[7]))
-    marker.points.append(Point(*vertices[7]))
-    marker.points.append(Point(*vertices[6]))
-    marker.points.append(Point(*vertices[6]))
-    marker.points.append(Point(*vertices[4]))
-
-    # vertical lines
-    marker.points.append(Point(*vertices[0]))
-    marker.points.append(Point(*vertices[4]))
-    marker.points.append(Point(*vertices[1]))
-    marker.points.append(Point(*vertices[5]))
-    marker.points.append(Point(*vertices[2]))
-    marker.points.append(Point(*vertices[6]))
-    marker.points.append(Point(*vertices[3]))
-    marker.points.append(Point(*vertices[7]))
+    connections = [
+    (0, 1),  # Bottom face
+    (0, 2),
+    (1, 7),
+    (2, 7),
+    (3, 6),  # Top face
+    (3, 5),
+    (4, 6),
+    (4, 5),
+    (0, 3),  # Side faces
+    (1, 6),
+    (2, 5),
+    (7, 4)
+]
+    for conn in connections:
+        marker.points.append(Point(*vertices[conn[0]]))
+        marker.points.append(Point(*vertices[conn[1]]))
 
     if label.lower() == "person":
         marker.color.r = 1.0

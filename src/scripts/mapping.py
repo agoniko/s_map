@@ -8,6 +8,7 @@ from cv_bridge import CvBridge
 from message_filters import TimeSynchronizer, Subscriber
 from visualization_msgs.msg import MarkerArray
 from s_map.msg import Detection
+import rospkg
 
 # Local modules
 from utils import (
@@ -22,6 +23,8 @@ import numpy as np
 from geometric_transformations import CameraPoseEstimator, TransformHelper
 from world import World, Obj
 from pose_reliability import ReliabilityEvaluator
+import open3d as o3d
+
 
 
 # Topic constants
@@ -138,16 +141,39 @@ class Mapper(object):
         xmin, ymin, xmax, ymax = box
         filtered_depth = depth_image * mask
         filtered_depth = filtered_depth[filtered_depth != 0]
+
         if len(filtered_depth) == 0 or xmin < 0 or ymin < 0 or xmax > 848 or ymax > 480:
             return None
-        zmin, zmax = np.min(filtered_depth) / 1000, np.max(filtered_depth) / 1000
-        point_min = self.pose_estimator.pixel_to_3d(xmin, ymin, zmin)
-        point_max = self.pose_estimator.pixel_to_3d(xmax, ymax, zmax)
-        vertices_camera_frame = get_vercitces(point_min, point_max)
-        vertices_world_frame = self.transformer.transform_coordinates(
-            CAMERA_FRAME, WORLD_FRAME, vertices_camera_frame, stamp
+        
+        pc = self.compute_pointcloud(depth_image, mask)
+        pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
+        bbox_camera_frame = self.extract_bbox_vertices_from_pointcloud(pc_camera_frame)
+
+        bbox_world_frame = self.transformer.transform_coordinates(
+            CAMERA_FRAME, WORLD_FRAME, bbox_camera_frame, stamp
         )
-        return Obj(id, vertices_world_frame, label, score)
+        return Obj(id, bbox_world_frame, label, score)
+    
+    def compute_pointcloud(self, depth_image, mask):
+        pc = depth_image * mask
+        (ys, xs) = np.argwhere(pc).T
+        zs = pc[ys, xs] / 1000 # convert to meters
+        pointcloud = np.array([xs, ys, zs]).T
+        return pointcloud
+
+
+    def extract_bbox_vertices_from_pointcloud(self, pointcloud):
+        path = rospkg.RosPack().get_path("s_map") + "/pointcloud.txt"
+        np.savetxt(path, pointcloud, delimiter=",")
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(pointcloud)
+        pcd = pcd.voxel_down_sample(voxel_size=0.02)
+        pcd, _ = pcd.remove_radius_outlier(nb_points=15, radius=0.05)
+        bbox = pcd.get_axis_aligned_bounding_box()
+        vertices = np.asarray(bbox.get_box_points())
+
+        return vertices
+
 
     def publish_markers(self, stamp):
         marker = create_delete_marker(WORLD_FRAME)
