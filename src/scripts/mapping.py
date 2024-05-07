@@ -1,4 +1,5 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
+#! /usr/bin/env python3
+# /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
 
 # ROS packages
 import rospy
@@ -91,6 +92,16 @@ class Mapper(object):
         return header, boxes, labels, scores, ids, masks
 
     def process_data(self, detection, depth):
+        """
+        Process the data received from detection and depth sensors.
+
+        Args:
+            detection: The detection message containing object information.
+            depth: The depth image message.
+
+        Returns:
+            None
+        """
         start = rospy.get_time()
         if not self.pose_reliability_evaluator.evaluate(detection.header.stamp):
             # rospy.logwarn("Pose is not reliable")
@@ -109,6 +120,21 @@ class Mapper(object):
         # print("Time to process detection: ", rospy.get_time() - start)
 
     def compute_object(self, id, box, depth_image, mask, label, score, stamp):
+        """
+        Computes the object information in the world frame
+        Args:
+            id (int): The ID of the object.
+            box (tuple): The bounding box coordinates (xmin, ymin, xmax, ymax).
+            depth_image (numpy.ndarray): The depth image.
+            mask (numpy.ndarray): The mask indicating the object region.
+            label (str): The label of the object.
+            score (float): The score of the object.
+            stamp (float): The timestamp of the object.
+
+        Returns:
+            Obj: An instance of the Obj class representing the computed object.
+                Returns None if the computation fails.
+        """
         xmin, ymin, xmax, ymax = box
         filtered_depth = depth_image * mask
         filtered_depth = filtered_depth[filtered_depth != 0]

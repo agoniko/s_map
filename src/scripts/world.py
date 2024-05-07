@@ -1,7 +1,6 @@
 from scipy.spatial import KDTree
 import numpy as np
 from collections import deque
-from shapely.geometry import Polygon, MultiPoint
 from utils import compute_3d_iou
 
 
