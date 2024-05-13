@@ -3,7 +3,8 @@
 
 # ROS packages
 import rospy
-from sensor_msgs.msg import Image, LaserScan
+from sensor_msgs.msg import Image, LaserScan, PointCloud2
+from sensor_msgs import point_cloud2
 from cv_bridge import CvBridge
 from message_filters import TimeSynchronizer, Subscriber
 from visualization_msgs.msg import MarkerArray
@@ -13,10 +14,9 @@ import rospkg
 # Local modules
 from utils import (
     create_marker_array,
-    get_vercitces,
-    bbox_iou,
     create_delete_marker,
-    delete_marker,
+    create_pointcloud_message,
+    time_it,
 )
 import supervision as sv
 import numpy as np
@@ -34,6 +34,7 @@ RGB_TOPIC = "/realsense/rgb/image_raw"
 CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
+PC_TOPIC = "/s_map/pointcloud"
 
 # Frame constants
 WORLD_FRAME = "world"
@@ -65,7 +66,10 @@ class Mapper(object):
 
     def init_publishers(self):
         self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
+        self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=2)
 
+
+    #@time_it
     def preprocess_msg(self, msg: Detection):
         header = msg.header
         labels = np.array(msg.labels)
@@ -83,18 +87,9 @@ class Mapper(object):
         if masks.shape[0] != n:
             masks = [None] * n
 
-        # boxes = []
-        # for mask in masks:
-        #    obj_presence_idx = np.argwhere(mask)
-        #    if len(obj_presence_idx) != 0:
-        #        ymin, xmin = np.min(obj_presence_idx, axis=0)
-        #        ymax, xmax = np.max(obj_presence_idx, axis=0)
-        #    else:
-        #        ymin, xmin, ymax, xmax = 0, 0, 0, 0
-        #    boxes.append([xmin, ymin, xmax, ymax])
-
         return header, boxes, labels, scores, ids, masks
 
+    #@time_it
     def process_data(self, detection, depth):
         """
         Process the data received from detection and depth sensors.
@@ -106,7 +101,6 @@ class Mapper(object):
         Returns:
             None
         """
-        start = rospy.get_time()
         if not self.pose_reliability_evaluator.evaluate(detection.header.stamp):
             # rospy.logwarn("Pose is not reliable")
             return
@@ -119,11 +113,13 @@ class Mapper(object):
             )
             if obj is None:
                 continue
-
+            
             self.world.manage_object(obj)
-        self.publish_markers(header.stamp)
-        # print("Time to process detection: ", rospy.get_time() - start)
+        #self.publish_markers(header.stamp)
+        self.publish_pointclouds(WORLD_FRAME, header.stamp)
 
+
+    #@time_it
     def compute_object(self, id, box, depth_image, mask, label, score, stamp):
         """
         Computes the object information in the world frame
@@ -144,11 +140,13 @@ class Mapper(object):
         if len(pc) < 200:
             return None
         pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
-        pc_world_frame = self.transformer.transform_coordinates(
+        pc_world_frame = self.transformer.fast_transform(
             CAMERA_FRAME, WORLD_FRAME, pc_camera_frame, stamp
         )
-        return Obj(id, pc_world_frame, label, score)
+        obj = Obj(id, pc_world_frame, label, score, stamp)
+        return obj
     
+    #@time_it
     def compute_pointcloud(self, depth_image, mask):
         pc = depth_image * mask
         (ys, xs) = np.argwhere(pc).T
@@ -156,20 +154,12 @@ class Mapper(object):
         pointcloud = np.array([xs, ys, zs]).T
         return pointcloud
 
+    def publish_pointclouds(self, frame, stamp):
+        objects = self.world.get_objects()
+        msg = create_pointcloud_message(objects, frame, stamp)
+        self.pc_pub.publish(msg)
 
-    def extract_bbox_vertices_from_pointcloud(self, pointcloud):
-        #path = rospkg.RosPack().get_path("s_map") + "/pointcloud.txt"
-        #np.savetxt(path, pointcloud, delimiter=",")
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(pointcloud)
-        pcd = pcd.voxel_down_sample(voxel_size=0.02)
-        pcd, _ = pcd.remove_radius_outlier(nb_points=15, radius=0.05)
-        bbox = pcd.get_axis_aligned_bounding_box()
-        vertices = np.asarray(bbox.get_box_points())
-
-        return vertices
-
-
+    #@time_it
     def publish_markers(self, stamp):
         marker = create_delete_marker(WORLD_FRAME)
         self.marker_pub.publish(marker)

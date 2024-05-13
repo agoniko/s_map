@@ -168,7 +168,7 @@ Visualization Manager:
       Marker Topic: /s_map/objects
       Name: Objects
       Namespaces:
-        {}
+        my_namespace: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -199,7 +199,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 22.75567054748535
+      Distance: 11.248636245727539
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -207,17 +207,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 13.278264999389648
-        Y: 14.17343521118164
-        Z: 0
+        X: 15.54385757446289
+        Y: 12.452898025512695
+        Z: -3.814697265625e-06
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.1453971117734909
+      Pitch: 0.7897971272468567
       Target Frame: <Fixed Frame>
-      Yaw: 0.3003959357738495
+      Yaw: 4.230396270751953
     Saved: ~
 Window Geometry:
   Camera:
