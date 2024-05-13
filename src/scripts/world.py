@@ -3,23 +3,27 @@ import numpy as np
 from collections import deque
 from utils import compute_3d_iou
 import open3d as o3d
+import open3d.core as o3c
+from utils import time_it
 
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen"]
 
-    def __init__(self, id, points, label, score):
+    def __init__(self, id, points, label, score, stamp):
         self.id = id
         self.label = label
         self.score = score
         self.pcd = o3d.geometry.PointCloud()
         self.pcd.points = o3d.utility.Vector3dVector(points)
+        self.last_seen = stamp
         self.compute()
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
+        self.last_seen = max(self.last_seen, other.last_seen)
         self.pcd.points.extend(other.pcd.points)
         self.compute()
 
@@ -51,7 +55,7 @@ class Obj:
         return np.asarray(aabb.get_box_points())
     
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.01)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=.03)
         clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.1)
         #self.pcd, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
         #self.bbox = self.pcd.get_axis_aligned_bounding_box()
@@ -71,12 +75,10 @@ class World:
         self.index2id = {}
         if o3d.core.cuda.is_available():
             print("CUDA is available in Open3D.")
-            # Further check for devices
-            for i in range(o3d.core.cuda.device_count()):
-                print(f"CUDA Device {i}: {o3d.core.cuda.get_device_properties(i).name}")
         else:
             print("CUDA is not available in Open3D.")
 
+    #@time_it
     def add_object(self, obj):
         """Adds a new object to the world and updates the KDTree."""
         self.objects[obj.id] = obj
@@ -87,12 +89,14 @@ class World:
         self.index2id[len(self.points_list) - 1] = obj.id
         self._rebuild_kdtree()
 
+    #@time_it
     def update_object(self, obj):
         """Updates an existing object in the world."""
         self.objects[obj.id].update(obj)
         self.points_list[self.id2index[obj.id]] = self.objects[obj.id].centroid
         self._rebuild_kdtree()
-
+    
+    #@time_it
     def remove_object(self, obj_id):
         """Removes an object from the world."""
         if obj_id in self.objects:
@@ -132,8 +136,9 @@ class World:
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:
             self.kdtree = KDTree(np.array(self.points_list))
-
-    def get_world_id(self, obj: Obj, distance_thr=2, iou_thr=0.0):
+    
+    #@time_it
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.00):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
@@ -144,14 +149,15 @@ class World:
         """
         close_objects = self.query_by_distance(obj.centroid, distance_thr)
         for close_obj in close_objects:
-            distance = np.median(obj.pcd.compute_point_cloud_distance(close_obj.pcd))
-            if obj.id != close_obj.id and obj.label == close_obj.label:
-                print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
+            #distance = np.median(obj.pcd.compute_point_cloud_distance(close_obj.pcd))
+            if obj.id != close_obj.id and obj.label == close_obj.label and abs(obj.last_seen - close_obj.last_seen).to_sec() > 0.5:
+                #print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
 
         return obj.id
 
+    #@time_it
     def manage_object(self, obj: Obj):
 
         if obj.id in self.objects:
