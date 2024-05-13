@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /DepthCloud1/Auto Size1
-        - /Objects1
         - /Camera1/Status1
       Splitter Ratio: 0.5
     Tree Height: 500
@@ -107,14 +106,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /s_map/objects
-      Name: Objects
-      Namespaces:
-        my_namespace: true
-      Queue Size: 100
-      Value: true
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
@@ -172,6 +163,14 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /s_map/objects
+      Name: Objects
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -216,9 +215,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5503968596458435
+      Pitch: 0.1453971117734909
       Target Frame: <Fixed Frame>
-      Yaw: 1.1753952503204346
+      Yaw: 0.3003959357738495
     Saved: ~
 Window Geometry:
   Camera:

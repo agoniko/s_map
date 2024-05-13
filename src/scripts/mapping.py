@@ -38,6 +38,7 @@ MARKERS_TOPIC = "/s_map/objects"
 # Frame constants
 WORLD_FRAME = "world"
 CAMERA_FRAME = "realsense_rgb_optical_frame"
+PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 
 class Mapper(object):
@@ -118,6 +119,7 @@ class Mapper(object):
             )
             if obj is None:
                 continue
+
             self.world.manage_object(obj)
         self.publish_markers(header.stamp)
         # print("Time to process detection: ", rospy.get_time() - start)
@@ -138,19 +140,13 @@ class Mapper(object):
             Obj: An instance of the Obj class representing the computed object.
                 Returns None if the computation fails.
         """
-        xmin, ymin, xmax, ymax = box
-        filtered_depth = depth_image * mask
-        filtered_depth = filtered_depth[filtered_depth != 0]
-
-        if len(filtered_depth) == 0 or xmin < 0 or ymin < 0 or xmax > 848 or ymax > 480:
-            return None
-        
         pc = self.compute_pointcloud(depth_image, mask)
+        if len(pc) < 200:
+            return None
         pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
         pc_world_frame = self.transformer.transform_coordinates(
             CAMERA_FRAME, WORLD_FRAME, pc_camera_frame, stamp
         )
-
         return Obj(id, pc_world_frame, label, score)
     
     def compute_pointcloud(self, depth_image, mask):
@@ -178,6 +174,9 @@ class Mapper(object):
         marker = create_delete_marker(WORLD_FRAME)
         self.marker_pub.publish(marker)
         objects = self.world.get_objects()
+        #for obj in objects:
+        #    points = np.asarray(obj.pcd.points)
+        #    np.savetxt(PKG_PATH + f"/pc/{obj.id}_{obj.label}.txt", points, delimiter=",")
         msg = create_marker_array(objects, WORLD_FRAME, stamp)
         if msg:
             self.marker_pub.publish(msg)
