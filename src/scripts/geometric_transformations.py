@@ -58,9 +58,9 @@ class CameraPoseEstimator:
         x_3d = x * depth_m
         y_3d = y * depth_m
         z_3d = z * depth_m
-        
+
         return [x_3d, y_3d, z_3d]
-    
+
     def multiple_pixels_to_3d(self, uvz):
         """
         Parallelized version of pixel_to_3d for mutliple points modified from the official library
@@ -74,7 +74,7 @@ class CameraPoseEstimator:
         u = (uvz[:, 0] - self.camera.cx()) / self.camera.fx()
         v = (uvz[:, 1] - self.camera.cy()) / self.camera.fy()
         depth = uvz[:, 2]
-        
+
         # extracting unit 3dray
         uv = np.stack((u, v, np.ones(len(u))), axis=1)
         norms = np.linalg.norm(uv, axis=1, keepdims=False)
@@ -93,11 +93,12 @@ class CameraPoseEstimator:
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
-    
+
     def rectify_image(self, image):
         rect = np.zeros_like(image)
         self.camera.rectifyImage(image, rect)
         return rect
+
 
 class SingletonMeta(type):
     _instances = {}
@@ -107,7 +108,8 @@ class SingletonMeta(type):
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
         return cls._instances[cls]
-    
+
+
 class TransformHelper(metaclass=SingletonMeta):
     def __init__(self, cache_time=60.0):
         self.tf_buffer = tf2_ros.Buffer(cache_time=rospy.Duration(cache_time))
@@ -157,7 +159,7 @@ class TransformHelper(metaclass=SingletonMeta):
                 return None
 
         return np.array(transformed_points)
-    
+
     def transform_points(self, points, rotation, translation):
         """
         Points has shape n, 3.
@@ -173,13 +175,18 @@ class TransformHelper(metaclass=SingletonMeta):
         points = np.dot(rototranslation, points.T).T
 
         return points[:, :3]
-    
+
     def fast_transform(self, source_frame, target_frame, points, stamp):
         transform = self.lookup_transform(source_frame, target_frame, stamp)
         if transform is None:
             return None
 
-        rotation = [transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w]
+        rotation = [
+            transform.transform.rotation.x,
+            transform.transform.rotation.y,
+            transform.transform.rotation.z,
+            transform.transform.rotation.w,
+        ]
         translation = [
             transform.transform.translation.x,
             transform.transform.translation.y,

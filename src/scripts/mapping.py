@@ -26,7 +26,6 @@ from pose_reliability import ReliabilityEvaluator
 import open3d as o3d
 
 
-
 # Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
 DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
@@ -68,8 +67,7 @@ class Mapper(object):
         self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
         self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=2)
 
-
-    #@time_it
+    # @time_it
     def preprocess_msg(self, msg: Detection):
         header = msg.header
         labels = np.array(msg.labels)
@@ -89,7 +87,7 @@ class Mapper(object):
 
         return header, boxes, labels, scores, ids, masks
 
-    #@time_it
+    # @time_it
     def process_data(self, detection, depth):
         """
         Process the data received from detection and depth sensors.
@@ -113,13 +111,12 @@ class Mapper(object):
             )
             if obj is None:
                 continue
-            
+
             self.world.manage_object(obj)
         self.publish_markers(header.stamp)
         self.publish_pointclouds(WORLD_FRAME, header.stamp)
 
-
-    #@time_it
+    # @time_it
     def compute_object(self, id, box, depth_image, mask, label, score, stamp):
         """
         Computes the object information in the world frame
@@ -145,27 +142,27 @@ class Mapper(object):
         )
         obj = Obj(id, pc_world_frame, label, score, stamp)
         return obj
-    
-    #@time_it
+
+    # @time_it
     def compute_pointcloud(self, depth_image, mask):
         pc = depth_image * mask
         (ys, xs) = np.argwhere(pc).T
-        zs = pc[ys, xs] / 1000 # convert to meters
+        zs = pc[ys, xs] / 1000  # convert to meters
         pointcloud = np.array([xs, ys, zs]).T
         return pointcloud
 
-    #@time_it
+    # @time_it
     def publish_pointclouds(self, frame, stamp):
         objects = self.world.get_objects()
         msg = create_pointcloud_message(objects, frame, stamp)
         self.pc_pub.publish(msg)
 
-    #@time_it
+    # @time_it
     def publish_markers(self, stamp):
         marker = create_delete_marker(WORLD_FRAME)
         self.marker_pub.publish(marker)
         objects = self.world.get_objects()
-        #for obj in objects:
+        # for obj in objects:
         #    points = np.asarray(obj.pcd.points)
         #    np.savetxt(PKG_PATH + f"/pc/{obj.id}_{obj.label}.txt", points, delimiter=",")
         msg = create_marker_array(objects, WORLD_FRAME, stamp)
