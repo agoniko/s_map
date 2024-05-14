@@ -40,7 +40,7 @@ class ReliabilityEvaluator:
         diff = abs(x - last_x) + abs(y - last_y) + abs(z - last_z)
         self.last_transform = transform
         # considering 20 FPS as the running of the detection node, 0.2 correspond to a maximum linear velocity of 4 m/s (about 15km/h)
-        if diff > 0.1:
+        if diff > 0.05:
             return False
         else:
             return True

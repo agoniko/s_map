@@ -2,6 +2,69 @@ from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import Point, PointStamped
 import rospy
 import numpy as np
+from functools import wraps
+from sensor_msgs.msg import PointCloud2, PointField
+from sensor_msgs import point_cloud2
+from std_msgs.msg import Header
+import struct
+
+label_colors = {
+    "person": (255, 0, 0),       # Red
+    "chair": (0, 128, 0),        # Green
+    "dining table": (0, 0, 255), # Blue
+    "laptop": (255, 165, 0),     # Orange
+    "mouse": (255, 20, 147),     # Deep Pink (for visibility)
+    "tv": (75, 0, 130)           # Indigo
+}
+
+
+def time_it(func):
+ import time
+ @wraps(func)
+ def wrapper(*args,**kwargs):
+  start = time.time()
+  result = func(*args,**kwargs)
+  print(f'time taken by {func.__name__} is {time.time()-start }')
+
+  return result
+ return wrapper
+
+def create_pointcloud_message(objects, frame, stamp):
+    """
+    Creates a point cloud message from a list of points.
+    """
+    points = []
+    for obj in objects:
+        if obj.label.lower() in label_colors:
+            r, g, b = label_colors[obj.label.lower()]
+            a = 255
+            pc = np.asarray(obj.pcd.points)
+            rgb = struct.unpack('I', struct.pack('BBBB', b, g, r, a))[0] * np.ones((pc.shape[0], 1))
+
+            point = np.hstack((pc, rgb))
+            points = np.vstack((points, point)) if len(points) > 0 else point
+            
+    fields = [
+                PointField('x', 0, PointField.FLOAT32, 1),
+                PointField('y', 4, PointField.FLOAT32, 1),
+                PointField('z', 8, PointField.FLOAT32, 1),
+                PointField('rgb', 16, PointField.UINT32, 1),
+            ]
+    
+    header = Header()
+    header.stamp = stamp
+    header.frame_id = frame
+
+    x = points[:, 0]
+    y = points[:, 1]
+    z = points[:, 2]
+    rgb = points[:, 3].astype(np.uint32)
+
+    pc2 = point_cloud2.create_cloud(header, fields, [list(i) for i in zip(x, y, z, rgb)])
+    #pc2 = point_cloud2.create_cloud_xyz32(header, points)
+    return pc2
+
+
 
 
 def create_delete_marker(frame):
@@ -32,11 +95,13 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     """
     creates marker msg for rviz vsualization of the 3d bounding box
     """
+    if vertices is None:
+        return None
     marker = Marker()
     # keeping frame and timestamp consistent with the header of the received message to account for detection and mapping delay
     marker.header.stamp = stamp
     marker.header.frame_id = frame
-    marker.id = id
+    marker.id = int(id)
 
     marker.ns = "my_namespace"
     marker.type = Marker.LINE_LIST
@@ -62,34 +127,16 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     for conn in connections:
         marker.points.append(Point(*vertices[conn[0]]))
         marker.points.append(Point(*vertices[conn[1]]))
+    
+    if label.lower() in label_colors:
+        r, g, b = label_colors[label.lower()]
+        marker.color.r = r / 255.0
+        marker.color.g = g / 255.0
+        marker.color.b = b / 255.0
 
-    if label.lower() == "person":
-        marker.color.r = 1.0
-        marker.color.g = 0.0
-        marker.color.b = 0.0
-    elif label.lower() == "chair":
-        marker.color.r = 0.0
-        marker.color.g = 1.0
-        marker.color.b = 0.0
-    elif label.lower() == "laptop":
-        marker.color.r = 0.0
-        marker.color.g = 0.0
-        marker.color.b = 1.0
-    elif label.lower() == "dining table":
-        # yellow
-        marker.color.r = 1.0
-        marker.color.g = 1.0
-        marker.color.b = 0.0
-    elif label.lower() == "tv":
-        # aqua
-        marker.color.r = 0.0
-        marker.color.g = 1.0
-        marker.color.b = 1.0
+        return marker
     else:
         return None
-
-    return marker
-
 
 def get_vercitces(point_min, point_max):
     vertices = [
