@@ -32,6 +32,8 @@ class Obj:
 
     def compute_z_oriented_bounding_box(self, pcd):
         # Compute the mean of the points
+        if not pcd.points:
+            return None
         mean = np.mean(np.asarray(pcd.points), axis=0)
         
         # Compute PCA on the XY components only
@@ -56,9 +58,10 @@ class Obj:
     
     def compute(self):
         self.pcd = self.pcd.voxel_down_sample(voxel_size=.03)
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.1)
-        #self.pcd, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
-        #self.bbox = self.pcd.get_axis_aligned_bounding_box()
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=200, radius=0.5)
+
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=500, std_ratio=0.1)       
+
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(clean.points).mean(axis=0)
 
@@ -117,7 +120,9 @@ class World:
         old_obj = self.objects[old_id]
         print(f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}")
         self.objects[obj.id].update(old_obj)
+        print("Before: ", self.objects.keys())
         self.remove_object(old_id)
+        print("After: ", self.objects.keys())
 
     def get_objects(self):
         """Returns all objects in the world."""
@@ -138,7 +143,7 @@ class World:
             self.kdtree = KDTree(np.array(self.points_list))
     
     #@time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.00):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
@@ -150,7 +155,7 @@ class World:
         close_objects = self.query_by_distance(obj.centroid, distance_thr)
         for close_obj in close_objects:
             #distance = np.median(obj.pcd.compute_point_cloud_distance(close_obj.pcd))
-            if obj.id != close_obj.id and obj.label == close_obj.label and abs(obj.last_seen - close_obj.last_seen).to_sec() > 0.5:
+            if obj.id != close_obj.id and obj.label == close_obj.label and abs(obj.last_seen - close_obj.last_seen).to_sec() > 5.0:
                 #print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
@@ -169,6 +174,9 @@ class World:
 
         world_id = self.get_world_id(obj)
         if world_id != obj.id:
+            print(self.objects[obj.id].last_seen)
+            print(self.objects[world_id].last_seen)
+            print(abs(self.objects[obj.id].last_seen - self.objects[world_id].last_seen).to_sec())
             self.override_object(world_id, obj)
 
         return self.objects[obj.id]
