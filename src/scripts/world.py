@@ -3,38 +3,69 @@ import numpy as np
 from collections import deque
 from utils import compute_3d_iou
 import open3d as o3d
+import open3d.core as o3c
+from utils import time_it
 
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen"]
 
-    def __init__(self, id, points, label, score):
+    def __init__(self, id, points, label, score, stamp):
         self.id = id
         self.label = label
         self.score = score
         self.pcd = o3d.geometry.PointCloud()
         self.pcd.points = o3d.utility.Vector3dVector(points)
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.02)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=15, radius=0.05)
-        self.bbox = self.pcd.get_axis_aligned_bounding_box()
-        self.bbox = np.asarray(self.bbox.get_box_points())
-        
+        self.last_seen = stamp
+        self.compute()
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
-        points = np.concatenate([self.pcd.points, other.pcd.points], axis = 0)
-        self.pcd.points = o3d.utility.Vector3dVector(points)
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.02)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=15, radius=0.05)
-
-        self.bbox = self.pcd.get_axis_aligned_bounding_box()
-        self.bbox = np.asarray(self.bbox.get_box_points())
+        self.last_seen = max(self.last_seen, other.last_seen)
+        self.pcd.points.extend(other.pcd.points)
+        self.compute()
 
         self.label = other.label if other.score > self.score else self.label
         self.score = np.max([self.score, other.score])
 
+    def compute_z_oriented_bounding_box(self, pcd):
+        # Compute the mean of the points
+        if not pcd.points:
+            return None
+        mean = np.mean(np.asarray(pcd.points), axis=0)
+        
+        # Compute PCA on the XY components only
+        xy_points = np.asarray(pcd.points)[:, :2] - mean[:2]
+        cov_matrix = np.dot(xy_points.T, xy_points) / len(xy_points)
+        eigvals, eigvecs = np.linalg.eig(cov_matrix)
+
+        # Align primary component with the X-axis
+        angle = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
+        R = pcd.get_rotation_matrix_from_xyz((0, 0, -angle))
+        pcd.rotate(R, center=mean)
+
+        # Compute the axis-aligned bounding box of the rotated point cloud
+        aabb = pcd.get_axis_aligned_bounding_box()
+        #convert aabb to oriented bbox
+        aabb = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(aabb)
+        
+        # Apply inverse rotation to the bounding box
+        aabb.rotate(R.T, center=mean)
+
+        return np.asarray(aabb.get_box_points())
+    
+    def compute(self):
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=.03)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=200, radius=0.5)
+
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=500, std_ratio=0.1)       
+
+        self.bbox = self.compute_z_oriented_bounding_box(clean)
+        self.centroid = np.asarray(clean.points).mean(axis=0)
+
+        
 
 class World:
     """World class that uses a KDTree for efficient spatial management of objects."""
@@ -45,25 +76,30 @@ class World:
         self.points_list = []
         self.id2index = {}
         self.index2id = {}
+        if o3d.core.cuda.is_available():
+            print("CUDA is available in Open3D.")
+        else:
+            print("CUDA is not available in Open3D.")
 
+    #@time_it
     def add_object(self, obj):
         """Adds a new object to the world and updates the KDTree."""
         self.objects[obj.id] = obj
         self.points_list.append(
-            obj.pcd.points.mean(axis=0)
+            obj.centroid
         )  # Using centroid of the bounding box
         self.id2index[obj.id] = len(self.points_list) - 1
         self.index2id[len(self.points_list) - 1] = obj.id
         self._rebuild_kdtree()
 
+    #@time_it
     def update_object(self, obj):
         """Updates an existing object in the world."""
         self.objects[obj.id].update(obj)
-        self.points_list[self.id2index[obj.id]] = self.objects[obj.id].pcd.points.mean(
-            axis=0
-        )
+        self.points_list[self.id2index[obj.id]] = self.objects[obj.id].centroid
         self._rebuild_kdtree()
-
+    
+    #@time_it
     def remove_object(self, obj_id):
         """Removes an object from the world."""
         if obj_id in self.objects:
@@ -75,7 +111,7 @@ class World:
             for i, (id, obj) in enumerate(self.objects.items()):
                 self.id2index[id] = i
                 self.index2id[i] = id
-                self.points_list.append(obj.pcd.points.mean(axis=0))
+                self.points_list.append(obj.centroid)
 
             self._rebuild_kdtree()
 
@@ -84,7 +120,9 @@ class World:
         old_obj = self.objects[old_id]
         print(f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}")
         self.objects[obj.id].update(old_obj)
+        print("Before: ", self.objects.keys())
         self.remove_object(old_id)
+        print("After: ", self.objects.keys())
 
     def get_objects(self):
         """Returns all objects in the world."""
@@ -103,8 +141,9 @@ class World:
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:
             self.kdtree = KDTree(np.array(self.points_list))
-
-    def get_world_id(self, obj: Obj, distance_thr=2, iou_thr=0.0):
+    
+    #@time_it
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
@@ -113,17 +152,17 @@ class World:
             iou_thr: IoU threshold for considering two objects as the same
         Returns: The ID of the object in the world if it exists, otherwise the object's ID.
         """
-        close_objects = self.query_by_distance(obj.pcd.points.mean(axis=0), distance_thr)
+        close_objects = self.query_by_distance(obj.centroid, distance_thr)
         for close_obj in close_objects:
-            if (
-                obj.id != close_obj.id
-                and obj.label == close_obj.label
-                and compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr
-            ):
-                return close_obj.id
+            #distance = np.median(obj.pcd.compute_point_cloud_distance(close_obj.pcd))
+            if obj.id != close_obj.id and obj.label == close_obj.label and abs(obj.last_seen - close_obj.last_seen).to_sec() > 5.0:
+                #print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
+                if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
+                    return close_obj.id
 
         return obj.id
 
+    #@time_it
     def manage_object(self, obj: Obj):
 
         if obj.id in self.objects:
@@ -135,6 +174,9 @@ class World:
 
         world_id = self.get_world_id(obj)
         if world_id != obj.id:
+            print(self.objects[obj.id].last_seen)
+            print(self.objects[world_id].last_seen)
+            print(abs(self.objects[obj.id].last_seen - self.objects[world_id].last_seen).to_sec())
             self.override_object(world_id, obj)
 
         return self.objects[obj.id]

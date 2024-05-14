@@ -10,6 +10,7 @@ import tf2_ros
 
 from geometry_msgs.msg import PointStamped
 from tf2_geometry_msgs import do_transform_point
+import tf.transformations as tft
 import math
 
 
@@ -156,3 +157,33 @@ class TransformHelper(metaclass=SingletonMeta):
                 return None
 
         return np.array(transformed_points)
+    
+    def transform_points(self, points, rotation, translation):
+        """
+        Points has shape n, 3.
+        This function creates the rototranslation matrix from the rotation and translation and applies it to the points.
+        """
+
+        # Create the rototranslation matrix
+        rototranslation = tft.quaternion_matrix(rotation)
+        rototranslation[:3, 3] = translation
+
+        # Apply the rototranslation matrix to the points
+        points = np.hstack([points, np.ones((points.shape[0], 1))])
+        points = np.dot(rototranslation, points.T).T
+
+        return points[:, :3]
+    
+    def fast_transform(self, source_frame, target_frame, points, stamp):
+        transform = self.lookup_transform(source_frame, target_frame, stamp)
+        if transform is None:
+            return None
+
+        rotation = [transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w]
+        translation = [
+            transform.transform.translation.x,
+            transform.transform.translation.y,
+            transform.transform.translation.z,
+        ]
+
+        return self.transform_points(points, rotation, translation)
