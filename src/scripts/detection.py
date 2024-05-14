@@ -126,6 +126,8 @@ class Node:
         Args:
             image_msg (Image): The incoming ROS message containing the image data.
         """
+        if image_msg.header.seq % 1 != 0:
+            return
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
 
         results = next(

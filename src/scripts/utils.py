@@ -29,7 +29,6 @@ def time_it(func):
   return result
  return wrapper
 
-@time_it
 def create_pointcloud_message(objects, frame, stamp):
     """
     Creates a point cloud message from a list of points.
@@ -96,6 +95,8 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     """
     creates marker msg for rviz vsualization of the 3d bounding box
     """
+    if vertices is None:
+        return None
     marker = Marker()
     # keeping frame and timestamp consistent with the header of the received message to account for detection and mapping delay
     marker.header.stamp = stamp
@@ -126,36 +127,16 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     for conn in connections:
         marker.points.append(Point(*vertices[conn[0]]))
         marker.points.append(Point(*vertices[conn[1]]))
+    
+    if label.lower() in label_colors:
+        r, g, b = label_colors[label.lower()]
+        marker.color.r = r / 255.0
+        marker.color.g = g / 255.0
+        marker.color.b = b / 255.0
 
-    if label.lower() == "person":
-        marker.color.r = 1.0
-        marker.color.g = 0.0
-        marker.color.b = 0.0
-    elif label.lower() == "chair":
-        marker.color.r = 0.0
-        marker.color.g = 1.0
-        marker.color.b = 0.0
-    elif label.lower() == "laptop":
-        marker.color.r = 0.0
-        marker.color.g = 0.0
-        marker.color.b = 1.0
-    elif label.lower() == "dining table":
-        # yellow
-        marker.color.r = 1.0
-        marker.color.g = 1.0
-        marker.color.b = 0.0
-    elif label.lower() == "tv":
-        # aqua
-        marker.color.r = 0.0
-        marker.color.g = 1.0
-        marker.color.b = 1.0
+        return marker
     else:
         return None
-
-    return marker
-
-    
-
 
 def get_vercitces(point_min, point_max):
     vertices = [

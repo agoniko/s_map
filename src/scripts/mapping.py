@@ -115,7 +115,7 @@ class Mapper(object):
                 continue
             
             self.world.manage_object(obj)
-        #self.publish_markers(header.stamp)
+        self.publish_markers(header.stamp)
         self.publish_pointclouds(WORLD_FRAME, header.stamp)
 
 
@@ -154,6 +154,7 @@ class Mapper(object):
         pointcloud = np.array([xs, ys, zs]).T
         return pointcloud
 
+    #@time_it
     def publish_pointclouds(self, frame, stamp):
         objects = self.world.get_objects()
         msg = create_pointcloud_message(objects, frame, stamp)
