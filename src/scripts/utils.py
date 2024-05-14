@@ -9,25 +9,28 @@ from std_msgs.msg import Header
 import struct
 
 label_colors = {
-    "person": (255, 0, 0),       # Red
-    "chair": (0, 128, 0),        # Green
-    "dining table": (0, 0, 255), # Blue
-    "laptop": (255, 165, 0),     # Orange
-    "mouse": (255, 20, 147),     # Deep Pink (for visibility)
-    "tv": (75, 0, 130)           # Indigo
+    "person": (255, 0, 0),  # Red
+    "chair": (0, 128, 0),  # Green
+    "dining table": (0, 0, 255),  # Blue
+    "laptop": (255, 165, 0),  # Orange
+    "mouse": (255, 20, 147),  # Deep Pink (for visibility)
+    "tv": (75, 0, 130),  # Indigo
 }
 
 
 def time_it(func):
- import time
- @wraps(func)
- def wrapper(*args,**kwargs):
-  start = time.time()
-  result = func(*args,**kwargs)
-  print(f'time taken by {func.__name__} is {time.time()-start }')
+    import time
 
-  return result
- return wrapper
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        print(f"time taken by {func.__name__} is {time.time()-start }")
+
+        return result
+
+    return wrapper
+
 
 def create_pointcloud_message(objects, frame, stamp):
     """
@@ -39,18 +42,20 @@ def create_pointcloud_message(objects, frame, stamp):
             r, g, b = label_colors[obj.label.lower()]
             a = 255
             pc = np.asarray(obj.pcd.points)
-            rgb = struct.unpack('I', struct.pack('BBBB', b, g, r, a))[0] * np.ones((pc.shape[0], 1))
+            rgb = struct.unpack("I", struct.pack("BBBB", b, g, r, a))[0] * np.ones(
+                (pc.shape[0], 1)
+            )
 
             point = np.hstack((pc, rgb))
             points = np.vstack((points, point)) if len(points) > 0 else point
-            
+
     fields = [
-                PointField('x', 0, PointField.FLOAT32, 1),
-                PointField('y', 4, PointField.FLOAT32, 1),
-                PointField('z', 8, PointField.FLOAT32, 1),
-                PointField('rgb', 16, PointField.UINT32, 1),
-            ]
-    
+        PointField("x", 0, PointField.FLOAT32, 1),
+        PointField("y", 4, PointField.FLOAT32, 1),
+        PointField("z", 8, PointField.FLOAT32, 1),
+        PointField("rgb", 16, PointField.UINT32, 1),
+    ]
+
     header = Header()
     header.stamp = stamp
     header.frame_id = frame
@@ -60,11 +65,11 @@ def create_pointcloud_message(objects, frame, stamp):
     z = points[:, 2]
     rgb = points[:, 3].astype(np.uint32)
 
-    pc2 = point_cloud2.create_cloud(header, fields, [list(i) for i in zip(x, y, z, rgb)])
-    #pc2 = point_cloud2.create_cloud_xyz32(header, points)
+    pc2 = point_cloud2.create_cloud(
+        header, fields, [list(i) for i in zip(x, y, z, rgb)]
+    )
+    # pc2 = point_cloud2.create_cloud_xyz32(header, points)
     return pc2
-
-
 
 
 def create_delete_marker(frame):
@@ -111,23 +116,23 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
     marker.pose.orientation.w = 1.0
 
     connections = [
-    (0, 1),  # Bottom face
-    (0, 2),
-    (1, 7),
-    (2, 7),
-    (3, 6),  # Top face
-    (3, 5),
-    (4, 6),
-    (4, 5),
-    (0, 3),  # Side faces
-    (1, 6),
-    (2, 5),
-    (7, 4)
-]
+        (0, 1),  # Bottom face
+        (0, 2),
+        (1, 7),
+        (2, 7),
+        (3, 6),  # Top face
+        (3, 5),
+        (4, 6),
+        (4, 5),
+        (0, 3),  # Side faces
+        (1, 6),
+        (2, 5),
+        (7, 4),
+    ]
     for conn in connections:
         marker.points.append(Point(*vertices[conn[0]]))
         marker.points.append(Point(*vertices[conn[1]]))
-    
+
     if label.lower() in label_colors:
         r, g, b = label_colors[label.lower()]
         marker.color.r = r / 255.0
@@ -137,6 +142,7 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
         return marker
     else:
         return None
+
 
 def get_vercitces(point_min, point_max):
     vertices = [

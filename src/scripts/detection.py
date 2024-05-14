@@ -26,7 +26,6 @@ SUBSCRIPTION_QUEUE_SIZE = 50
 CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 
 
-
 class Node:
     """
     A ROS node for object detection using YOLO, processing images and publishing results.
