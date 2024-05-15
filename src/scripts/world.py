@@ -69,9 +69,6 @@ class Obj:
             self.centroid = np.zeros(3)
             return
 
-        #print pcd and clean len
-        print(len(np.asarray(self.pcd.points)), len(np.asarray(clean.points)) )      
-        #clean = self.pcd
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(clean.points).mean(axis=0)
 

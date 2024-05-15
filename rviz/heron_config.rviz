@@ -7,8 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /DepthCloud1/Auto Size1
-        - /Objects1
-        - /Camera1/Status1
+        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 500
   - Class: rviz/Selection
@@ -107,14 +106,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /s_map/objects
-      Name: Objects
-      Namespaces:
-        my_namespace: true
-      Queue Size: 100
-      Value: true
     - Class: rviz/Camera
       Enabled: true
       Image Rendering: background and overlay
@@ -130,7 +121,8 @@ Visualization Manager:
         Grid: true
         LaserScan: true
         Map: true
-        Objects: true
+        MarkerArray: true
+        PointCloud2: true
         TF: true
         Value: true
       Zoom Factor: 1
@@ -172,6 +164,42 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /s_map/pointcloud
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /s_map/objects
+      Name: MarkerArray
+      Namespaces:
+        my_namespace: true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -200,7 +228,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 22.75567054748535
+      Distance: 18.355932235717773
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -208,17 +236,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 13.278264999389648
-        Y: 14.17343521118164
+        X: 14.3365478515625
+        Y: 15.38228988647461
         Z: 0
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5503968596458435
+      Pitch: 0.7553967833518982
       Target Frame: <Fixed Frame>
-      Yaw: 1.1753952503204346
+      Yaw: 0.33539581298828125
     Saved: ~
 Window Geometry:
   Camera:

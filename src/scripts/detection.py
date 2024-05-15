@@ -12,6 +12,8 @@ from ultralytics import YOLO
 import supervision as sv
 import numpy as np
 from geometric_transformations import CameraPoseEstimator
+from message_filters import TimeSynchronizer, Subscriber
+
 
 # Global Configuration Variables
 RGB_TOPIC = "/realsense/rgb/image_raw"
@@ -54,6 +56,7 @@ class Node:
         "image_sub",
         "depth_sub",
         "laser_sub",
+        "synchronizer",
         "annotated_image_pub",
         "results_pub",
     ]
@@ -72,14 +75,10 @@ class Node:
         self.box_annotator = sv.BoxCornerAnnotator()
 
         # Subscribers
-        self.image_sub = rospy.Subscriber(
-            RGB_TOPIC,
-            Image,
-            self.detection_callback,
-            queue_size=SUBSCRIPTION_QUEUE_SIZE,
-        )
-        # self.depth_sub = rospy.Subscriber(DEPTH_TOPIC, Image, self.depth_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
-        # self.laser_sub = rospy.Subscriber(SCAN_TOPIC, LaserScan, self.scan_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
+        self.image_sub = Subscriber(RGB_TOPIC, Image)
+        self.depth_sub = Subscriber(DEPTH_TOPIC, Image)
+        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub], SUBSCRIPTION_QUEUE_SIZE)
+        self.synchronizer.registerCallback(self.detection_callback)
 
         # Publishers
         self.annotated_image_pub = rospy.Publisher(
@@ -89,7 +88,7 @@ class Node:
             DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
 
-    def preprocess_msg(self, detections, header):
+    def preprocess_msg(self, detections, depth, header):
         """
         Preprocess the detection message to be published from supervision detection
         """
@@ -111,12 +110,13 @@ class Node:
             res.scores = conf
             res.masks = mask_msg
             res.labels = labels
+            res.depth = depth
 
             return res
         except:
             return None
 
-    def detection_callback(self, image_msg):
+    def detection_callback(self, image_msg, depth_msg):
         """
         Callback for processing images received from the RGB topic.
         Received images are already rectified and aligned with the depth image.
@@ -124,6 +124,7 @@ class Node:
 
         Args:
             image_msg (Image): The incoming ROS message containing the image data.
+            depth_msg (Image): The incoming ROS message containing the depth data.
         """
         if image_msg.header.seq % 1 != 0:
             return
@@ -143,7 +144,7 @@ class Node:
         if results:
             detections = sv.Detections.from_ultralytics(results)
             frame = self.annotate_frame(frame, detections, image_msg.header)
-            self.publish_results(detections, image_msg.header, frame)
+            self.publish_results(detections, depth_msg, image_msg.header, frame)
 
     def annotate_frame(self, frame, detections, header):
         """
@@ -176,16 +177,17 @@ class Node:
         frame = self.box_annotator.annotate(frame, detections)
         return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
 
-    def publish_results(self, detections, header, frame):
+    def publish_results(self, detections, depth, header, frame):
         """
         Publishes detection results and annotated images.
 
         Args:
             detections (sv.Detections): Detection results to be published.
             header (std_msgs.msg.Header): Header from the incoming image message, used for time stamping the published messages.
+            depth (std_msgs.msg.Image): Depth image to be published associated to the detections
             frame (std_msgs.msg.Image): Annotated image to be published
         """
-        detection_msg = self.preprocess_msg(detections, header)
+        detection_msg = self.preprocess_msg(detections, depth, header)
         if detection_msg:
             self.results_pub.publish(detection_msg)
         self.annotated_image_pub.publish(frame)
