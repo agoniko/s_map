@@ -53,6 +53,7 @@ class Mapper(object):
         self.pose_reliability_evaluator = ReliabilityEvaluator(
             CAMERA_FRAME, WORLD_FRAME
         )
+        rospy.Timer(rospy.Duration(0.2), self.check_still_there)
 
     def init_subscribers(self):
         self.result_subscriber = Subscriber(RESULT_TOPIC, Detection)
@@ -115,6 +116,25 @@ class Mapper(object):
             self.world.manage_object(obj)
         self.publish_markers(header.stamp)
         self.publish_pointclouds(WORLD_FRAME, header.stamp)
+
+    #@time_it
+    def check_still_there(self, event):
+        """
+        This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
+        """
+
+        point = np.array([[0, 0, 1.5]]) # 1.5 meters in front of the camera
+        point_world_frame = self.transformer.fast_transform(CAMERA_FRAME, WORLD_FRAME, point, rospy.Time.now())
+        if point_world_frame is None:
+            return
+        objects = self.world.query_by_distance(point_world_frame[0], 1.5) #The depth camera cannot see objects over 3 meters
+        print(objects)
+        to_remove = []  
+        for obj in objects:
+            if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
+                to_remove.append(obj.id)
+        
+        self.world.remove_objects(to_remove)
 
     # @time_it
     def compute_object(self, id, box, depth_image, mask, label, score, stamp):
