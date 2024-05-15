@@ -6,7 +6,6 @@ import rospy
 from sensor_msgs.msg import Image, LaserScan, PointCloud2
 from sensor_msgs import point_cloud2
 from cv_bridge import CvBridge
-from message_filters import TimeSynchronizer, Subscriber
 from visualization_msgs.msg import MarkerArray
 from s_map.msg import Detection
 import rospkg
@@ -40,7 +39,6 @@ WORLD_FRAME = "world"
 CAMERA_FRAME = "realsense_rgb_optical_frame"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-
 class Mapper(object):
     def __init__(self):
         rospy.init_node("mapping", anonymous=True)
@@ -53,16 +51,13 @@ class Mapper(object):
         self.pose_reliability_evaluator = ReliabilityEvaluator(
             CAMERA_FRAME, WORLD_FRAME
         )
+        rospy.loginfo("Mapping node initialized")
         rospy.Timer(rospy.Duration(0.2), self.check_still_there)
 
     def init_subscribers(self):
-        self.result_subscriber = Subscriber(RESULT_TOPIC, Detection)
-        self.depth_subscriber = Subscriber(DEPTH_TOPIC, Image)
-        self.laser_subscriber = Subscriber(SCAN_TOPIC, LaserScan)
-        self.synchronizer = TimeSynchronizer(
-            [self.result_subscriber, self.depth_subscriber], 1000
-        )
-        self.synchronizer.registerCallback(self.process_data)
+        self.result_subscriber = rospy.Subscriber(
+            RESULT_TOPIC, Detection, self.process_data, queue_size=10
+            )
 
     def init_publishers(self):
         self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
@@ -76,6 +71,7 @@ class Mapper(object):
         boxes = np.array(msg.boxes).reshape(n, 4)
         scores = np.array(msg.scores)
         ids = np.array(msg.ids)
+        depth_image = self.cv_bridge.imgmsg_to_cv2(msg.depth, "passthrough")
 
         masks = self.cv_bridge.imgmsg_to_cv2(msg.masks)
         if len(masks.shape) == 2:
@@ -85,11 +81,11 @@ class Mapper(object):
 
         if masks.shape[0] != n:
             masks = [None] * n
-
-        return header, boxes, labels, scores, ids, masks
+        
+        return header, boxes, labels, scores, ids, masks, depth_image
 
     # @time_it
-    def process_data(self, detection, depth):
+    def process_data(self, detection):
         """
         Process the data received from detection and depth sensors.
 
@@ -103,12 +99,12 @@ class Mapper(object):
         if not self.pose_reliability_evaluator.evaluate(detection.header.stamp):
             # rospy.logwarn("Pose is not reliable")
             return
-        depth_image = self.cv_bridge.imgmsg_to_cv2(depth, "passthrough")
-        header, boxes, labels, scores, ids, masks = self.preprocess_msg(detection)
+        
+        header, boxes, labels, scores, ids, masks, depth_image = self.preprocess_msg(detection)
 
         for id, box, label, mask, score in zip(ids, boxes, labels, masks, scores):
             obj = self.compute_object(
-                id, box, depth_image, mask, label, score, header.stamp
+                id, box, depth_image, mask, label, score, header
             )
             if obj is None:
                 continue
@@ -128,7 +124,6 @@ class Mapper(object):
         if point_world_frame is None:
             return
         objects = self.world.query_by_distance(point_world_frame[0], 1.5) #The depth camera cannot see objects over 3 meters
-        print(objects)
         to_remove = []  
         for obj in objects:
             if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
@@ -137,7 +132,7 @@ class Mapper(object):
         self.world.remove_objects(to_remove)
 
     # @time_it
-    def compute_object(self, id, box, depth_image, mask, label, score, stamp):
+    def compute_object(self, id, box, depth_image, mask, label, score, header):
         """
         Computes the object information in the world frame
         Args:
@@ -158,9 +153,9 @@ class Mapper(object):
             return None
         pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
         pc_world_frame = self.transformer.fast_transform(
-            CAMERA_FRAME, WORLD_FRAME, pc_camera_frame, stamp
+            header.frame_id, WORLD_FRAME, pc_camera_frame, header.stamp
         )
-        obj = Obj(id, pc_world_frame, label, score, stamp)
+        obj = Obj(id, pc_world_frame, label, score, header.stamp)
         return obj
 
     # @time_it

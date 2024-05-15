@@ -7,6 +7,7 @@ float32[] scores
 
 # need to be reshaped to (n, h, w)
 sensor_msgs/Image masks
+sensor_msgs/Image depth
 
 string[] labels
 
