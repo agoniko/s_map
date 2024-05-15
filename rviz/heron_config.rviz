@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /DepthCloud1/Auto Size1
-        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 500
   - Class: rviz/Selection
