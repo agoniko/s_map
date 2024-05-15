@@ -26,7 +26,6 @@ SUBSCRIPTION_QUEUE_SIZE = 50
 CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
 
 
-
 class Node:
     """
     A ROS node for object detection using YOLO, processing images and publishing results.
@@ -126,6 +125,8 @@ class Node:
         Args:
             image_msg (Image): The incoming ROS message containing the image data.
         """
+        if image_msg.header.seq % 1 != 0:
+            return
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
 
         results = next(
