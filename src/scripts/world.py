@@ -69,13 +69,15 @@ class Obj:
             self.centroid = np.zeros(3)
             return
 
+        #print pcd and clean len
+        print(len(np.asarray(self.pcd.points)), len(np.asarray(clean.points)) )      
+        #clean = self.pcd
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(clean.points).mean(axis=0)
 
 
 class World:
     """World class that uses a KDTree for efficient spatial management of objects."""
-
     def __init__(self):
         self.objects = {}
         self.kdtree = None
@@ -103,30 +105,30 @@ class World:
         self.points_list[self.id2index[obj.id]] = self.objects[obj.id].centroid
         self._rebuild_kdtree()
 
-    # @time_it
-    def remove_object(self, obj_id):
+    
+    #@time_it
+    def remove_objects(self, obj_ids):
         """Removes an object from the world."""
-        if obj_id in self.objects:
-            self.objects.pop(obj_id)
-            self.points_list = []
-            self.id2index = {}
-            self.index2id = {}
+        for obj_id in obj_ids:
+            if obj_id in self.objects:
+                self.objects.pop(obj_id)
 
-            for i, (id, obj) in enumerate(self.objects.items()):
-                self.id2index[id] = i
-                self.index2id[i] = id
-                self.points_list.append(obj.centroid)
+        self.points_list = []
+        self.id2index = {}
+        self.index2id = {}
 
-            self._rebuild_kdtree()
+        for i, (id, obj) in enumerate(self.objects.items()):
+            self.id2index[id] = i
+            self.index2id[i] = id
+            self.points_list.append(obj.centroid)
+
+        self._rebuild_kdtree()
 
     def override_object(self, old_id, obj):
-        """ """
         old_obj = self.objects[old_id]
         print(f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}")
         self.objects[obj.id].update(old_obj)
-        print("Before: ", self.objects.keys())
-        self.remove_object(old_id)
-        print("After: ", self.objects.keys())
+        self.remove_objects([old_id])
 
     def get_objects(self):
         """Returns all objects in the world."""
