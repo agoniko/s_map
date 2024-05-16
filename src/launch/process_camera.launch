@@ -1,0 +1,16 @@
+<launch>
+
+    <arg name="camera_name" default="back"/>
+    <arg name="rectify_manager" default="rectify_manager"/>
+    <arg name="align_manager" default="align_manager"/>
+
+    <include file="$(find s_map)/src/launch/rectify_image.launch">
+        <arg name="camera_name" value="$(arg camera_name)"/>
+        <arg name="manager_name" value="$(arg rectify_manager)"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/align_depth.launch">
+        <arg name="camera_name" value="$(arg camera_name)"/>
+        <arg name="manager_name" value="$(arg align_manager)"/>
+    </include>
+</launch>

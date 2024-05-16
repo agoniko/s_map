@@ -1,0 +1,27 @@
+<launch>
+    <remap from="/spot/camera/frontleft/camera_info" to="frontleft/rgb/camera_info"/>
+    <remap from="/spot/camera/frontleft/image" to="frontleft/rgb/image_raw"/>
+    <remap from="/spot/depth/frontleft/camera_info" to="frontleft/depth/camera_info"/>
+    <remap from="/spot/depth/frontleft/image" to="frontleft/depth/image_raw"/>
+
+    <remap from="/spot/camera/frontright/camera_info" to="frontright/rgb/camera_info"/>
+    <remap from="/spot/camera/frontright/image" to="frontright/rgb/image_raw"/>
+    <remap from="/spot/depth/frontright/camera_info" to="frontright/depth/camera_info"/>
+    <remap from="/spot/depth/frontright/image" to="frontright/depth/image_raw"/>
+
+    <remap from="/spot/camera/left/camera_info" to="left/rgb/camera_info"/>
+    <remap from="/spot/camera/left/image" to="left/rgb/image_raw"/>
+    <remap from="/spot/depth/left/camera_info" to="left/depth/camera_info"/>
+    <remap from="/spot/depth/left/image" to="left/depth/image_raw"/>
+
+    <remap from="/spot/camera/right/camera_info" to="right/rgb/camera_info"/>
+    <remap from="/spot/camera/right/image" to="right/rgb/image_raw"/>
+    <remap from="/spot/depth/right/camera_info" to="right/depth/camera_info"/>
+    <remap from="/spot/depth/right/image" to="right/depth/image_raw"/>
+
+    <remap from="/spot/camera/back/camera_info" to="back/rgb/camera_info"/>
+    <remap from="/spot/camera/back/image" to="back/rgb/image_raw"/>
+    <remap from="/spot/depth/back/camera_info" to="back/depth/camera_info"/>
+    <remap from="/spot/depth/back/image" to="back/depth/image_raw"/>
+
+</launch>
