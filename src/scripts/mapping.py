@@ -27,16 +27,14 @@ import open3d as o3d
 
 # Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
-DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
-RGB_TOPIC = "/realsense/rgb/image_raw"
-CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
+CAMERA_INFO_TOPIC = "/frontleft/rgb/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 PC_TOPIC = "/s_map/pointcloud"
 
 # Frame constants
-WORLD_FRAME = "world"
-CAMERA_FRAME = "realsense_rgb_optical_frame"
+WORLD_FRAME = "vision"
+CAMERA_FRAME = "frontleft"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 class Mapper(object):

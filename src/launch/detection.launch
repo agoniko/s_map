@@ -1,24 +1,42 @@
 <launch>
-    <!-- My Package launch file -->
-    <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen"></node>
-    <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen"></node>
-    
-    <!-- Nodelet manager to manage the register nodelet -->
-    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" output="screen"/>
+    <node pkg="nodelet" type="nodelet" name="rect_manager" args="manager" output="screen"/>
+    <node pkg="nodelet" type="nodelet" name="align_manager" args="manager" output="screen"/>
 
-    <!-- Register nodelet for aligning depth to RGB -->
-    <node pkg="nodelet" type="nodelet" name="depth_image_register" args="load depth_image_proc/register nodelet_manager" output="screen">
-        <!-- Remap the topics to your specific camera topics -->
-        <remap from="rgb/camera_info" to="/spot/camera/back/camera_info"/>
-        <remap from="depth/camera_info" to="/spot/depth/back/camera_info"/>
-        <remap from="depth/image_rect" to="/spot/depth/back/image"/>
-        
-        <!-- Published topics -->
-        <remap from="depth_registered/camera_info" to="/spot/depth_registered/back/camera_info"/>
-        <remap from="depth_registered/image_rect" to="/spot/depth_registered/back/image_rect"/>
-        
-        <!-- Parameters -->
-        <param name="queue_size" value="5"/>
-    </node>
+    <param name="/use_sim_time" value="true"/>
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="frontleft"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+    <!--
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="frontright"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="left"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="right"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="back"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+
+    -->
+    <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen"/>
+    <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen"/>
 
 </launch>

@@ -16,16 +16,16 @@ from message_filters import TimeSynchronizer, Subscriber
 
 
 # Global Configuration Variables
-RGB_TOPIC = "/realsense/rgb/image_raw"
-DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
+RGB_TOPIC = "/frontleft/rgb/image_rect"
+DEPTH_TOPIC = "/frontleft/aligned_depth/image_rect"
 SCAN_TOPIC = "/scan"
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
-CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
+CAMERA_INFO_TOPIC = "/frontleft/aligned_depth/camera_info"
 
 
 class Node:
@@ -126,6 +126,7 @@ class Node:
             image_msg (Image): The incoming ROS message containing the image data.
             depth_msg (Image): The incoming ROS message containing the depth data.
         """
+        rospy.logerr("Received image")
         if image_msg.header.seq % 1 != 0:
             return
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
@@ -145,6 +146,7 @@ class Node:
             detections = sv.Detections.from_ultralytics(results)
             frame = self.annotate_frame(frame, detections, image_msg.header)
             self.publish_results(detections, depth_msg, image_msg.header, frame)
+            rospy.loginfo("Detection results published.")
 
     def annotate_frame(self, frame, detections, header):
         """

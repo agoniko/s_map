@@ -119,7 +119,7 @@ class TransformHelper(metaclass=SingletonMeta):
     def lookup_transform(self, source_frame, target_frame, stamp):
         try:
             transform = self.tf_buffer.lookup_transform(
-                target_frame, source_frame, stamp
+                target_frame, source_frame, stamp, timeout=rospy.Duration(0.1)
             )
         except (
             tf2_ros.LookupException,
@@ -128,6 +128,7 @@ class TransformHelper(metaclass=SingletonMeta):
         ) as e:
             rospy.logerr("Failed to lookup transform: %s", str(e))
             return None
+        
         return transform
 
     def transform_coordinates(self, source_frame, target_frame, points, stamp):
