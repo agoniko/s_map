@@ -24,7 +24,10 @@ class Obj:
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
         self.last_seen = max(self.last_seen, other.last_seen)
-        self.pcd.points.extend(other.pcd.points)
+        if self.label == "person" and other.label == "person":
+            self.pcd.points = other.pcd.points
+        else:
+            self.pcd.points.extend(other.pcd.points)
         self.compute()
 
         self.label = other.label if other.score > self.score else self.label
@@ -62,9 +65,9 @@ class Obj:
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
         self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=200, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=500, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=200, std_ratio=0.2)
 
-        if len(clean.points) < 200:
+        if len(clean.points) < 100:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
             return
@@ -135,6 +138,7 @@ class World:
         """Queries objects within a certain distance threshold."""
         if self.kdtree is not None:
             indexes = self.kdtree.query_ball_point(point, r=threshold)
+            print(len(self.objects.keys()), len(self.points_list), len(indexes))
             return [
                 self.objects[obj_id]
                 for obj_id in np.array(list(self.objects.keys()))[indexes]

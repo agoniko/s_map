@@ -27,14 +27,14 @@ import open3d as o3d
 
 # Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
-CAMERA_INFO_TOPIC = "/frontleft/rgb/camera_info"
+CAMERA_INFO_TOPIC = "/left/rgb/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 PC_TOPIC = "/s_map/pointcloud"
 
 # Frame constants
 WORLD_FRAME = "vision"
-CAMERA_FRAME = "frontleft"
+CAMERA_FRAME = "left"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 class Mapper(object):
@@ -46,15 +46,13 @@ class Mapper(object):
         self.pose_estimator = CameraPoseEstimator(CAMERA_INFO_TOPIC)
         self.transformer = TransformHelper()
         self.world = World()
-        self.pose_reliability_evaluator = ReliabilityEvaluator(
-            CAMERA_FRAME, WORLD_FRAME
-        )
+        self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
         rospy.Timer(rospy.Duration(0.2), self.check_still_there)
 
     def init_subscribers(self):
         self.result_subscriber = rospy.Subscriber(
-            RESULT_TOPIC, Detection, self.process_data, queue_size=10
+            RESULT_TOPIC, Detection, self.process_data, queue_size=50
             )
 
     def init_publishers(self):
@@ -81,6 +79,11 @@ class Mapper(object):
             masks = [None] * n
         
         return header, boxes, labels, scores, ids, masks, depth_image
+    
+    def is_reliable(self, header):
+        if header.frame_id not in self.pose_reliability_evaluator:
+            self.pose_reliability_evaluator[header.frame_id] = ReliabilityEvaluator(header.frame_id, WORLD_FRAME)
+        return self.pose_reliability_evaluator[header.frame_id].evaluate(header.stamp)
 
     # @time_it
     def process_data(self, detection):
@@ -94,7 +97,7 @@ class Mapper(object):
         Returns:
             None
         """
-        if not self.pose_reliability_evaluator.evaluate(detection.header.stamp):
+        if not self.is_reliable(detection.header):
             # rospy.logwarn("Pose is not reliable")
             return
         
@@ -116,18 +119,18 @@ class Mapper(object):
         """
         This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
         """
-
-        point = np.array([[0, 0, 1.5]]) # 1.5 meters in front of the camera
-        point_world_frame = self.transformer.fast_transform(CAMERA_FRAME, WORLD_FRAME, point, rospy.Time.now())
-        if point_world_frame is None:
-            return
-        objects = self.world.query_by_distance(point_world_frame[0], 1.5) #The depth camera cannot see objects over 3 meters
-        to_remove = []  
-        for obj in objects:
-            if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
-                to_remove.append(obj.id)
-        
-        self.world.remove_objects(to_remove)
+        for camera_frame in self.pose_reliability_evaluator.keys():
+            point = np.array([[0, 0, 1.5]]) # 1.5 meters in front of the camera
+            point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
+            if point_world_frame is None:
+                return
+            objects = self.world.query_by_distance(point_world_frame[0], 1.5) #The depth camera cannot see objects over 3 meters
+            to_remove = []  
+            for obj in objects:
+                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
+                    to_remove.append(obj.id)
+            
+            self.world.remove_objects(to_remove)
 
     # @time_it
     def compute_object(self, id, box, depth_image, mask, label, score, header):
