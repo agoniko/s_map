@@ -5,11 +5,16 @@
     <param name="/use_sim_time" value="true"/>
 
     <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="back"/>
+        <arg name="rectify_manager" value="rect_manager"/>
+        <arg name="align_manager" value="align_manager"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
         <arg name="camera_name" value="frontleft"/>
         <arg name="rectify_manager" value="rect_manager"/>
         <arg name="align_manager" value="align_manager"/>
     </include>
-    <!--
 
     <include file="$(find s_map)/src/launch/process_camera.launch">
         <arg name="camera_name" value="frontright"/>
@@ -29,14 +34,15 @@
         <arg name="align_manager" value="align_manager"/>
     </include>
 
-    <include file="$(find s_map)/src/launch/process_camera.launch">
-        <arg name="camera_name" value="back"/>
-        <arg name="rectify_manager" value="rect_manager"/>
-        <arg name="align_manager" value="align_manager"/>
-    </include>
+    <node pkg="s_map" type="detection.py" name="s_map_detection_left"  output="screen">
+        <param name="camera" value="left"/>
+    </node>
 
-    -->
-    <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen"/>
+    <node pkg="s_map" type="detection.py" name="s_map_detection_right"  output="screen">
+        <param name="camera" value="back"/>
+    </node>
+
+
     <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen"/>
 
 </launch>

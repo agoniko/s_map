@@ -15,17 +15,16 @@ from geometric_transformations import CameraPoseEstimator
 from message_filters import TimeSynchronizer, Subscriber
 
 
-# Global Configuration Variables
-RGB_TOPIC = "/frontleft/rgb/image_rect"
-DEPTH_TOPIC = "/frontleft/aligned_depth/image_rect"
-SCAN_TOPIC = "/scan"
+#Global Configuration Variables
+RGB_TOPIC = "/rgb/image_rect"
+DEPTH_TOPIC = "/aligned_depth/image_rect"
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
-CAMERA_INFO_TOPIC = "/frontleft/aligned_depth/camera_info"
+CAMERA_INFO_TOPIC = "/aligned_depth/camera_info"
 
 
 class Node:
@@ -63,7 +62,10 @@ class Node:
 
     def __init__(self):
         """Initialize the node, its publications, subscriptions, and model."""
+        global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
         rospy.init_node("detection_node")
+        self.initialize_topics()
+
         self.cv_bridge = CvBridge()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "mps")
         self.detector = YOLO(MODEL_PATH)
@@ -87,6 +89,19 @@ class Node:
         self.results_pub = rospy.Publisher(
             DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
+    
+    def initialize_topics(self):
+        global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
+        camera_name = rospy.get_param("~camera", None)
+        if camera_name is None:
+            rospy.logerr("Camera name not provided.")
+            rospy.signal_shutdown
+
+        RGB_TOPIC = f"/{camera_name}{RGB_TOPIC}"
+        DEPTH_TOPIC = f"/{camera_name}{DEPTH_TOPIC}"
+        CAMERA_INFO_TOPIC = f"/{camera_name}{CAMERA_INFO_TOPIC}"
+        ANNOTATED_IMAGES_TOPIC = f"/{camera_name}{ANNOTATED_IMAGES_TOPIC}"
+
 
     def preprocess_msg(self, detections, depth, header):
         """
@@ -145,7 +160,7 @@ class Node:
         if results:
             detections = sv.Detections.from_ultralytics(results)
             frame = self.annotate_frame(frame, detections, image_msg.header)
-            self.publish_results(detections, depth_msg, image_msg.header, frame)
+            self.publish_results(detections, depth_msg, depth_msg.header, frame)
             rospy.loginfo("Detection results published.")
 
     def annotate_frame(self, frame, detections, header):

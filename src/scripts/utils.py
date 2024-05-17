@@ -15,6 +15,9 @@ label_colors = {
     "laptop": (255, 165, 0),  # Orange
     "mouse": (255, 20, 147),  # Deep Pink (for visibility)
     "tv": (75, 0, 130),  # Indigo
+    "backpack": (0, 0, 128),  # Navy
+    "suitcase": (255, 255, 0),  # Yellow
+    "bench": (128, 0, 128),  # Purple
 }
 
 
