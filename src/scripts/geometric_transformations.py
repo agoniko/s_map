@@ -28,13 +28,13 @@ class CameraPoseEstimator:
                 self.camera.fromCameraInfo(x)
 
         data = Dummy()
+        print(info_topic)
         sub = rospy.Subscriber(info_topic, CameraInfo, callback=data.callback)
 
         r = rospy.Rate(10)
         while data.data is None:
             r.sleep()
         sub.unregister()
-
         k = np.array(data.data.K).reshape((3, 3))
         height, width = data.data.height, data.data.width
 
