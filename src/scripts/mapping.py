@@ -27,14 +27,13 @@ import open3d as o3d
 
 # Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
-CAMERA_INFO_TOPIC = "/left/rgb/camera_info"
+CAMERA_INFO_TOPIC = "/aligned_depth/camera_info"
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 PC_TOPIC = "/s_map/pointcloud"
 
 # Frame constants
 WORLD_FRAME = "vision"
-CAMERA_FRAME = "left"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 class Mapper(object):
@@ -43,7 +42,7 @@ class Mapper(object):
         self.cv_bridge = CvBridge()
         self.init_subscribers()
         self.init_publishers()
-        self.pose_estimator = CameraPoseEstimator(CAMERA_INFO_TOPIC)
+        self.pose_estimator_dict = {}
         self.transformer = TransformHelper()
         self.world = World()
         self.pose_reliability_evaluator = {}
@@ -78,12 +77,17 @@ class Mapper(object):
         if masks.shape[0] != n:
             masks = [None] * n
         
-        return header, boxes, labels, scores, ids, masks, depth_image
+        return header, boxes, labels, scores, ids, masks, depth_image, msg.camera_name
     
     def is_reliable(self, header):
         if header.frame_id not in self.pose_reliability_evaluator:
             self.pose_reliability_evaluator[header.frame_id] = ReliabilityEvaluator(header.frame_id, WORLD_FRAME)
         return self.pose_reliability_evaluator[header.frame_id].evaluate(header.stamp)
+    
+    def get_pose_estimator(self, camera_name):
+        if camera_name not in self.pose_estimator_dict.keys():
+            self.pose_estimator_dict[camera_name] = CameraPoseEstimator(camera_name + CAMERA_INFO_TOPIC)
+        return self.pose_estimator_dict[camera_name]
 
     # @time_it
     def process_data(self, detection):
@@ -98,14 +102,14 @@ class Mapper(object):
             None
         """
         if not self.is_reliable(detection.header):
-            # rospy.logwarn("Pose is not reliable")
             return
         
-        header, boxes, labels, scores, ids, masks, depth_image = self.preprocess_msg(detection)
+        header, boxes, labels, scores, ids, masks, depth_image, camera_name = self.preprocess_msg(detection)
+        pose_estimator = self.get_pose_estimator(camera_name)
 
         for id, box, label, mask, score in zip(ids, boxes, labels, masks, scores):
             obj = self.compute_object(
-                id, box, depth_image, mask, label, score, header
+                id, box, depth_image, mask, label, score, header, pose_estimator
             )
             if obj is None:
                 continue
@@ -124,7 +128,7 @@ class Mapper(object):
             point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
             if point_world_frame is None:
                 return
-            objects = self.world.query_by_distance(point_world_frame[0], 1.5) #The depth camera cannot see objects over 3 meters
+            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
             to_remove = []  
             for obj in objects:
                 if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
@@ -133,7 +137,7 @@ class Mapper(object):
             self.world.remove_objects(to_remove)
 
     # @time_it
-    def compute_object(self, id, box, depth_image, mask, label, score, header):
+    def compute_object(self, id, box, depth_image, mask, label, score, header, pose_estimator):
         """
         Computes the object information in the world frame
         Args:
@@ -152,7 +156,8 @@ class Mapper(object):
         pc = self.compute_pointcloud(depth_image, mask)
         if len(pc) < 200:
             return None
-        pc_camera_frame = self.pose_estimator.multiple_pixels_to_3d(pc)
+
+        pc_camera_frame = pose_estimator.multiple_pixels_to_3d(pc)
         pc_world_frame = self.transformer.fast_transform(
             header.frame_id, WORLD_FRAME, pc_camera_frame, header.stamp
         )
@@ -163,7 +168,14 @@ class Mapper(object):
     def compute_pointcloud(self, depth_image, mask):
         pc = depth_image * mask
         (ys, xs) = np.argwhere(pc).T
-        zs = pc[ys, xs] / 1000  # convert to meters
+
+        #remove from the pointcloud the points that are too close or too far from the camera
+        zs = pc[ys, xs] / 1000
+        mask = np.logical_and(zs > 0.5, zs < 3.0)
+        ys = ys[mask]
+        xs = xs[mask]
+        zs = zs[mask]
+
         pointcloud = np.array([xs, ys, zs]).T
         return pointcloud
 

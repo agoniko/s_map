@@ -10,17 +10,17 @@
         <arg name="align_manager" value="align_manager"/>
     </include>
 
-    <include file="$(find s_map)/src/launch/process_camera.launch">
+    <!--include file="$(find s_map)/src/launch/process_camera.launch">
         <arg name="camera_name" value="frontleft"/>
         <arg name="rectify_manager" value="rect_manager"/>
         <arg name="align_manager" value="align_manager"/>
-    </include>
+    </include-->
 
-    <include file="$(find s_map)/src/launch/process_camera.launch">
+    <!--include file="$(find s_map)/src/launch/process_camera.launch">
         <arg name="camera_name" value="frontright"/>
         <arg name="rectify_manager" value="rect_manager"/>
         <arg name="align_manager" value="align_manager"/>
-    </include>
+    </include-->
 
     <include file="$(find s_map)/src/launch/process_camera.launch">
         <arg name="camera_name" value="left"/>
@@ -39,6 +39,10 @@
     </node>
 
     <node pkg="s_map" type="detection.py" name="s_map_detection_right"  output="screen">
+        <param name="camera" value="right"/>
+    </node>
+
+    <node pkg="s_map" type="detection.py" name="s_map_detection_back"  output="screen">
         <param name="camera" value="back"/>
     </node>
 
