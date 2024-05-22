@@ -15,6 +15,7 @@ from geometric_transformations import CameraPoseEstimator
 from message_filters import TimeSynchronizer, Subscriber
 import cv2
 import hashlib
+from utils import time_it
 
 
 #Global Configuration Variables
@@ -145,7 +146,8 @@ class Node:
             return res
         except:
             return None
-
+    
+    @time_it
     def detection_callback(self, image_msg, depth_msg):
         """
         Callback for processing images received from the RGB topic.
