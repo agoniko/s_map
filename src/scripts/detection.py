@@ -71,7 +71,7 @@ class Node:
         self.initialize_topics()
 
         self.cv_bridge = CvBridge()
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps")
+        self.device = self.get_device()
         self.detector = YOLO(MODEL_PATH)
         self.detector = self.detector.to(self.device)
         rospy.loginfo(f"Using device: {self.device}")
@@ -93,6 +93,14 @@ class Node:
         self.results_pub = rospy.Publisher(
             DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
+    
+    def get_device(self):
+        if torch.cuda.is_available():
+            return torch.device("cuda")
+        elif torch.cuda.is_mps_available():
+            return torch.device("mps")
+        else:
+            return torch.device("cpu")
     
     def initialize_topics(self):
         global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
