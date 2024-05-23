@@ -1,0 +1,12 @@
+<launch>
+
+    <arg name="camera_name" default="frontleft"/>
+    <arg name="manager" default="manager"/>
+
+    <node pkg="nodelet" type="nodelet" name="depth_to_pointcloud_$(arg camera_name)" args="load depth_image_proc/point_cloud_xyz $(arg manager)" respawn="true">
+        <remap from="camera_info" to="$(arg camera_name)/aligned_depth/camera_info"/>
+        <remap from="image_rect" to="$(arg camera_name)/aligned_depth/image_rect"/>
+        <remap from="points" to="/$(arg camera_name)/points"/>
+    </node>
+
+</launch>
