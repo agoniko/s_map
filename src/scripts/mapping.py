@@ -22,7 +22,6 @@ import numpy as np
 from geometric_transformations import CameraPoseEstimator, TransformHelper
 from world import World, Obj
 from pose_reliability import ReliabilityEvaluator
-import open3d as o3d
 
 
 # Topic constants

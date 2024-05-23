@@ -16,6 +16,7 @@ from message_filters import TimeSynchronizer, Subscriber
 import cv2
 import hashlib
 from utils import time_it
+import sys
 
 
 #Global Configuration Variables
@@ -23,7 +24,7 @@ RGB_TOPIC = "/rgb/image_rect"
 DEPTH_TOPIC = "/aligned_depth/image_rect"
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
 DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
@@ -68,6 +69,8 @@ class Node:
         """Initialize the node, its publications, subscriptions, and model."""
         global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
         rospy.init_node("detection_node")
+        rospy.logerr("Python executable: %s", sys.executable)
+        rospy.logerr("Python version: %s", sys.version)
         self.initialize_topics()
 
         self.cv_bridge = CvBridge()
@@ -155,7 +158,7 @@ class Node:
         except:
             return None
     
-    @time_it
+    #@time_it
     def detection_callback(self, image_msg, depth_msg):
         """
         Callback for processing images received from the RGB topic.
@@ -166,6 +169,7 @@ class Node:
             image_msg (Image): The incoming ROS message containing the image data.
             depth_msg (Image): The incoming ROS message containing the depth data.
         """
+        return
         rospy.logerr("Received image")
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
         if self.camera_name == "right": #TODO: make wrapper

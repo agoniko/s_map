@@ -1,9 +1,8 @@
+import open3d as o3d
 from scipy.spatial import KDTree
 import numpy as np
 from collections import deque
 from utils import compute_3d_iou
-import open3d as o3d
-import open3d.core as o3c
 from utils import time_it
 import rospy
 
