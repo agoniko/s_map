@@ -27,10 +27,10 @@ class PointCloudMerger:
         merged_points = []
         
         for cloud in clouds:
-            points = np.array(list(pc2.read_points(cloud, skip_nans=True)))
-            points_world_frame = self.transformer.fast_transform(cloud.header.frame_id, self.world_frame, points, cloud.header.stamp)
-            merged_points.extend(points_world_frame)
-        
+            points = np.array(list(pc2.read_points(cloud, skip_nans=True, field_names=("x", "y", "z", "rgb"))))
+            points_world_frame = self.transformer.fast_transform(cloud.header.frame_id, self.world_frame, points[:, :3], cloud.header.stamp)
+            merged_points.extend(np.hstack((points_world_frame, points[:, 3:4])))
+
         merged_cloud = self.convert_to_pointcloud2(merged_points)
         merged_cloud.header.stamp = rospy.Time.now()
         merged_cloud.header.frame_id = self.world_frame
@@ -40,7 +40,14 @@ class PointCloudMerger:
         header = rospy.Header()
         header.stamp = rospy.Time.now()
         header.frame_id = 'vision'
-        return pc2.create_cloud_xyz32(header, points)
+        
+        fields = [
+            pc2.PointField('x', 0, pc2.PointField.FLOAT32, 1),
+            pc2.PointField('y', 4, pc2.PointField.FLOAT32, 1),
+            pc2.PointField('z', 8, pc2.PointField.FLOAT32, 1),
+            pc2.PointField('rgb', 12, pc2.PointField.FLOAT32, 1)
+        ]
+        return pc2.create_cloud(header, fields, points)
 
 if __name__ == '__main__':
     try:
