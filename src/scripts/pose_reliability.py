@@ -1,4 +1,3 @@
-#! /Users/nicoloagostara/miniforge3/envs/ros_env/bin/python
 
 # ros packages
 import rospy

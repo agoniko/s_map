@@ -24,7 +24,7 @@ RGB_TOPIC = "/rgb/image_rect"
 DEPTH_TOPIC = "/aligned_depth/image_rect"
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8n-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
@@ -153,6 +153,8 @@ class Node:
             res.labels = labels
             res.depth = depth
             res.camera_name = self.camera_name
+            rospy.loginfo(f"Publishing detection results for {self.camera_name} camera: ")
+            rospy.loginfo(f"{[(label, id) for label, id in zip(labels, res.ids)]}")
 
             return res
         except:
@@ -169,8 +171,6 @@ class Node:
             image_msg (Image): The incoming ROS message containing the image data.
             depth_msg (Image): The incoming ROS message containing the depth data.
         """
-        return
-        rospy.logerr("Received image")
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
         if self.camera_name == "right": #TODO: make wrapper
             #vertically flip the image
@@ -191,7 +191,6 @@ class Node:
             detections = sv.Detections.from_ultralytics(results)
             frame = self.annotate_frame(frame, detections, image_msg.header)
             self.publish_results(detections, depth_msg, depth_msg.header, frame)
-            rospy.loginfo("Detection results published.")
         else:
             img_msg = self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", image_msg.header)
             self.annotated_image_pub.publish(img_msg)

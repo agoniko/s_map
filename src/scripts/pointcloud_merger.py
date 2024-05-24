@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from sensor_msgs.msg import PointCloud2
@@ -11,7 +11,6 @@ from geometric_transformations import TransformHelper
 class PointCloudMerger:
     def __init__(self):
         rospy.init_node('pointcloud_merger')
-
         self.subscribers = []
         topics = rospy.get_param('~topics')
         self.world_frame = rospy.get_param('~world_frame')

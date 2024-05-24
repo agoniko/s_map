@@ -46,7 +46,7 @@ class Mapper(object):
         self.world = World()
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
-        rospy.Timer(rospy.Duration(0.2), self.check_still_there)
+        rospy.Timer(rospy.Duration(0.1), self.check_still_there)
 
     def init_subscribers(self):
         self.result_subscriber = rospy.Subscriber(
@@ -105,7 +105,6 @@ class Mapper(object):
         
         header, boxes, labels, scores, ids, masks, depth_image, camera_name = self.preprocess_msg(detection)
         pose_estimator = self.get_pose_estimator(camera_name)
-
         for id, box, label, mask, score in zip(ids, boxes, labels, masks, scores):
             obj = self.compute_object(
                 id, box, depth_image, mask, label, score, header, pose_estimator
@@ -114,6 +113,7 @@ class Mapper(object):
                 continue
 
             self.world.manage_object(obj)
+
         self.publish_markers(header.stamp)
         self.publish_pointclouds(WORLD_FRAME, header.stamp)
 
@@ -170,7 +170,7 @@ class Mapper(object):
 
         #remove from the pointcloud the points that are too close or too far from the camera
         zs = pc[ys, xs] / 1000
-        mask = np.logical_and(zs > 0.5, zs < 3.0)
+        mask = np.logical_and(zs > 0.5, zs < 10.0)
         ys = ys[mask]
         xs = xs[mask]
         zs = zs[mask]
@@ -179,8 +179,9 @@ class Mapper(object):
         return pointcloud
 
     # @time_it
-    def publish_pointclouds(self, frame, stamp):
-        objects = self.world.get_objects()
+    def publish_pointclouds(self, frame, stamp, objects = None):
+        if objects is None:
+            objects = self.world.get_objects()
         msg = create_pointcloud_message(objects, frame, stamp)
         self.pc_pub.publish(msg)
 

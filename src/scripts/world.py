@@ -23,15 +23,27 @@ class Obj:
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
+        other = self.register_pointcloud_to_self(other)
         self.last_seen = max(self.last_seen, other.last_seen)
         if self.label == "person" and other.label == "person":
             self.pcd.points = other.pcd.points
         else:
-            self.pcd.points.extend(other.pcd.points)
+            self.pcd += other.pcd
+
         self.compute()
 
         self.label = other.label if other.score > self.score else self.label
-        self.score = np.max([self.score, other.score])
+        self.score = max(self.score, other.score)
+    
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.02):
+        reg_p2p = o3d.pipelines.registration.registration_icp(
+            other.pcd, self.pcd, threshold, np.eye(4),
+            o3d.pipelines.registration.TransformationEstimationPointToPoint())
+        transformation = reg_p2p.transformation
+
+        # Transform the source point cloud
+        other.pcd.transform(transformation)
+        return other
 
     def compute_z_oriented_bounding_box(self, pcd):
         # Compute the mean of the points
@@ -63,11 +75,11 @@ class Obj:
 
     def compute(self):
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=200, radius=0.5)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=20, radius=0.1)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=200, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.1)
 
-        if len(clean.points) < 100:
+        if len(clean.points) <= 20:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
             return
@@ -146,7 +158,6 @@ class World:
 
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:
-            print(self.objects.keys())
             self.kdtree = KDTree(np.array(self.points_list))
 
     # @time_it
@@ -175,7 +186,6 @@ class World:
 
     # @time_it
     def manage_object(self, obj: Obj):
-
         if obj.id in self.objects:
             self.update_object(obj)
             # taking the updated object
