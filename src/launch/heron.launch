@@ -1,0 +1,25 @@
+<launch>
+    <node pkg="nodelet" type="nodelet" name="manager" args="manager" output="screen"/>
+
+    <param name="/use_sim_time" value="true"/>
+
+    <include file="$(find s_map)/src/launch/rgbd2pc.launch">
+        <arg name="camera_name" value="front"/>
+        <arg name="manager" value="manager"/>
+    </include>
+
+    <include file="$(find s_map)/src/launch/octomap_mapping.launch"/>    
+
+    <include file="$(find s_map)/src/launch/process_camera.launch">
+        <arg name="camera_name" value="front"/>
+        <arg name="rectify_manager" value="manager"/>
+        <arg name="align_manager" value="manager"/>
+    </include>
+
+    <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
+        <param name="camera" value="front"/>
+    </node>
+
+    <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen"/>
+
+</launch>

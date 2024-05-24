@@ -7,18 +7,10 @@ from sensor_msgs.msg import PointCloud2, PointField
 from sensor_msgs import point_cloud2
 from std_msgs.msg import Header
 import struct
+import rospkg
 
-label_colors = {
-    "person": (255, 0, 0),  # Red
-    "chair": (0, 128, 0),  # Green
-    "dining table": (0, 0, 255),  # Blue
-    "laptop": (255, 165, 0),  # Orange
-    "mouse": (255, 20, 147),  # Deep Pink (for visibility)
-    "tv": (75, 0, 130),  # Indigo
-    "backpack": (0, 0, 128),  # Navy
-    "suitcase": (255, 255, 0),  # Yellow
-    "bench": (128, 0, 128),  # Purple
-}
+class_names = np.loadtxt(rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt", dtype=str, delimiter=",")
+label_colors = {label.lower().strip(): np.random.randint(0, 255, 3) for label in class_names}
 
 
 def time_it(func):
@@ -51,6 +43,8 @@ def create_pointcloud_message(objects, frame, stamp):
 
             point = np.hstack((pc, rgb))
             points = np.vstack((points, point)) if len(points) > 0 else point
+        else:
+            rospy.logerr(f"Label {obj.label} not found in label colors")
 
     fields = [
         PointField("x", 0, PointField.FLOAT32, 1),
