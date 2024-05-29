@@ -1,71 +1,73 @@
 #! /usr/bin/env python3
 
-
 import rospy
 from message_filters import TimeSynchronizer, Subscriber
 from geometric_transformations import TransformHelper
-from sensor_msgs.msg import Image, CameraInfo
-
+from nav_msgs.msg import Odometry
+import numpy as np
 
 class ReliabilityEvaluator:
-    def __init__(self, source_frame, target_frame, cache_time=60.0):
+    def __init__(self, cache_time=60.0):
         rospy.init_node("reliability_evaluator")
 
-        self.source_frame = rospy.get_param("~source_frame", source_frame)
-        self.target_frame = rospy.get_param("~target_frame", target_frame)
+        self.source_frame = rospy.get_param("~source_frame")
+        self.target_frame = rospy.get_param("~target_frame")
 
         self.transformer = TransformHelper(cache_time)
         self.last_transform = None
         self.last_update = None
 
-        self.rgb_sub = Subscriber("/realsense/rgb/image_raw", Image)
-        self.depth_sub = Subscriber("/realsense/aligned_depth_to_color/image_raw", Image)
-        self.camera_info_sub = Subscriber("/realsense/aligned_depth_to_color/camera_info", CameraInfo)
+        self.odom_sub = rospy.Subscriber("/odom", Odometry, self.evaluate)
 
-        self.synchronizer = TimeSynchronizer([self.rgb_sub, self.depth_sub, self.camera_info_sub], queue_size=10)
-        self.synchronizer.registerCallback(self.evaluate)
+        self.reliable_odom_pub = rospy.Publisher("/reliable/odom", Odometry, queue_size=10)
+        self.distances = []
+    
+    def distance(self, transform1, transform2):
+        """
+        calculates the distance between two transforms
+        """
+        x1 = transform1.translation.x
+        y1 = transform1.translation.y
+        z1 = transform1.translation.z
 
-        self.reliable_rgb_pub = rospy.Publisher("reliable_rgb", Image, queue_size=10)
-        self.reliable_depth_pub = rospy.Publisher("reliable_depth", Image, queue_size=10)
-        self.reliable_camera_info_pub = rospy.Publisher("reliable_camera_info", CameraInfo, queue_size=10)
+        x2 = transform2.translation.x
+        y2 = transform2.translation.y
+        z2 = transform2.translation.z
 
-    def evaluate(self, rgb, depth, camera_info):
-        rospy.logerr("Evaluating")
-        stamp = rgb.header.stamp
+        return ((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2)**0.5
+
+    def evaluate(self, odom):
+        """
+        determines if the odom is reliable based on the distance with the last reliable odom
+        """
         if self.last_transform is None:
-            self.last_transform = self.transformer.lookup_transform(
-                self.source_frame, self.target_frame, stamp
-            )
-            self.last_update = stamp
+            self.last_transform = self.transformer.lookup_transform(self.source_frame, self.target_frame, odom.header.stamp).transform
+            self.last_update = odom.header.stamp
             return False
 
-        transform = self.transformer.lookup_transform(
-            self.source_frame, self.target_frame, stamp
-        )
-        if transform is None:
-            return False
-
-        x = transform.transform.translation.x
-        y = transform.transform.translation.y
-        z = transform.transform.translation.z
-
-        last_x = self.last_transform.transform.translation.x
-        last_y = self.last_transform.transform.translation.y
-        last_z = self.last_transform.transform.translation.z
-
-        diff = abs(x - last_x) + abs(y - last_y) + abs(z - last_z)
-        self.last_transform = transform
-        # considering 20 FPS as the running of the detection node, 0.2 correspond to a maximum linear velocity of 4 m/s (about 15km/h)
-        if diff > 0.05:
-            return 
+        current_transform = self.transformer.lookup_transform(self.source_frame, self.target_frame, odom.header.stamp).transform
+        distance = self.distance(self.last_transform, current_transform)
+        self.distances.append(distance)
+        #rospy.logerr(np.mean(self.distances))
+        #rospy.logerr(np.median(self.distances))
+        #rospy.logerr(np.std(self.distances))
+        #rospy.logerr(np.max(self.distances))
+        #rospy.logerr(np.min(self.distances))
+        if distance < 0.5 or self.last_update < odom.header.stamp - rospy.Duration(1.0):
+            self.last_update = odom.header.stamp
+            self.last_transform = current_transform
+            self.reliable_odom_pub.publish(odom)
         else:
-            self.reliable_rgb_pub.publish(rgb)
-            self.reliable_depth_pub.publish(depth)
-            self.reliable_camera_info_pub.publish(camera_info)
+            rospy.logwarn("Unreliable odom detected")
+
 
 if __name__ == "__main__":
     rospy.logerr("Reliability evaluator node started")
-    evaluator = ReliabilityEvaluator("base_link", "camera_link")
+    evaluator = ReliabilityEvaluator()
     rospy.spin()
+
+
+
+
 
 
