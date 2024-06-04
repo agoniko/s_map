@@ -79,6 +79,8 @@
       <param name="Icp/RangeMax"             type="string" value="$(arg max_range)"/>
       <param name="Grid/RangeMax"            type="string" value="$(arg max_range)"/>
       <param name="Grid/FromDepth"     type="string" value="true"/>
+      <param name="Rtabmap/DetectionRate" type="int" value = "10"/>
+
     </node>
 
     <!-- Visualisation RTAB-Map -->
