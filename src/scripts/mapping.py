@@ -35,7 +35,7 @@ MARKERS_TOPIC = "/s_map/objects"
 PC_TOPIC = "/s_map/pointcloud"
 
 # Frame constants
-WORLD_FRAME = "world"
+WORLD_FRAME = "map"
 CAMERA_FRAME = "realsense_rgb_optical_frame"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
