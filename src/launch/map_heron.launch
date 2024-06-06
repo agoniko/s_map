@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="rviz"       default="true" />
+  <arg name="rviz"       default="false" />
   <arg name="rtabmap_viz" default="false" />
   <arg name="max_range" default="0" />
   
@@ -9,17 +9,15 @@
   <!-- Use libpointmatcher for ICP? (has effect only when hector:=false) -->
   <arg name="pm" default="true" />
 
-  <node pkg="tf" type="static_transform_publisher" name="rtabmap_to_map" args="0 0 0 0 0 0 map rtabmap_map 10" />
-
   <!-- Odometry -->
   <node pkg="rtabmap_odom" type="icp_odometry" name="icp_odometry" output="screen" >
      <remap from="scan"      to="/f_scan"/>
      <remap from="odom"      to="/scanmatch_odom"/>
      <remap from="odom_info"      to="/rtabmap/odom_info"/>
 
-     <param name="publish_tf"       type="bool"   value="false" />
+     <param name="publish_tf"       type="bool"   value="true" />
      <param name="frame_id"        type="string" value="mir/base_link"/>
-     <param name="deskewing"       type="string" value="true"/>
+     <param name="deskewing"       type="string" value="false"/>
 
      <!--param if="$(arg odom_guess)" name="odom_frame_id"   type="string" value="icp_odom"/-->
      <!--param if="$(arg odom_guess)" name="guess_frame_id"  type="string" value="odom"/-->
@@ -37,6 +35,7 @@
      <param name="Icp/MaxCorrespondenceDistance" type="string" value="0.1"/>
      <param name="Icp/PM"             type="string" value="$(arg pm)"/> <!-- use libpointmatcher to handle PointToPlane with 2d scans-->
      <param name="Icp/PMOutlierRatio" type="string" value="0.85"/>
+     <param name="ICP/Strategy"        type="int" value="1"/>
      <param name="Odom/Strategy"        type="string" value="0"/>
      <param name="Odom/GuessMotion"     type="string" value="true"/>
      <param name="Odom/ResetCountdown"  type="string" value="0"/>
@@ -58,13 +57,11 @@
     <!-- args: "delete_db_on_start" and "udebug" -->
     <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="--delete_db_on_start">
       <param name="frame_id" type="string" value="mir/base_link"/>
-
       <param name="subscribe_rgb"   type="bool" value="false"/>
       <param name="subscribe_depth" type="bool" value="false"/>
       <param name="subscribe_rgbd"  type="bool" value="true"/>
       <param name="subscribe_scan"  type="bool" value="true"/>
-      <param name="map_frame_id" type="string" value="rtabmap_map"/>
-      <param name="publish_tf"       type="bool"   value="false" />
+      <param name="publish_tf"       type="bool"   value="true" />
       <remap from="scan" to="/scan"/>
 
       <remap from="odom" to="/scanmatch_odom"/>
@@ -77,6 +74,7 @@
       <param name="Icp/CorrespondenceRatio"  type="string" value="0.2"/>
       <param name="Icp/VoxelSize"            type="string" value="0.05"/>
       <param name="Icp/RangeMax"             type="string" value="$(arg max_range)"/>
+      <param name="ICP/Strategy"        type="int" value="1"/>
       <param name="Grid/RangeMax"            type="string" value="$(arg max_range)"/>
       <param name="Grid/FromDepth"     type="string" value="true"/>
       <param name="Rtabmap/DetectionRate" type="int" value = "10"/>
@@ -93,7 +91,7 @@
       <remap from="odom" to="/scanmatch_odom"/>
       <param name="subscribe_odom_info" type="bool" value="true"/>
     </node>
-    <node unless="$(arg rtabmap_viz)" pkg="rviz" type="rviz" name="rviz"/>
+    <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz"/>
 
 
   </group>
