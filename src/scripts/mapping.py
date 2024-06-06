@@ -26,18 +26,19 @@ from pose_reliability import ReliabilityEvaluator
 
 # Topic constants
 RESULT_TOPIC = "/s_map/detection/results"
-CAMERA_INFO_TOPIC = "/aligned_depth/camera_info"
+CAMERA_INFO_TOPIC = None
 SCAN_TOPIC = "/scan"
 MARKERS_TOPIC = "/s_map/objects"
 PC_TOPIC = "/s_map/pointcloud"
-
+WORLD_FRAME = None
 # Frame constants
-WORLD_FRAME = "vision"
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 class Mapper(object):
     def __init__(self):
+        global WORLD_FRAME
         rospy.init_node("mapping", anonymous=True)
+        self.init_params()
         self.cv_bridge = CvBridge()
         self.init_subscribers()
         self.init_publishers()
@@ -46,7 +47,15 @@ class Mapper(object):
         self.world = World()
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
-        rospy.Timer(rospy.Duration(0.1), self.check_still_there)
+        #rospy.Timer(rospy.Duration(0.1), self.check_still_there)
+    
+    def init_params(self):
+        global CAMERA_INFO_TOPIC, WORLD_FRAME
+        CAMERA_INFO_TOPIC = rospy.get_param("~camera_info_topic", None)
+        WORLD_FRAME = rospy.get_param("~world_frame", None)
+        if not CAMERA_INFO_TOPIC or not WORLD_FRAME:
+            rospy.logerr("Camera info topic or world frame not specified")
+            rospy.signal_shutdown("Camera info topic or world frame not specified")
 
     def init_subscribers(self):
         self.result_subscriber = rospy.Subscriber(
@@ -85,7 +94,7 @@ class Mapper(object):
     
     def get_pose_estimator(self, camera_name):
         if camera_name not in self.pose_estimator_dict.keys():
-            self.pose_estimator_dict[camera_name] = CameraPoseEstimator(camera_name + CAMERA_INFO_TOPIC)
+            self.pose_estimator_dict[camera_name] = CameraPoseEstimator(CAMERA_INFO_TOPIC)
         return self.pose_estimator_dict[camera_name]
 
     # @time_it

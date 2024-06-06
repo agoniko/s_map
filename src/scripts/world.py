@@ -75,9 +75,9 @@ class Obj:
 
     def compute(self):
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=20, radius=0.1)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=100, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=200, std_ratio=0.1)
 
         if len(clean.points) <= 20:
             self.bbox = np.zeros((8, 3))
@@ -161,7 +161,7 @@ class World:
             self.kdtree = KDTree(np.array(self.points_list))
 
     # @time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.05):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:

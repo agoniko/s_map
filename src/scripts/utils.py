@@ -136,6 +136,8 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
         marker.color.g = g / 255.0
         marker.color.b = b / 255.0
 
+        marker.text = f"{label}:{id}"
+
         return marker
     else:
         return None

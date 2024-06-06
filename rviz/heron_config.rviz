@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /DepthCloud1/Auto Size1
+        - /PointCloud22
       Splitter Ratio: 0.5
     Tree Height: 500
   - Class: rviz/Selection
@@ -26,7 +27,7 @@ Panels:
   - Class: rviz/Time
     Name: Time
     SyncMode: 0
-    SyncSource: DepthCloud
+    SyncSource: LaserScan
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -53,12 +54,126 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Filter (blacklist): ""
       Filter (whitelist): ""
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        connector_plate:
+          Value: true
+        map:
+          Value: true
+        mir/back_laser_link:
+          Value: true
+        mir/base_footprint:
+          Value: true
+        mir/base_link:
+          Value: true
+        mir/bl_caster_rotation_link:
+          Value: true
+        mir/bl_caster_wheel_link:
+          Value: true
+        mir/br_caster_rotation_link:
+          Value: true
+        mir/br_caster_wheel_link:
+          Value: true
+        mir/cabinet_arm_base:
+          Value: true
+        mir/cabinet_centre:
+          Value: true
+        mir/cabinet_lower:
+          Value: true
+        mir/cabinet_pad:
+          Value: true
+        mir/cabinet_table:
+          Value: true
+        mir/camera_floor_left_color_frame:
+          Value: true
+        mir/camera_floor_left_color_optical_frame:
+          Value: true
+        mir/camera_floor_left_depth_optical_frame:
+          Value: true
+        mir/camera_floor_left_link:
+          Value: true
+        mir/camera_floor_right_color_frame:
+          Value: true
+        mir/camera_floor_right_color_optical_frame:
+          Value: true
+        mir/camera_floor_right_depth_optical_frame:
+          Value: true
+        mir/camera_floor_right_link:
+          Value: true
+        mir/camera_infra1_frame:
+          Value: true
+        mir/camera_infra1_optical_frame:
+          Value: true
+        mir/camera_infra2_frame:
+          Value: true
+        mir/camera_infra2_optical_frame:
+          Value: true
+        mir/fl_caster_rotation_link:
+          Value: true
+        mir/fl_caster_wheel_link:
+          Value: true
+        mir/fr_caster_rotation_link:
+          Value: true
+        mir/fr_caster_wheel_link:
+          Value: true
+        mir/front_laser_link:
+          Value: true
+        mir/imu_frame:
+          Value: true
+        mir/imu_link:
+          Value: true
+        mir/left_wheel_link:
+          Value: true
+        mir/right_wheel_link:
+          Value: true
+        mir/surface:
+          Value: true
+        mir/us_1_frame:
+          Value: true
+        mir/us_2_frame:
+          Value: true
+        odom:
+          Value: true
+        realsense_aligned_depth_to_rgb_frame_id:
+          Value: true
+        realsense_depth_frame:
+          Value: true
+        realsense_depth_optical_frame:
+          Value: true
+        realsense_link:
+          Value: true
+        realsense_rgb_frame:
+          Value: true
+        realsense_rgb_optical_frame:
+          Value: true
+        ur5e_base:
+          Value: true
+        ur5e_base_link:
+          Value: true
+        ur5e_ee_link:
+          Value: true
+        ur5e_forearm_link:
+          Value: true
+        ur5e_shoulder_link:
+          Value: true
+        ur5e_tcp_link_ref_pose:
+          Value: true
+        ur5e_tool0:
+          Value: true
+        ur5e_tool0_controller:
+          Value: true
+        ur5e_upper_arm_link:
+          Value: true
+        ur5e_wrist_1_link:
+          Value: true
+        ur5e_wrist_2_link:
+          Value: true
+        ur5e_wrist_3_link:
+          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -66,9 +181,92 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        map:
+          odom:
+            mir/base_link:
+              mir/back_laser_link:
+                {}
+              mir/bl_caster_rotation_link:
+                mir/bl_caster_wheel_link:
+                  {}
+              mir/br_caster_rotation_link:
+                mir/br_caster_wheel_link:
+                  {}
+              mir/camera_floor_left_link:
+                mir/camera_floor_left_color_frame:
+                  mir/camera_floor_left_color_optical_frame:
+                    {}
+                mir/camera_floor_left_depth_optical_frame:
+                  {}
+                mir/camera_infra1_frame:
+                  mir/camera_infra1_optical_frame:
+                    {}
+                mir/camera_infra2_frame:
+                  mir/camera_infra2_optical_frame:
+                    {}
+              mir/camera_floor_right_link:
+                mir/camera_floor_right_color_frame:
+                  mir/camera_floor_right_color_optical_frame:
+                    {}
+                mir/camera_floor_right_depth_optical_frame:
+                  {}
+              mir/fl_caster_rotation_link:
+                mir/fl_caster_wheel_link:
+                  {}
+              mir/fr_caster_rotation_link:
+                mir/fr_caster_wheel_link:
+                  {}
+              mir/front_laser_link:
+                {}
+              mir/imu_link:
+                mir/imu_frame:
+                  {}
+              mir/left_wheel_link:
+                {}
+              mir/right_wheel_link:
+                {}
+              mir/surface:
+                mir/cabinet_centre:
+                  mir/cabinet_lower:
+                    {}
+                  mir/cabinet_pad:
+                    {}
+                  mir/cabinet_table:
+                    mir/cabinet_arm_base:
+                      ur5e_base_link:
+                        ur5e_base:
+                          ur5e_tool0_controller:
+                            {}
+                        ur5e_shoulder_link:
+                          ur5e_upper_arm_link:
+                            ur5e_forearm_link:
+                              ur5e_wrist_1_link:
+                                ur5e_wrist_2_link:
+                                  ur5e_wrist_3_link:
+                                    ur5e_ee_link:
+                                      connector_plate:
+                                        {}
+                                      realsense_link:
+                                        realsense_aligned_depth_to_rgb_frame_id:
+                                          realsense_rgb_optical_frame:
+                                            {}
+                                        realsense_depth_frame:
+                                          realsense_depth_optical_frame:
+                                            {}
+                                        realsense_rgb_frame:
+                                          {}
+                                    ur5e_tool0:
+                                      {}
+                        ur5e_tcp_link_ref_pose:
+                          {}
+              mir/us_1_frame:
+                {}
+              mir/us_2_frame:
+                {}
+        mir/base_footprint:
+          {}
       Update Interval: 0
-      Value: false
+      Value: true
     - Alpha: 1
       Auto Size:
         Auto Size Factor: 1
@@ -120,6 +318,8 @@ Visualization Manager:
         Grid: true
         LaserScan: true
         Map: true
+        MapCloud: true
+        MapGraph: true
         MarkerArray: true
         PointCloud2: true
         TF: true
@@ -136,7 +336,7 @@ Visualization Manager:
       Class: rviz/LaserScan
       Color: 255; 255; 255
       Color Transformer: Intensity
-      Decay Time: 20
+      Decay Time: 1
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
@@ -159,7 +359,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /map
+      Topic: /rtabmap/grid_prob_map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -196,8 +396,89 @@ Visualization Manager:
       Marker Topic: /s_map/objects
       Name: MarkerArray
       Namespaces:
-        my_namespace: true
+        {}
       Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rtabmap_rviz_plugins/MapCloud
+      Cloud decimation: 4
+      Cloud from scan: false
+      Cloud max depth (m): 4
+      Cloud min depth (m): 0
+      Cloud voxel size (m): 0.009999999776482582
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Download graph: false
+      Download map: false
+      Download namespace: rtabmap
+      Enabled: true
+      Filter ceiling (m): 0
+      Filter floor (m): 0
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: MapCloud
+      Node filtering angle (degrees): 30
+      Node filtering radius (m): 0
+      Position Transformer: XYZ
+      Queue Size: 10
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /rtabmap/mapData
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Class: rtabmap_rviz_plugins/MapGraph
+      Enabled: true
+      Global loop closure: 255; 0; 0
+      Landmark: 0; 128; 0
+      Local loop closure: 255; 255; 0
+      Merged neighbor: 255; 170; 0
+      Name: MapGraph
+      Neighbor: 0; 0; 255
+      Queue Size: 10
+      Topic: /rtabmap/mapGraph
+      Unreliable: false
+      User: 255; 0; 0
+      Value: true
+      Virtual: 255; 0; 255
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /rtabmap/cloud_obstacles
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
@@ -227,7 +508,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 18.355932235717773
+      Distance: 3.4130301475524902
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -235,17 +516,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 14.3365478515625
-        Y: 15.38228988647461
-        Z: 0
+        X: -3.248685359954834
+        Y: 3.062133312225342
+        Z: -2.7418136596679688e-06
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7553967833518982
+      Pitch: 0.18039608001708984
       Target Frame: <Fixed Frame>
-      Yaw: 0.33539581298828125
+      Yaw: 5.741753578186035
     Saved: ~
 Window Geometry:
   Camera:
