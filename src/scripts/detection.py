@@ -20,16 +20,12 @@ import sys
 
 
 #Global Configuration Variables
-RGB_TOPIC = "/rgb/image_rect"
-DEPTH_TOPIC = "/aligned_depth/image_rect"
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
 MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
-DETECTION_CONFIDENCE = 0.6
+DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
-CAMERA_INFO_TOPIC = "/aligned_depth/camera_info"
-
 
 class Node:
     """
@@ -107,15 +103,17 @@ class Node:
     
     def initialize_topics(self):
         global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
-        self.camera_name = rospy.get_param("~camera", None)
-        if self.camera_name is None:
-            rospy.logerr("Camera name not provided.")
-            rospy.signal_shutdown
+        RGB_TOPIC = rospy.get_param("~rgb_topic", None)
+        DEPTH_TOPIC = rospy.get_param("~depth_topic", None)
+        CAMERA_INFO_TOPIC = rospy.get_param("~camera_info_topic", None)
+        ANNOTATED_IMAGES_TOPIC = rospy.get_param("~annotated_images_topic", "/s_map/annotated_images")
+        self.camera_name = rospy.get_param("~camera_name", None)
 
-        RGB_TOPIC = f"/{self.camera_name}{RGB_TOPIC}"
-        DEPTH_TOPIC = f"/{self.camera_name}{DEPTH_TOPIC}"
-        CAMERA_INFO_TOPIC = f"/{self.camera_name}{CAMERA_INFO_TOPIC}"
-        ANNOTATED_IMAGES_TOPIC = f"/{self.camera_name}{ANNOTATED_IMAGES_TOPIC}"
+        if not RGB_TOPIC or not DEPTH_TOPIC or not CAMERA_INFO_TOPIC or not self.camera_name:
+            rospy.logerr("Missing required parameters. Exiting...")
+            rospy.signal_shutdown("Missing required parameters. Exiting...")
+
+
 
     def hash_string_to_int32(self, s):
         # Compute the SHA-256 hash of the input string
@@ -138,9 +136,6 @@ class Node:
 
             masks = detections.mask
             masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
-
-            if self.camera_name == "right":
-                masks = cv2.flip(masks, 0)
 
             mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
 
