@@ -1,15 +1,11 @@
 <launch>
 
-  <arg name="rviz"       default="true" />
-  <arg name="rtabmap_viz" default="false" />
   <arg name="max_range" default="0" />
   
   <!-- Point to Plane ICP? (has effect only when hector:=false) -->
   <arg name="p2n" default="true" />
   <!-- Use libpointmatcher for ICP? (has effect only when hector:=false) -->
   <arg name="pm" default="true" />
-  <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
-
 
   <!-- Odometry -->
   <node pkg="rtabmap_odom" type="icp_odometry" name="icp_odometry" output="screen" >
@@ -18,6 +14,7 @@
      <remap from="odom_info"      to="/rtabmap/odom_info"/>
      <param name="frame_id"        type="string" value="mir/base_link"/>
      <param name="deskewing"       type="string" value="false"/>
+
   </node>
 
   <group ns="rtabmap">
@@ -46,29 +43,22 @@
       <remap from="odom" to="/scanmatch_odom"/>
 
       <param name="Grid/FromDepth"     type="string" value="true"/>
-      <param name="GridGlobal/OccupancyThr" type="string" value="0.65"/>
-      <param name="Vis/EstimationType" type="string" value="1"/> <!-- should be 0 for multi-cameras -->
+      <param name="Vis/EstimationType" type="string" value="0"/> <!-- should be 0 for multi-cameras -->
 
       <!-- RTAB-Map's parameters -->
-      <param name="Rtabmap/DetectionRate" type="int" value = "5"/>
+      <param name="Rtabmap/DetectionRate" type="int" value = "10"/> <!-- 0=as fast as possible -->
+      <param name="Grid/MapFrameProjection" value="true"/>
+      <param name="Grid/Sensor" value="2"/> <!-- Borh scan and depth used to create occupancy grid-->
+      <param name="RGBD/CreateOccupancyGrid" value="true"/> 
+      <param name="Mem/ImageKept" value="true"/>
+      <param name="DbSqlite3/InMemory" value="true"/>
+      <param name="Grid/RangeMax" value="2.5"/>
+      <param name="Optimizer/Strategy" value="2"/>
+      <param name="VhEp/MatchCountMin" value ="10"/>
+      <param name="RGBD/LoopClosureReextractFeatures" value="true"/>
 
-    </node>
-      <!-- Visualisation RTAB-Map -->
-    <node if="$(arg rtabmap_viz)" pkg="rtabmap_viz" type="rtabmap_viz" name="rtabmap_viz" args="-d $(find rtabmap_demos)/launch/config/rgbd_gui.ini" output="screen">
-      <param name="subscribe_rgbd"      type="bool" value="true"/>
-      <param name="subscribe_laserScan" type="bool" value="true"/>
-      <param name="frame_id"            type="string" value="mir/base_link"/>
 
-      <remap from="scan"            to="/scan"/>
-      <remap from="odom" to="/scanmatch_odom"/>
-      <param name="subscribe_odom_info" type="bool" value="true"/>
     </node>
   </group>
 
-  <node pkg="pcl_ros" type="convert_pointcloud_to_image" name="pcl_to_image" output="screen">
-    <remap from="input" to="/rtabmap/cloud_map"/>
-    <remap from="output" to="/rtabmap/cloud_map_image"/>
-  </node>
-
-    <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find s_map)/rviz/heron_config.rviz"/>
 </launch>

@@ -202,10 +202,12 @@ class Mapper(object):
         # for obj in objects:
         #    points = np.asarray(obj.pcd.points)
         #    np.savetxt(PKG_PATH + f"/pc/{obj.id}_{obj.label}.txt", points, delimiter=",")
-        msg = create_marker_array(objects, WORLD_FRAME, stamp)
-        if msg:
-            self.marker_pub.publish(msg)
+        (boxes_msg, labels_msg) = create_marker_array(objects, WORLD_FRAME, stamp)
+        if boxes_msg:
+            self.marker_pub.publish(boxes_msg)
 
+        if labels_msg:
+            self.marker_pub.publish(labels_msg)
 
 if __name__ == "__main__":
     mapper = Mapper()
