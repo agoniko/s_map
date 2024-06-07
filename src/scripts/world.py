@@ -74,12 +74,12 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=100, radius=0.5)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
+        #self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=200, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.2)
 
-        if len(clean.points) <= 20:
+        if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
             return

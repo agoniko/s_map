@@ -4,7 +4,7 @@ import tf
 import cv2 as cv
 from geometry_msgs.msg import Pose, PoseStamped
 from sensor_msgs.msg import Image, CameraInfo
-from image_geometry import PinholeCameraModel
+from cameramodels import PinholeCameraModel
 import numpy as np
 import tf2_ros
 
@@ -24,8 +24,7 @@ class CameraPoseEstimator:
 
             def callback(self, x):
                 self.data = x
-                self.camera = PinholeCameraModel()
-                self.camera.fromCameraInfo(x)
+                self.camera = PinholeCameraModel.from_camera_info(x)
 
         data = Dummy()
         print(info_topic)
@@ -49,6 +48,7 @@ class CameraPoseEstimator:
             (self.height, self.width),
             self.camera,
         ) = self.receive_camera_info(info_topic)
+        print(self.cx, self.cy)
 
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         # getting the unit vector that represent the 3d ray from pixel (pix_x, pix_y) = (u, v)
@@ -71,8 +71,8 @@ class CameraPoseEstimator:
         using the camera :math:`P` matrix.
         This is the inverse of :meth:`project3dToPixel`.
         """
-        u = (uvz[:, 0] - self.camera.cx()) / self.camera.fx()
-        v = (uvz[:, 1] - self.camera.cy()) / self.camera.fy()
+        u = (uvz[:, 0] - self.camera.cx) / self.camera.fx
+        v = (uvz[:, 1] - self.camera.cy) / self.camera.fy
         depth = uvz[:, 2]
 
         # extracting unit 3dray
@@ -93,6 +93,41 @@ class CameraPoseEstimator:
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
+    
+    def multiple_3d_to_depth_image(self, points, depth_value=0.0):
+        """
+        Return depth image from 3D points.
+
+        Parameters
+        ----------
+        points : numpy.ndarray
+            batch of xyz point (batch_size, 3) or (height, width, 3).
+        depth_value : float
+            default depth value.
+
+        Returns
+        -------
+        depth : numpy.ndarray
+            projected depth image.
+        """
+        if points.shape == (self.height, self.width, 3):
+            points = points.reshape(-1, 3)
+        uv, indices = self.camera.batch_project3d_to_pixel(
+            points,
+            project_valid_depth_only=True,
+            return_indices=True)
+        
+        flattened_uv = self.camera.flatten_uv(uv)
+        
+        # round off
+        uv = np.array(uv + 0.5, dtype=np.int32)
+        depth = depth_value * np.ones((self.height, self.width), 'f')
+        depth.reshape(-1)[flattened_uv] = points[indices][:, 2]
+        depth *= 1000
+        return depth
+        
+
+        
 
     def rectify_image(self, image):
         rect = np.zeros_like(image)

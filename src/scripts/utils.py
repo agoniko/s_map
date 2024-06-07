@@ -79,18 +79,62 @@ def create_delete_marker(frame):
     return msg
 
 
+from visualization_msgs.msg import Marker, MarkerArray
+import rospy
+import numpy as np
+
+def create_marker_text(label, position, marker_id, stamp, frame):
+    text_marker = Marker()
+    text_marker.header.frame_id = frame
+    text_marker.header.stamp = stamp
+    text_marker.ns = "labels"
+    text_marker.id = marker_id
+    text_marker.type = Marker.TEXT_VIEW_FACING
+    text_marker.action = Marker.ADD
+    text_marker.pose.position.x = position[0]
+    text_marker.pose.position.y = position[1]
+    text_marker.pose.position.z = position[2]
+    text_marker.pose.orientation.x = 0.0
+    text_marker.pose.orientation.y = 0.0
+    text_marker.pose.orientation.z = 0.0
+    text_marker.pose.orientation.w = 1.0
+    text_marker.scale.z = 0.3  # Adjust text size as needed
+    text_marker.color.r = 1.0
+    text_marker.color.g = 1.0
+    text_marker.color.b = 1.0
+    text_marker.color.a = 1.0
+    text_marker.text = label
+
+    return text_marker
+
 def create_marker_array(objects, frame, stamp):
     if len(objects) == 0:
         return None
 
     msg = MarkerArray()
+    label_msg = MarkerArray()
 
     for obj in objects:
         marker = create_marker_vertices(obj.bbox, obj.label, obj.id, stamp, frame)
         if marker is not None:
             msg.markers.append(marker)
+            
+            # Calculate central position of the bounding box
+            bbox = np.array(obj.bbox)
+            central_position = bbox.mean(axis=0)
+            if np.sum(np.abs(central_position)) > 0:
+                label_marker = create_marker_text(obj.label, central_position, obj.id, stamp, frame)
+                label_msg.markers.append(label_marker)
+            
+    if label_msg.markers:
+        return (msg, label_msg)
+    else:
+        print("SBATTI")
+        return (msg, None)
 
-    return msg
+# Example usage
+# objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.
+
 
 
 def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
