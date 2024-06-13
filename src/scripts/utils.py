@@ -129,7 +129,6 @@ def create_marker_array(objects, frame, stamp):
     if label_msg.markers:
         return (msg, label_msg)
     else:
-        print("SBATTI")
         return (msg, None)
 
 # Example usage
