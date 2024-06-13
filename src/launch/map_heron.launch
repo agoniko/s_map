@@ -8,13 +8,13 @@
   <arg name="pm" default="true" />
 
   <!-- Odometry -->
-  <node pkg="rtabmap_odom" type="icp_odometry" name="icp_odometry" output="screen" >
+  <!--node pkg="rtabmap_odom" type="icp_odometry" name="icp_odometry" output="screen" >
      <remap from="scan"      to="/f_scan"/>
      <remap from="odom"      to="/scanmatch_odom"/>
      <remap from="odom_info"      to="/rtabmap/odom_info"/>
      <param name="frame_id"        type="string" value="mir/base_link"/>
      <param name="deskewing"       type="string" value="true"/>
-  </node>
+  </node-->
 
   <group ns="rtabmap">
     <node pkg="nodelet" type="nodelet" name="rgbd_sync" args="standalone rtabmap_sync/rgbd_sync" output="screen">
@@ -41,7 +41,7 @@
       <param name="Grid/FromDepth"     type="string" value="true"/>
 
       <!-- RTAB-Map's parameters -->
-      <param name="Rtabmap/DetectionRate" type="int" value="2"/> <!-- 0=as fast as possible -->
+      <param name="Rtabmap/DetectionRate" type="int" value="0"/> <!-- 0=as fast as possible -->
     </node>
   </group>
 

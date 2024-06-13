@@ -23,27 +23,44 @@ class Obj:
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
-        other = self.register_pointcloud_to_self(other)
+        try:
+            other = self.register_pointcloud_to_self(other)
+        except Exception as e:
+            rospy.logwarn(f"Error in registering point clouds: {e}")
+            return
+
         self.last_seen = max(self.last_seen, other.last_seen)
-        if self.label == "person" and other.label == "person":
+        
+        # Use more sophisticated logic for updating point cloud data
+        if self.label == other.label and self.label == "person":
             self.pcd.points = other.pcd.points
         else:
-            self.pcd += other.pcd
+            combined_pcd = self.pcd + other.pcd
+            self.pcd = combined_pcd
 
         self.compute()
-
         self.label = other.label if other.score > self.score else self.label
         self.score = max(self.score, other.score)
-    
-    def register_pointcloud_to_self(self, other: "Obj", threshold=0.02):
-        reg_p2p = o3d.pipelines.registration.registration_icp(
-            other.pcd, self.pcd, threshold, np.eye(4),
-            o3d.pipelines.registration.TransformationEstimationPointToPoint())
-        transformation = reg_p2p.transformation
 
-        # Transform the source point cloud
-        other.pcd.transform(transformation)
-        return other
+        
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.02):
+        """Aligns other point cloud to self using ICP registration."""
+        try:
+            reg_p2p = o3d.pipelines.registration.registration_icp(
+                other.pcd, self.pcd, threshold, np.eye(4),
+                o3d.pipelines.registration.TransformationEstimationPointToPoint())
+            
+            if reg_p2p.inlier_rmse > threshold:
+                raise ValueError("High registration error, skipping this frame")
+
+            transformation = reg_p2p.transformation
+
+            # Transform the source point cloud
+            other.pcd.transform(transformation)
+            return other
+        except Exception as e:
+            print(f"ICP registration failed: {e}")
+            raise e
 
     def compute_z_oriented_bounding_box(self, pcd):
         # Compute the mean of the points
@@ -77,7 +94,7 @@ class Obj:
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
         #self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.2)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.2)
 
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
@@ -161,7 +178,7 @@ class World:
             self.kdtree = KDTree(np.array(self.points_list))
 
     # @time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.0):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:

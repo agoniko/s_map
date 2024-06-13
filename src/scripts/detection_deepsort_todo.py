@@ -17,6 +17,8 @@ import cv2
 import hashlib
 from utils import time_it
 import sys
+from deep_sort_realtime.deepsort_tracker import DeepSort
+
 
 
 #Global Configuration Variables
@@ -58,7 +60,8 @@ class Node:
         "synchronizer",
         "annotated_image_pub",
         "results_pub",
-        "camera_name"
+        "camera_name",
+        "tracker"
     ]
 
     def __init__(self):
@@ -71,6 +74,8 @@ class Node:
         self.device = self.get_device()
         self.detector = YOLO(MODEL_PATH)
         self.detector = self.detector.to(self.device)
+        self.tracker = DeepSort(max_age=30000, embedder="mobilenet", polygon=True)
+
         rospy.loginfo(f"Using device: {self.device}")
 
         self.mask_annotator = sv.MaskAnnotator()
@@ -111,17 +116,7 @@ class Node:
             rospy.logerr("Missing required parameters. Exiting...")
             rospy.signal_shutdown("Missing required parameters. Exiting...")
 
-
-
-    def hash_string_to_int32(self, s):
-        # Compute the SHA-256 hash of the input string
-        hash_object = hashlib.sha256(s.encode())
-        # Convert the hash to an integer
-        hash_int = int(hash_object.hexdigest(), 16)
-        # Ensure the result fits in a 32-bit signed integer range
-        return hash_int & 0x7FFFFFFF  # Mask to ensure it stays positive and within 32-bit range
-
-    def preprocess_msg(self, detections, depth, header):
+    def preprocess_msg(self, detections, track_ids, depth, header):
         """
         Preprocess the detection message to be published from supervision detection
         """
@@ -129,18 +124,17 @@ class Node:
             boxes = detections.xyxy.astype(np.int32)
             boxes = boxes.flatten()  # already rescaled to the original image size
             labels = detections.data["class_name"]
-            track_id = detections.tracker_id.astype(np.int32)
+            #track_id = detections.tracker_id.astype(np.int32)
             conf = detections.confidence
 
             masks = detections.mask
             masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
 
             mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
-
             res = Detection()
             res.header = header
             res.boxes = boxes
-            res.ids = [self.hash_string_to_int32(f"{self.camera_name}:{i}") for i in track_id]
+            res.ids = track_ids
             res.scores = conf
             res.masks = mask_msg
             res.labels = labels
@@ -152,6 +146,39 @@ class Node:
             return res
         except:
             return None
+    
+    def convert_detections(self, results):
+        # Get the bounding boxes, labels and scores from the detections dictionary.
+        class_dict = results.names
+        cls = results.boxes.cls.cpu().numpy().astype(np.int32)
+        polygons = [poly.reshape(-1) for poly in results.masks.xy]
+        
+        scores = results.boxes.conf.cpu().numpy()
+        labels = np.array([class_dict[i] for i in cls])
+
+        assert len(polygons) == len(labels) == len(scores)
+        
+        final_results = [polygons, labels, scores]
+
+        return final_results
+    
+    def track(self, results, frame):
+        detections = self.convert_detections(results)
+        tracks = self.tracker.update_tracks(detections, frame=frame)
+        ids = []
+        h, w = frame.shape[:2]
+        for track in tracks:
+            if not track.is_confirmed():
+                continue
+            track_id = int(track.track_id)
+            track_class = track.det_class
+            x1, y1, x2, y2 = track.to_ltrb()
+            if x1 < 0 or y1 < 0 or x2 > w or y2 > h:
+                continue
+            print(f"Track ID: {track_id}, Class: {track_class}, Bounding Box: ({x1}, {y1}, {x2}, {y2})")
+            ids.append(track_id)
+        
+        return ids
     
     #@time_it
     def detection_callback(self, image_msg, depth_msg):
@@ -165,7 +192,6 @@ class Node:
             depth_msg (Image): The incoming ROS message containing the depth data.
         """
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
-
         results = next(
             self.detector.track(
                 frame,
@@ -177,25 +203,21 @@ class Node:
                 verbose=False,
             )
         )
+
         if results:
+            track_ids = self.track(results, frame)
+            print(results.boxes)
+            if len(track_ids) != len(results.boxes):
+                rospy.logerr("Number of track ids and detections do not match")
+                return
             detections = sv.Detections.from_ultralytics(results)
-            detections = self.erode_masks(detections)
-            frame = self.annotate_frame(frame, detections, image_msg.header)
-            self.publish_results(detections, depth_msg, depth_msg.header, frame)
+            frame = self.annotate_frame(frame, detections, track_ids, image_msg.header)
+            self.publish_results(detections, track_ids, depth_msg, depth_msg.header, frame)
         else:
             img_msg = self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", image_msg.header)
             self.annotated_image_pub.publish(img_msg)
-    
-    def erode_masks(self, detections, kernel_size=5):
-        masks = detections.mask.astype(np.uint8)
-        kernel = np.ones((kernel_size, kernel_size), np.uint8)
-        for i in range(masks.shape[0]):
-            masks[i] = cv2.erode(masks[i], kernel, iterations=3)
-        
-        detections.mask = masks.astype(bool)
-        return detections
 
-    def annotate_frame(self, frame, detections, header):
+    def annotate_frame(self, frame, detections, track_ids, header):
         """
         Annotates the frame with masks, labels, and boxes based on detections.
 
@@ -210,14 +232,13 @@ class Node:
         if (
             not detections
             or detections.data["class_name"] is None
-            or detections.tracker_id is None
         ):
             return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
 
         labels = [
             f"{tracker_id}:{class_name}"
             for class_name, tracker_id in zip(
-                detections.data["class_name"], detections.tracker_id
+                detections.data["class_name"], track_ids
             )
         ]
 
@@ -226,7 +247,7 @@ class Node:
         frame = self.box_annotator.annotate(frame, detections)
         return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
 
-    def publish_results(self, detections, depth, header, frame):
+    def publish_results(self, detections, track_ids, depth, header, frame):
         """
         Publishes detection results and annotated images.
 
@@ -236,7 +257,7 @@ class Node:
             depth (std_msgs.msg.Image): Depth image to be published associated to the detections
             frame (std_msgs.msg.Image): Annotated image to be published
         """
-        detection_msg = self.preprocess_msg(detections, depth, header)
+        detection_msg = self.preprocess_msg(detections, track_ids, depth, header)
         if detection_msg:
             self.results_pub.publish(detection_msg)
         self.annotated_image_pub.publish(frame)
