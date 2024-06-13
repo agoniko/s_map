@@ -12,6 +12,7 @@ from geometry_msgs.msg import PointStamped
 from tf2_geometry_msgs import do_transform_point
 import tf.transformations as tft
 import math
+import cv2
 
 
 class CameraPoseEstimator:
@@ -94,7 +95,7 @@ class CameraPoseEstimator:
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))
     
-    def multiple_3d_to_depth_image(self, points, depth_value=0.0):
+    def multiple_3d_to_depth_image(self, points, depth_value=100.0):
         """
         Return depth image from 3D points.
 
@@ -123,8 +124,16 @@ class CameraPoseEstimator:
         uv = np.array(uv + 0.5, dtype=np.int32)
         depth = depth_value * np.ones((self.height, self.width), 'f')
         depth.reshape(-1)[flattened_uv] = points[indices][:, 2]
-        depth *= 1000
-        return depth
+
+        # Apply morphological operations
+        kernel = np.ones((50, 50), np.uint8)
+        #closed_image = cv2.morphologyEx(depth, cv2.MORPH_CLOSE, kernel)      
+
+        # Apply morphological erosion
+        closed_image = cv2.erode(depth, kernel, iterations=1) 
+        filtered_image = cv2.medianBlur(closed_image, 5)
+        filtered_image *= 1000
+        return filtered_image
         
 
         
