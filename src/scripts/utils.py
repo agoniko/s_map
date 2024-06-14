@@ -93,7 +93,7 @@ def create_marker_text(label, position, marker_id, stamp, frame):
     text_marker.action = Marker.ADD
     text_marker.pose.position.x = position[0]
     text_marker.pose.position.y = position[1]
-    text_marker.pose.position.z = position[2]
+    text_marker.pose.position.z = position[2] + 0.5
     text_marker.pose.orientation.x = 0.0
     text_marker.pose.orientation.y = 0.0
     text_marker.pose.orientation.z = 0.0
@@ -178,9 +178,6 @@ def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
         marker.color.r = r / 255.0
         marker.color.g = g / 255.0
         marker.color.b = b / 255.0
-
-        marker.text = f"{label}:{id}"
-
         return marker
     else:
         return None

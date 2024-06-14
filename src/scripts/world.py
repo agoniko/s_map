@@ -6,11 +6,12 @@ from utils import compute_3d_iou
 from utils import time_it
 import rospy
 
+TIME_TO_BE_CONFIRMED = 0.0
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed"]
 
     def __init__(self, id, points, label, score, stamp):
         self.id = id
@@ -19,6 +20,8 @@ class Obj:
         self.pcd = o3d.geometry.PointCloud()
         self.pcd.points = o3d.utility.Vector3dVector(points)
         self.last_seen = stamp
+        self.first_seen = stamp
+        self.is_confirmed = False
         self.compute()
 
     def update(self, other: "Obj"):
@@ -30,13 +33,19 @@ class Obj:
             return
 
         self.last_seen = max(self.last_seen, other.last_seen)
+
+        #Euristics: an object is confirmed if it has been seen multiple times
+        if not self.is_confirmed:
+            self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(TIME_TO_BE_CONFIRMED)
         
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label == "person":
             self.pcd.points = other.pcd.points
         else:
-            combined_pcd = self.pcd + other.pcd
-            self.pcd = combined_pcd
+            old_points = np.asarray(self.pcd.points)
+            new_points = np.asarray(other.pcd.points)
+            combined_points = np.concatenate((old_points, new_points), axis=0)
+            self.pcd.points = o3d.utility.Vector3dVector(combined_points)
 
         self.compute()
         self.label = other.label if other.score > self.score else self.label
@@ -91,10 +100,11 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
         #self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
+        clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.2)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=0.1)
 
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
@@ -161,7 +171,7 @@ class World:
 
     def get_objects(self):
         """Returns all objects in the world."""
-        return list(self.objects.values())
+        return list([obj for obj in self.objects.values() if obj.is_confirmed])
 
     def query_by_distance(self, point, threshold):
         """Queries objects within a certain distance threshold."""
