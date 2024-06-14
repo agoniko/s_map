@@ -20,12 +20,14 @@
     <node pkg="nodelet" type="nodelet" name="rgbd_sync" args="standalone rtabmap_sync/rgbd_sync" output="screen">
       <remap from="rgb/image"       to="/realsense/rgb/image_raw"/>
       <remap from="depth/image"     to="/realsense/aligned_depth_to_color/image_raw"/>
+      <!--remap from="depth/image"     to="/s_map/depth_filtered"/-->
       <remap from="rgb/camera_info" to="/realsense/rgb/camera_info"/>
       <remap from="rgbd_image"      to="rgbd_image"/> <!-- output -->
       
       <!-- Should be true for not synchronized camera topics 
             (e.g., false for kinectv2, zed, realsense, true for xtion, kinect360)-->
       <param name="approx_sync"       value="true"/> 
+      <param name="queue_size"        value="100"/>
     </node>
     <!-- SLAM -->
     <!-- args: "delete_db_on_start" and "udebug" -->
@@ -38,6 +40,7 @@
       <param name="Grid/RangeMax" value = "3" />
       <param name="Vis/MinInliers" value = "10" />
       <param name="Vis/EstimationType" value = "0" />
+      <param name="queue_size"        value="100"/>
 
       <param name="Reg/Force3DoF"             type="string" value="true"/>
       <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
