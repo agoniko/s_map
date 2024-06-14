@@ -7,6 +7,7 @@ from utils import time_it
 import rospy
 
 TIME_TO_BE_CONFIRMED = 0.0
+MOVING_CLASSES = ["person"]
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
@@ -39,7 +40,7 @@ class Obj:
             self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(TIME_TO_BE_CONFIRMED)
         
         # Use more sophisticated logic for updating point cloud data
-        if self.label == other.label and self.label == "person":
+        if self.label == other.label and self.label in MOVING_CLASSES:
             self.pcd.points = other.pcd.points
         else:
             old_points = np.asarray(self.pcd.points)
@@ -52,7 +53,7 @@ class Obj:
         self.score = max(self.score, other.score)
 
         
-    def register_pointcloud_to_self(self, other: "Obj", threshold=0.02):
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.01):
         """Aligns other point cloud to self using ICP registration."""
         try:
             reg_p2p = o3d.pipelines.registration.registration_icp(
@@ -206,6 +207,9 @@ class World:
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
                 # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
+                if obj.label == "chair":
+                    print(f"CHAIRS: {obj.id} and {close_obj.id}")
+                    print(compute_3d_iou(obj.bbox, close_obj.bbox))
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
 
@@ -225,3 +229,11 @@ class World:
             self.override_object(world_id, obj)
 
         return self.objects[obj.id]
+    
+    def remove_old_moving_objects(self):
+        to_remove = []
+        for obj in self.objects.values():
+            if obj.label in MOVING_CLASSES and obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 1.0:
+                to_remove.append(obj.id)
+        
+        self.remove_objects(to_remove)

@@ -48,6 +48,7 @@ class Mapper(object):
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
         rospy.Timer(rospy.Duration(0.1), self.check_still_there)
+        rospy.Timer(rospy.Duration(0.1), self.remove_old_moving_objects)
     
     def init_params(self):
         global CAMERA_INFO_TOPIC, WORLD_FRAME
@@ -208,6 +209,9 @@ class Mapper(object):
 
         if labels_msg:
             self.marker_pub.publish(labels_msg)
+    
+    def remove_old_moving_objects(self, event):
+        self.world.remove_old_moving_objects()
 
 if __name__ == "__main__":
     mapper = Mapper()

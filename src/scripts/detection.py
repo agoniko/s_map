@@ -26,6 +26,7 @@ MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
+MOVING_CLASSES = ["person"]
 
 class Node:
     """
@@ -58,7 +59,8 @@ class Node:
         "synchronizer",
         "annotated_image_pub",
         "results_pub",
-        "camera_name"
+        "camera_name",
+        "filtered_depth_pub"
     ]
 
     def __init__(self):
@@ -90,6 +92,9 @@ class Node:
         self.results_pub = rospy.Publisher(
             DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
+        self.filtered_depth_pub = rospy.Publisher(
+            "/s_map/depth_filtered", Image, queue_size=10
+        )
     
     def get_device(self):
         if torch.cuda.is_available():
@@ -111,16 +116,6 @@ class Node:
             rospy.logerr("Missing required parameters. Exiting...")
             rospy.signal_shutdown("Missing required parameters. Exiting...")
 
-
-
-    def hash_string_to_int32(self, s):
-        # Compute the SHA-256 hash of the input string
-        hash_object = hashlib.sha256(s.encode())
-        # Convert the hash to an integer
-        hash_int = int(hash_object.hexdigest(), 16)
-        # Ensure the result fits in a 32-bit signed integer range
-        return hash_int & 0x7FFFFFFF  # Mask to ensure it stays positive and within 32-bit range
-
     def preprocess_msg(self, detections, depth, header):
         """
         Preprocess the detection message to be published from supervision detection
@@ -140,7 +135,7 @@ class Node:
             res = Detection()
             res.header = header
             res.boxes = boxes
-            res.ids = [self.hash_string_to_int32(f"{self.camera_name}:{i}") for i in track_id]
+            res.ids = track_id
             res.scores = conf
             res.masks = mask_msg
             res.labels = labels
@@ -182,6 +177,7 @@ class Node:
             detections = self.erode_masks(detections)
             frame = self.annotate_frame(frame, detections, image_msg.header)
             self.publish_results(detections, depth_msg, depth_msg.header, frame)
+            #self.filter_depth(detections, depth_msg)
         else:
             img_msg = self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", image_msg.header)
             self.annotated_image_pub.publish(img_msg)
@@ -240,6 +236,29 @@ class Node:
         if detection_msg:
             self.results_pub.publish(detection_msg)
         self.annotated_image_pub.publish(frame)
+    
+    def filter_depth(self, detections, depth_msg):
+        depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg, "passthrough")
+        depth_image = np.copy(depth_image)
+        masks = detections.mask
+        labels = detections.data["class_name"]
+
+        mask_to_filter = np.array([label in MOVING_CLASSES for label in labels])
+        mask_sum = np.sum(masks[mask_to_filter], axis=0)
+
+        mask_sum = mask_sum.astype(np.uint8)
+
+        # Create a structuring element (kernel)
+        kernel = np.ones((5, 5), np.uint8)
+        # Perform dilation to enlarge the mask
+        dilated_image = cv2.dilate(mask_sum, kernel, iterations=1)
+        # Apply the mask to the depth image
+        depth_image[dilated_image == 1] = 0
+
+        filtered_depth_message = self.cv_bridge.cv2_to_imgmsg(depth_image, "passthrough")
+        self.filtered_depth_pub.header = depth_msg.header
+        self.filtered_depth_pub.publish(filtered_depth_message)
+
 
 if __name__ == "__main__":
     node = Node()
