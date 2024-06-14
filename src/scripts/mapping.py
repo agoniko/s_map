@@ -47,7 +47,7 @@ class Mapper(object):
         self.world = World()
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
-        #rospy.Timer(rospy.Duration(0.1), self.check_still_there)
+        rospy.Timer(rospy.Duration(0.1), self.check_still_there)
     
     def init_params(self):
         global CAMERA_INFO_TOPIC, WORLD_FRAME
@@ -132,11 +132,11 @@ class Mapper(object):
         This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
         """
         for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 1.5]]) # 1.5 meters in front of the camera
+            point = np.array([[0, 0, 1]]) # 1.5 meters in front of the camera
             point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
             if point_world_frame is None:
                 return
-            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
+            objects = self.world.query_by_distance(point_world_frame[0], 0.5)
             to_remove = []  
             for obj in objects:
                 if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
