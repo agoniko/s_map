@@ -5,21 +5,25 @@ from collections import deque
 from utils import compute_3d_iou
 from utils import time_it
 import rospy
+import copy
 
 TIME_TO_BE_CONFIRMED = 0.0
 MOVING_CLASSES = ["person"]
+VOXEL_SIZE = 0.03
+o3d.core.Device("CUDA:0")
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed", "device"]
 
     def __init__(self, id, points, label, score, stamp):
         self.id = id
         self.label = label
         self.score = score
-        self.pcd = o3d.geometry.PointCloud()
-        self.pcd.points = o3d.utility.Vector3dVector(points)
+        self.device = o3d.core.Device("CPU:0")
+        self.pcd = o3d.t.geometry.PointCloud(device = self.device)
+        self.pcd.point.positions = o3d.core.Tensor(points, o3d.core.float32, self.device)
         self.last_seen = stamp
         self.first_seen = stamp
         self.is_confirmed = False
@@ -41,14 +45,12 @@ class Obj:
         
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
-            self.pcd.points = other.pcd.points
+            self.pcd.point.positions = other.pcd.point.positions
         else:
-            old_points = np.asarray(self.pcd.points)
-            new_points = np.asarray(other.pcd.points)
-            combined_points = np.concatenate((old_points, new_points), axis=0)
-            self.pcd.points = o3d.utility.Vector3dVector(combined_points)
+            self.pcd.point.positions = o3d.core.concatenate((self.pcd.point.positions, other.pcd.point.positions), axis=0)
 
         self.compute()
+        print(self.bbox, self.centroid)
         self.label = other.label if other.score > self.score else self.label
         self.score = max(self.score, other.score)
 
@@ -57,9 +59,17 @@ class Obj:
         """Aligns other point cloud to self using ICP registration."""
         try:
             reg_p2p = o3d.pipelines.registration.registration_icp(
-                other.pcd, self.pcd, threshold, np.eye(4),
+                other.pcd.to_legacy(), self.pcd.to_legacy(), threshold, np.eye(4),
                 o3d.pipelines.registration.TransformationEstimationPointToPoint())
-            
+            """reg_p2p = o3d.pipelines.registration.registration_ransac_based_on_feature_matching(
+                                                                                            other.pcd.to_legacy(),
+                                                                                            self.pcd.to_legacy(),
+                                                                                            o3d.pipelines.registration.compute_fpfh_feature(other.pcd.to_legacy(), o3d.geometry.KDTreeSearchParamHybrid(radius= 2* VOXEL_SIZE, max_nn=30)),
+                                                                                            o3d.pipelines.registration.compute_fpfh_feature(self.pcd.to_legacy(), o3d.geometry.KDTreeSearchParamHybrid(radius= 2* VOXEL_SIZE, max_nn=30)),
+                                                                                            True,
+                                                                                            threshold,
+                                                                                            )
+            """
             if reg_p2p.inlier_rmse > threshold:
                 raise ValueError("High registration error, skipping this frame")
 
@@ -73,23 +83,26 @@ class Obj:
             raise e
 
     def compute_z_oriented_bounding_box(self, pcd):
-        # Compute the mean of the points
-        if not pcd.points:
-            return None
-        mean = np.mean(np.asarray(pcd.points), axis=0)
+
+
+        temp = pcd.cpu().to_legacy()
+
+        points = np.asarray(temp.points)
+
+        mean = np.mean(np.asarray(points), axis=0)
 
         # Compute PCA on the XY components only
-        xy_points = np.asarray(pcd.points)[:, :2] - mean[:2]
+        xy_points = np.asarray(points)[:, :2] - mean[:2]
         cov_matrix = np.dot(xy_points.T, xy_points) / len(xy_points)
         eigvals, eigvecs = np.linalg.eig(cov_matrix)
 
         # Align primary component with the X-axis
         angle = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
-        R = pcd.get_rotation_matrix_from_xyz((0, 0, -angle))
-        pcd.rotate(R, center=mean)
+        R = temp.get_rotation_matrix_from_xyz((0, 0, -angle))
+        temp.rotate(R, center=mean)
 
         # Compute the axis-aligned bounding box of the rotated point cloud
-        aabb = pcd.get_axis_aligned_bounding_box()
+        aabb = temp.get_axis_aligned_bounding_box()
         # convert aabb to oriented bbox
         aabb = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(
             aabb
@@ -101,19 +114,21 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=50, radius=0.5)
+        #print(self.pcd)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
+        self.pcd, _ = self.pcd.remove_radius_outliers(nb_points=50, search_radius=0.5)
+        self.pcd.estimate_normals(max_nn=30, radius = 1.4 * VOXEL_SIZE) #Recommended by documentation
         #clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
+        clean, _ = self.pcd.remove_statistical_outliers(nb_neighbors=50, std_ratio=0.1)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=0.1)
-
-        if len(clean.points) <= 10:
+        if len(clean.point.positions.cpu().numpy()) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
             return
 
         self.bbox = self.compute_z_oriented_bounding_box(clean)
-        self.centroid = np.asarray(clean.points).mean(axis=0)
+        print(self.bbox)
+        self.centroid = np.mean(self.bbox, axis=0)
 
 
 class World:
@@ -189,7 +204,7 @@ class World:
             self.kdtree = KDTree(np.array(self.points_list))
 
     # @time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.05):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.0):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
