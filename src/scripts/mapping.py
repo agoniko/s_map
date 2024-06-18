@@ -180,7 +180,7 @@ class Mapper(object):
 
         #remove from the pointcloud the points that are too close or too far from the camera
         zs = pc[ys, xs] / 1000
-        mask = np.logical_and(zs > 0.5, zs < 10.0)
+        mask = np.logical_and(zs > 0.5, zs < 5.0)
         ys = ys[mask]
         xs = xs[mask]
         zs = zs[mask]

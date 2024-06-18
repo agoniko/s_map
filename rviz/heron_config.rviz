@@ -62,6 +62,10 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        camera_confidence_frame:
+          Value: true
+        camera_confidence_optical_frame:
+          Value: true
         connector_plate:
           Value: true
         finger1_link:
@@ -170,8 +174,6 @@ Visualization Manager:
           Value: true
         ur5e_tcp_link:
           Value: true
-        ur5e_tcp_link_ref_pose:
-          Value: true
         ur5e_tool0:
           Value: true
         ur5e_tool0_controller:
@@ -209,18 +211,18 @@ Visualization Manager:
                       {}
                   mir/camera_floor_left_depth_optical_frame:
                     {}
-                  mir/camera_infra1_frame:
-                    mir/camera_infra1_optical_frame:
-                      {}
-                  mir/camera_infra2_frame:
-                    mir/camera_infra2_optical_frame:
-                      {}
                 mir/camera_floor_right_link:
                   mir/camera_floor_right_color_frame:
                     mir/camera_floor_right_color_optical_frame:
                       {}
                   mir/camera_floor_right_depth_optical_frame:
                     {}
+                  mir/camera_infra1_frame:
+                    mir/camera_infra1_optical_frame:
+                      {}
+                  mir/camera_infra2_frame:
+                    mir/camera_infra2_optical_frame:
+                      {}
                 mir/fl_caster_rotation_link:
                   mir/fl_caster_wheel_link:
                     {}
@@ -264,6 +266,9 @@ Visualization Manager:
                                             ur5e_tcp_link:
                                               {}
                                         realsense_link:
+                                          camera_confidence_frame:
+                                            camera_confidence_optical_frame:
+                                              {}
                                           realsense_aligned_depth_to_rgb_frame_id:
                                             realsense_rgb_optical_frame:
                                               {}
@@ -274,8 +279,6 @@ Visualization Manager:
                                             {}
                                       ur5e_tool0:
                                         {}
-                          ur5e_tcp_link_ref_pose:
-                            {}
                 mir/us_1_frame:
                   {}
                 mir/us_2_frame:
@@ -537,7 +540,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/ThirdPersonFollower
-      Distance: 15.459301948547363
+      Distance: 9.678630828857422
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -545,17 +548,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -7.432269096374512
-        Y: -2.108732223510742
-        Z: 3.2186508178710938e-06
+        X: -4.896740913391113
+        Y: -5.035391330718994
+        Z: 3.6954879760742188e-06
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0503959655761719
+      Pitch: 1.4703948497772217
       Target Frame: <Fixed Frame>
-      Yaw: 1.4554184675216675
+      Yaw: 4.533592700958252
     Saved: ~
 Window Geometry:
   Camera:
