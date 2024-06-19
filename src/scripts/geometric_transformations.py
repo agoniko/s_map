@@ -163,7 +163,7 @@ class TransformHelper(metaclass=SingletonMeta):
     def lookup_transform(self, source_frame, target_frame, stamp):
         try:
             transform = self.tf_buffer.lookup_transform(
-                target_frame, source_frame, stamp, timeout=rospy.Duration(0.1)
+                target_frame, source_frame, stamp, timeout=rospy.Duration(1)
             )
             return transform
         except (

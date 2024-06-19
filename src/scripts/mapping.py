@@ -34,6 +34,10 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
+MAX_DEPTH = 9.0
+MIN_DEPTH = 0.8
+
+
 class Mapper(object):
     def __init__(self):
         global WORLD_FRAME
@@ -110,8 +114,8 @@ class Mapper(object):
         Returns:
             None
         """
-        if not self.is_reliable(detection.header):
-            return
+        #if not self.is_reliable(detection.header):
+        #    return
         
         header, boxes, labels, scores, ids, masks, depth_image, camera_name = self.preprocess_msg(detection)
         pose_estimator = self.get_pose_estimator(camera_name)
@@ -140,7 +144,7 @@ class Mapper(object):
             objects = self.world.query_by_distance(point_world_frame[0], 0.5)
             to_remove = []  
             for obj in objects:
-                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 5.0:
+                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 30.0:
                     to_remove.append(obj.id)
             
             self.world.remove_objects(to_remove)
@@ -180,7 +184,7 @@ class Mapper(object):
 
         #remove from the pointcloud the points that are too close or too far from the camera
         zs = pc[ys, xs] / 1000
-        mask = np.logical_and(zs > 0.5, zs < 5.0)
+        mask = np.logical_and(zs > MIN_DEPTH, zs < MAX_DEPTH)
         ys = ys[mask]
         xs = xs[mask]
         zs = zs[mask]
@@ -192,6 +196,7 @@ class Mapper(object):
     def publish_pointclouds(self, frame, stamp, objects = None):
         if objects is None:
             objects = self.world.get_objects()
+        
         msg = create_pointcloud_message(objects, frame, stamp)
         self.pc_pub.publish(msg)
 

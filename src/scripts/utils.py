@@ -8,6 +8,7 @@ from sensor_msgs import point_cloud2
 from std_msgs.msg import Header
 import struct
 import rospkg
+import numpy.matlib as npm
 
 class_names = np.loadtxt(rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt", dtype=str, delimiter=",")
 label_colors = {label.lower().strip(): np.random.randint(0, 255, 3) for label in class_names}
@@ -268,3 +269,50 @@ def compute_3d_iou(box1, box2):
     iou = inter_volume / union_volume if union_volume != 0 else 0
 
     return iou
+
+"""
+Markley, F. Landis, Yang Cheng, John Lucas Crassidis, and Yaakov Oshman. "Averaging quaternions." 
+Journal of Guidance, Control, and Dynamics 30, no. 4 (2007): 1193-1197. 
+Link: https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20070017872.pdf
+"""
+def averageQuaternions(Q):
+    # Number of quaternions to average
+    M = Q.shape[0]
+    A = npm.zeros(shape=(4,4))
+
+    for i in range(0,M):
+        q = Q[i,:]
+        # multiply q with its transposed version q' and add A
+        A = np.outer(q,q) + A
+
+    # scale
+    A = (1.0/M)*A
+    # compute eigenvalues and -vectors
+    eigenValues, eigenVectors = np.linalg.eig(A)
+    # Sort by largest eigenvalue
+    eigenVectors = eigenVectors[:,eigenValues.argsort()[::-1]]
+    # return the real part of the largest eigenvector (has only real part)
+    return np.real(eigenVectors[:,0].A1)
+
+def weightedAverageQuaternions(Q, w):
+    # Number of quaternions to average
+    M = Q.shape[0]
+    A = npm.zeros(shape=(4,4))
+    weightSum = 0
+
+    for i in range(0,M):
+        q = Q[i,:]
+        A = w[i] * np.outer(q,q) + A
+        weightSum += w[i]
+
+    # scale
+    A = (1.0/weightSum) * A
+
+    # compute eigenvalues and -vectors
+    eigenValues, eigenVectors = np.linalg.eig(A)
+
+    # Sort by largest eigenvalue
+    eigenVectors = eigenVectors[:,eigenValues.argsort()[::-1]]
+
+    # return the real part of the largest eigenvector (has only real part)
+    return np.real(eigenVectors[:,0].A1)

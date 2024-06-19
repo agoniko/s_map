@@ -4,15 +4,27 @@ import numpy as np
 from collections import deque
 from utils import compute_3d_iou
 from utils import time_it
+from utils import averageQuaternions, weightedAverageQuaternions
 import rospy
+from scipy.spatial.transform import Rotation as R
+import copy
 
-TIME_TO_BE_CONFIRMED = 0.0
+
+TIME_TO_BE_CONFIRMED = 0.5
 MOVING_CLASSES = ["person"]
+
+def exponential_weights(length, decay_rate=0.1):
+    weights = np.exp(-decay_rate * np.arange(length))
+    return weights / np.sum(weights)
+
+def linear_weights(length):
+    weights = np.linspace(1, 0, length)
+    return weights / np.sum(weights)
 
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed"]
+    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed", "centroids", "quaternions"]
 
     def __init__(self, id, points, label, score, stamp):
         self.id = id
@@ -23,16 +35,29 @@ class Obj:
         self.last_seen = stamp
         self.first_seen = stamp
         self.is_confirmed = False
+        self.centroids = np.asarray(self.pcd.points).mean(axis=0).reshape(1, 3)
+        
+        r = self.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
+
+        #saving other's centroid before registration
+        other_centroid = np.asarray(other.pcd.points).mean(axis=0)
+        self.centroids = np.concatenate((self.centroids, [other_centroid]), axis = 0)
+
+        #saving other's quaternion before registration
+        r = other.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.concatenate((self.quaternions, [R.from_matrix(r).as_quat()]), axis = 0)
+
         try:
             other = self.register_pointcloud_to_self(other)
         except Exception as e:
             rospy.logwarn(f"Error in registering point clouds: {e}")
             return
-
+        
         self.last_seen = max(self.last_seen, other.last_seen)
 
         #Euristics: an object is confirmed if it has been seen multiple times
@@ -48,12 +73,21 @@ class Obj:
             combined_points = np.concatenate((old_points, new_points), axis=0)
             self.pcd.points = o3d.utility.Vector3dVector(combined_points)
 
+            #weights = linear_weights(len(self.quaternions))
+#
+            #centroid = np.average(self.centroids, axis=0, weights = weights)
+            #quaternion = weightedAverageQuaternions(self.quaternions, weights)
+            #rot_matrix = R.from_quat(quaternion).as_matrix()
+            #self.pcd.translate(centroid, relative = False)
+            #self.pcd.rotate(rot_matrix)
+
         self.compute()
         self.label = other.label if other.score > self.score else self.label
         self.score = max(self.score, other.score)
 
+
         
-    def register_pointcloud_to_self(self, other: "Obj", threshold=0.01):
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.1):
         """Aligns other point cloud to self using ICP registration."""
         try:
             reg_p2p = o3d.pipelines.registration.registration_icp(
@@ -62,6 +96,7 @@ class Obj:
             
             if reg_p2p.inlier_rmse > threshold:
                 raise ValueError("High registration error, skipping this frame")
+
 
             transformation = reg_p2p.transformation
 
@@ -101,12 +136,12 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.03)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=50, radius=0.5)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=16, radius=.5)
         #clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=0.1)
-
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
+        #clean = self.pcd
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
@@ -207,9 +242,6 @@ class World:
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
                 # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
-                if obj.label == "chair":
-                    print(f"CHAIRS: {obj.id} and {close_obj.id}")
-                    print(compute_3d_iou(obj.bbox, close_obj.bbox))
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
 
@@ -227,7 +259,7 @@ class World:
         world_id = self.get_world_id(obj)
         if world_id != obj.id:
             self.override_object(world_id, obj)
-
+        print(self.id2index.keys())
         return self.objects[obj.id]
     
     def remove_old_moving_objects(self):
