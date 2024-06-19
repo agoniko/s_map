@@ -18,7 +18,7 @@
     </node>
 
     <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen">
-        <param name="world_frame" value="map"/>
+        <param name="world_frame" value="mir/odom"/>
         <param name="camera_info_topic" value="realsense/rgb/camera_info"/>
     </node>
 
