@@ -43,7 +43,8 @@
     <!-- args: "delete_db_on_start" and "udebug" -->
     <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="--delete_db_on_start">
       <param name="subscribe_depth"  type="bool"   value="false"/>
-      <param name="subscribe_rgbd"   type="bool"   value="true"/>
+      <param name="subscribe_rgbd"   type="bool"   value="false"/>
+      <param name="subscribe_rgb"   type="bool"   value="true"/>
       <param name="frame_id"         type="string" value="mir/base_link"/>
       <param name="subscribe_scan"   type="bool"   value="true"/>
       <param name="GridGlobal/MinSize" value = "30" />
@@ -55,10 +56,11 @@
       <param name="Reg/Force3DoF"             type="string" value="true"/>
       <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
 
-
       <remap from="scan" to="/scan"/>
-      <remap from="odom" to="/scanmatch_odom"/>
+      <remap from="odom" to="/odom"/>
 
+      <remap from="/rtabmap/rgb/image" to="/realsense/rgb/image_raw" />
+      <remap from="/rtabmap/rgb/camera_info" to="/realsense/rgb/camera_info" />
       <param name="Grid/FromDepth"     type="string" value="true"/>
 
       <!-- RTAB-Map's parameters -->

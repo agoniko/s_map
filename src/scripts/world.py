@@ -10,21 +10,36 @@ from scipy.spatial.transform import Rotation as R
 import copy
 
 
-TIME_TO_BE_CONFIRMED = 0.5
+TIME_TO_BE_CONFIRMED = 0.2
 MOVING_CLASSES = ["person"]
+
 
 def exponential_weights(length, decay_rate=0.1):
     weights = np.exp(-decay_rate * np.arange(length))
     return weights / np.sum(weights)
 
+
 def linear_weights(length):
     weights = np.linspace(1, 0, length)
     return weights / np.sum(weights)
 
+
 class Obj:
     """Object class with historical data and spatial indexing using KDTree."""
 
-    __slots__ = ["pcd", "label", "score", "bbox", "id", "centroid", "last_seen", "first_seen", "is_confirmed", "centroids", "quaternions"]
+    __slots__ = [
+        "pcd",
+        "label",
+        "score",
+        "bbox",
+        "id",
+        "centroid",
+        "last_seen",
+        "first_seen",
+        "is_confirmed",
+        "centroids",
+        "quaternions",
+    ]
 
     def __init__(self, id, points, label, score, stamp):
         self.id = id
@@ -36,7 +51,7 @@ class Obj:
         self.first_seen = stamp
         self.is_confirmed = False
         self.centroids = np.asarray(self.pcd.points).mean(axis=0).reshape(1, 3)
-        
+
         r = self.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
         self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
@@ -44,26 +59,30 @@ class Obj:
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
 
-        #saving other's centroid before registration
+        # saving other's centroid before registration
         other_centroid = np.asarray(other.pcd.points).mean(axis=0)
-        self.centroids = np.concatenate((self.centroids, [other_centroid]), axis = 0)
+        self.centroids = np.concatenate((self.centroids, [other_centroid]), axis=0)
 
-        #saving other's quaternion before registration
+        # saving other's quaternion before registration
         r = other.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
-        self.quaternions = np.concatenate((self.quaternions, [R.from_matrix(r).as_quat()]), axis = 0)
+        self.quaternions = np.concatenate(
+            (self.quaternions, [R.from_matrix(r).as_quat()]), axis=0
+        )
 
         try:
             other = self.register_pointcloud_to_self(other)
         except Exception as e:
             rospy.logwarn(f"Error in registering point clouds: {e}")
             return
-        
+
         self.last_seen = max(self.last_seen, other.last_seen)
 
-        #Euristics: an object is confirmed if it has been seen multiple times
+        # Euristics: an object is confirmed if it has been seen multiple times
         if not self.is_confirmed:
-            self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(TIME_TO_BE_CONFIRMED)
-        
+            self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(
+                TIME_TO_BE_CONFIRMED
+            )
+
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
             self.pcd.points = other.pcd.points
@@ -74,29 +93,29 @@ class Obj:
             self.pcd.points = o3d.utility.Vector3dVector(combined_points)
 
             #weights = linear_weights(len(self.quaternions))
-#
-            #centroid = np.average(self.centroids, axis=0, weights = weights)
+            #centroid = np.average(self.centroids, axis=0, weights=weights)
             #quaternion = weightedAverageQuaternions(self.quaternions, weights)
             #rot_matrix = R.from_quat(quaternion).as_matrix()
-            #self.pcd.translate(centroid, relative = False)
+            #self.pcd.translate(centroid, relative=False)
             #self.pcd.rotate(rot_matrix)
 
         self.compute()
         self.label = other.label if other.score > self.score else self.label
         self.score = max(self.score, other.score)
 
-
-        
-    def register_pointcloud_to_self(self, other: "Obj", threshold=0.1):
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.2):
         """Aligns other point cloud to self using ICP registration."""
         try:
             reg_p2p = o3d.pipelines.registration.registration_icp(
-                other.pcd, self.pcd, threshold, np.eye(4),
-                o3d.pipelines.registration.TransformationEstimationPointToPoint())
-            
+                other.pcd,
+                self.pcd,
+                threshold,
+                np.eye(4),
+                o3d.pipelines.registration.TransformationEstimationPointToPoint(),
+            )
+
             if reg_p2p.inlier_rmse > threshold:
                 raise ValueError("High registration error, skipping this frame")
-
 
             transformation = reg_p2p.transformation
 
@@ -137,11 +156,11 @@ class Obj:
 
     def compute(self):
         self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=16, radius=.5)
-        #clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=30, radius=0.5)
+        # clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
         clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
-        #clean = self.pcd
+        # clean = self.pcd
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
@@ -153,6 +172,7 @@ class Obj:
 
 class World:
     """World class that uses a KDTree for efficient spatial management of objects."""
+
     def __init__(self):
         self.objects = {}
         self.kdtree = None
@@ -180,8 +200,7 @@ class World:
         self.points_list[self.id2index[obj.id]] = self.objects[obj.id].centroid
         self._rebuild_kdtree()
 
-    
-    #@time_it
+    # @time_it
     def remove_objects(self, obj_ids):
         """Removes an object from the world."""
         for obj_id in obj_ids:
@@ -201,7 +220,9 @@ class World:
 
     def override_object(self, old_id, obj):
         old_obj = self.objects[old_id]
-        rospy.loginfo(f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}")
+        rospy.loginfo(
+            f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}"
+        )
         self.objects[obj.id].update(old_obj)
         self.remove_objects([old_id])
 
@@ -261,11 +282,17 @@ class World:
             self.override_object(world_id, obj)
         print(self.id2index.keys())
         return self.objects[obj.id]
-    
+
     def remove_old_moving_objects(self):
         to_remove = []
         for obj in self.objects.values():
-            if obj.label in MOVING_CLASSES and obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 1.0:
+            if (
+                obj.label in MOVING_CLASSES
+                and obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 1.0
+            ):
                 to_remove.append(obj.id)
-        
+
         self.remove_objects(to_remove)
+    
+    def get_kdtree_centroids(self):
+        return self.points_list

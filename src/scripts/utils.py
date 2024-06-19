@@ -316,3 +316,32 @@ def weightedAverageQuaternions(Q, w):
 
     # return the real part of the largest eigenvector (has only real part)
     return np.real(eigenVectors[:,0].A1)
+
+def create_marker_point(points, stamp, world_frame):
+    marker_array = MarkerArray()
+
+    for i, point in enumerate(points, 1):
+        marker = Marker()
+        marker.header.frame_id = world_frame
+        marker.header.stamp = stamp
+        marker.ns = "Close_point"
+        marker.id = i
+        marker.type = Marker.SPHERE
+        marker.action = Marker.ADD
+        marker.pose.position.x = point[0]
+        marker.pose.position.y = point[1]
+        marker.pose.position.z = point[2]
+        marker.pose.orientation.x = 0.0
+        marker.pose.orientation.y = 0.0
+        marker.pose.orientation.z = 0.0
+        marker.pose.orientation.w = 1.0
+        marker.scale.x = 0.1
+        marker.scale.y = 0.1
+        marker.scale.z = 0.1
+        marker.color.a = 1.0
+        marker.color.r = 1.0
+        marker.color.g = 0.0
+        marker.color.b = 0.0
+        marker_array.markers.append(marker)
+
+    return marker_array

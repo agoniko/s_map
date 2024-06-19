@@ -16,6 +16,7 @@ from utils import (
     create_delete_marker,
     create_pointcloud_message,
     time_it,
+    create_marker_point
 )
 import supervision as sv
 import numpy as np
@@ -53,6 +54,7 @@ class Mapper(object):
         rospy.loginfo("Mapping node initialized")
         rospy.Timer(rospy.Duration(0.1), self.check_still_there)
         rospy.Timer(rospy.Duration(0.1), self.remove_old_moving_objects)
+        rospy.Timer(rospy.Duration(0.1), self.plot_centroids)
     
     def init_params(self):
         global CAMERA_INFO_TOPIC, WORLD_FRAME
@@ -114,8 +116,8 @@ class Mapper(object):
         Returns:
             None
         """
-        #if not self.is_reliable(detection.header):
-        #    return
+        if not self.is_reliable(detection.header):
+            return
         
         header, boxes, labels, scores, ids, masks, depth_image, camera_name = self.preprocess_msg(detection)
         pose_estimator = self.get_pose_estimator(camera_name)
@@ -137,16 +139,21 @@ class Mapper(object):
         This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
         """
         for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 1]]) # 1.5 meters in front of the camera
+            point = np.array([[0, 0, 2]]) # 1.5 meters in front of the camera
             point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
+            marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
+            self.marker_pub.publish(marker)
             if point_world_frame is None:
                 return
-            objects = self.world.query_by_distance(point_world_frame[0], 0.5)
+            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
+            print("close objects: ", objects)
             to_remove = []  
             for obj in objects:
+                print(obj.last_seen.to_sec(), rospy.Time.now().to_sec())
                 if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 30.0:
                     to_remove.append(obj.id)
-            
+
+            print("To remove: ", to_remove)
             self.world.remove_objects(to_remove)
 
     # @time_it
@@ -188,8 +195,9 @@ class Mapper(object):
         ys = ys[mask]
         xs = xs[mask]
         zs = zs[mask]
-
+        
         pointcloud = np.array([xs, ys, zs]).T
+
         return pointcloud
 
     # @time_it
@@ -217,6 +225,12 @@ class Mapper(object):
     
     def remove_old_moving_objects(self, event):
         self.world.remove_old_moving_objects()
+    
+    def plot_centroids(self, event):
+        centroids = self.world.get_kdtree_centroids()
+        marker = create_marker_point(centroids, rospy.Time.now(), WORLD_FRAME)
+        self.marker_pub.publish(marker)
+
 
 if __name__ == "__main__":
     mapper = Mapper()
