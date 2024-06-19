@@ -1,5 +1,5 @@
 <launch>
-    <arg name="rviz"       default="true" />
+    <arg name="rviz"       default="false" />
     <arg name="rtabmap_viz" default="false" />
 
     <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
@@ -18,7 +18,7 @@
     </node>
 
     <node pkg="s_map" type="mapping.py" name="s_map_mapping"  output="screen">
-        <param name="world_frame" value="mir/odom"/>
+        <param name="world_frame" value="map"/>
         <param name="camera_info_topic" value="realsense/rgb/camera_info"/>
     </node>
 
