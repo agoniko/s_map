@@ -1,2 +1,4 @@
 models
-*settings.json
+*.pyc
+.vscode/
+settings.json

@@ -1,0 +1,22 @@
+<launch>
+
+    <!-- Nodelet manager to manage the register nodelet -->
+    <arg name="camera_name" default="back"/>
+    <arg name="manager_name" default="align_manager"/>
+
+    <!-- Register nodelet for aligning depth to RGB for back camera -->
+    <node pkg="nodelet" type="nodelet" name="depth_image_register_$(arg camera_name)" args="load depth_image_proc/register $(arg manager_name)" output="screen" respawn="true">
+        <!-- Remap the topics to your specific camera topics -->
+        <remap from="rgb/camera_info" to="$(arg camera_name)/rgb/camera_info"/>
+        <remap from="depth/camera_info" to="$(arg camera_name)/depth/camera_info"/>
+        <remap from="depth/image_rect" to="$(arg camera_name)/depth/image_rect"/>
+        
+        <!-- Published topics -->
+        <remap from="depth_registered/camera_info" to="$(arg camera_name)/aligned_depth/camera_info"/>
+        <remap from="depth_registered/image_rect" to="$(arg camera_name)/aligned_depth/image_rect"/>
+        
+        <!-- Parameters -->
+        <param name="queue_size" value="10"/>
+    </node>
+
+</launch>
