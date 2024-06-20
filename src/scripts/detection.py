@@ -12,20 +12,21 @@ from ultralytics import YOLO
 import supervision as sv
 import numpy as np
 from geometric_transformations import CameraPoseEstimator
+from message_filters import TimeSynchronizer, Subscriber
+import cv2
+import hashlib
+from utils import time_it
+import sys
 
-# Global Configuration Variables
-RGB_TOPIC = "/realsense/rgb/image_raw"
-DEPTH_TOPIC = "/realsense/aligned_depth_to_color/image_raw"
-SCAN_TOPIC = "/scan"
+
+#Global Configuration Variables
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8m-seg.pt"
-DETECTION_CONFIDENCE = 0.5
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
+DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
 SUBSCRIPTION_QUEUE_SIZE = 50
-CAMERA_INFO_TOPIC = "/realsense/aligned_depth_to_color/camera_info"
-
-
+MOVING_CLASSES = ["person"]
 
 class Node:
     """
@@ -55,15 +56,21 @@ class Node:
         "image_sub",
         "depth_sub",
         "laser_sub",
+        "synchronizer",
         "annotated_image_pub",
         "results_pub",
+        "camera_name",
+        "filtered_depth_pub"
     ]
 
     def __init__(self):
         """Initialize the node, its publications, subscriptions, and model."""
+        global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
         rospy.init_node("detection_node")
+        self.initialize_topics()
+
         self.cv_bridge = CvBridge()
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps")
+        self.device = self.get_device()
         self.detector = YOLO(MODEL_PATH)
         self.detector = self.detector.to(self.device)
         rospy.loginfo(f"Using device: {self.device}")
@@ -73,14 +80,10 @@ class Node:
         self.box_annotator = sv.BoxCornerAnnotator()
 
         # Subscribers
-        self.image_sub = rospy.Subscriber(
-            RGB_TOPIC,
-            Image,
-            self.detection_callback,
-            queue_size=SUBSCRIPTION_QUEUE_SIZE,
-        )
-        # self.depth_sub = rospy.Subscriber(DEPTH_TOPIC, Image, self.depth_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
-        # self.laser_sub = rospy.Subscriber(SCAN_TOPIC, LaserScan, self.scan_callback, queue_size=SUBSCRIPTION_QUEUE_SIZE)
+        self.image_sub = Subscriber(RGB_TOPIC, Image)
+        self.depth_sub = Subscriber(DEPTH_TOPIC, Image)
+        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub], SUBSCRIPTION_QUEUE_SIZE)
+        self.synchronizer.registerCallback(self.detection_callback)
 
         # Publishers
         self.annotated_image_pub = rospy.Publisher(
@@ -89,8 +92,31 @@ class Node:
         self.results_pub = rospy.Publisher(
             DETECTION_RESULTS_TOPIC, Detection, queue_size=10
         )
+        self.filtered_depth_pub = rospy.Publisher(
+            "/s_map/depth_filtered", Image, queue_size=10
+        )
+    
+    def get_device(self):
+        if torch.cuda.is_available():
+            return torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            return torch.device("mps")
+        else:
+            return torch.device("cpu")
+    
+    def initialize_topics(self):
+        global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
+        RGB_TOPIC = rospy.get_param("~rgb_topic", None)
+        DEPTH_TOPIC = rospy.get_param("~depth_topic", None)
+        CAMERA_INFO_TOPIC = rospy.get_param("~camera_info_topic", None)
+        ANNOTATED_IMAGES_TOPIC = rospy.get_param("~annotated_images_topic", "/s_map/annotated_images")
+        self.camera_name = rospy.get_param("~camera_name", None)
 
-    def preprocess_msg(self, detections, header):
+        if not RGB_TOPIC or not DEPTH_TOPIC or not CAMERA_INFO_TOPIC or not self.camera_name:
+            rospy.logerr("Missing required parameters. Exiting...")
+            rospy.signal_shutdown("Missing required parameters. Exiting...")
+
+    def preprocess_msg(self, detections, depth, header):
         """
         Preprocess the detection message to be published from supervision detection
         """
@@ -103,6 +129,7 @@ class Node:
 
             masks = detections.mask
             masks = np.moveaxis(masks, 0, -1).astype(np.uint8)
+
             mask_msg = self.cv_bridge.cv2_to_imgmsg(masks, "passthrough")
 
             res = Detection()
@@ -112,12 +139,17 @@ class Node:
             res.scores = conf
             res.masks = mask_msg
             res.labels = labels
+            res.depth = depth
+            res.camera_name = self.camera_name
+            #rospy.loginfo(f"Publishing detection results for {self.camera_name} camera: ")
+            #rospy.loginfo(f"{[(label, id) for label, id in zip(labels, res.ids)]}")
 
             return res
         except:
             return None
-
-    def detection_callback(self, image_msg):
+    
+    #@time_it
+    def detection_callback(self, image_msg, depth_msg):
         """
         Callback for processing images received from the RGB topic.
         Received images are already rectified and aligned with the depth image.
@@ -125,7 +157,11 @@ class Node:
 
         Args:
             image_msg (Image): The incoming ROS message containing the image data.
+            depth_msg (Image): The incoming ROS message containing the depth data.
         """
+        if image_msg.header.seq % 1 != 0:
+            return
+
         frame = self.cv_bridge.imgmsg_to_cv2(image_msg, "rgb8")
 
         results = next(
@@ -141,8 +177,22 @@ class Node:
         )
         if results:
             detections = sv.Detections.from_ultralytics(results)
+            detections = self.erode_masks(detections)
             frame = self.annotate_frame(frame, detections, image_msg.header)
-            self.publish_results(detections, image_msg.header, frame)
+            self.publish_results(detections, depth_msg, depth_msg.header, frame)
+            #self.filter_depth(detections, depth_msg)
+        else:
+            img_msg = self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", image_msg.header)
+            self.annotated_image_pub.publish(img_msg)
+    
+    def erode_masks(self, detections, kernel_size=5):
+        masks = detections.mask.astype(np.uint8)
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        for i in range(masks.shape[0]):
+            masks[i] = cv2.erode(masks[i], kernel, iterations=3)
+        
+        detections.mask = masks.astype(bool)
+        return detections
 
     def annotate_frame(self, frame, detections, header):
         """
@@ -175,27 +225,42 @@ class Node:
         frame = self.box_annotator.annotate(frame, detections)
         return self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", header)
 
-    def publish_results(self, detections, header, frame):
+    def publish_results(self, detections, depth, header, frame):
         """
         Publishes detection results and annotated images.
 
         Args:
             detections (sv.Detections): Detection results to be published.
             header (std_msgs.msg.Header): Header from the incoming image message, used for time stamping the published messages.
+            depth (std_msgs.msg.Image): Depth image to be published associated to the detections
             frame (std_msgs.msg.Image): Annotated image to be published
         """
-        detection_msg = self.preprocess_msg(detections, header)
+        detection_msg = self.preprocess_msg(detections, depth, header)
         if detection_msg:
             self.results_pub.publish(detection_msg)
         self.annotated_image_pub.publish(frame)
+    
+    def filter_depth(self, detections, depth_msg):
+        depth_image = self.cv_bridge.imgmsg_to_cv2(depth_msg, "passthrough")
+        depth_image = np.copy(depth_image)
+        masks = detections.mask
+        labels = detections.data["class_name"]
 
-    def depth_callback(self, msg):
-        """Placeholder for processing depth images."""
-        pass
+        mask_to_filter = np.array([label in MOVING_CLASSES for label in labels])
+        mask_sum = np.sum(masks[mask_to_filter], axis=0)
 
-    def scan_callback(self, msg):
-        """Placeholder for processing laser scan data."""
-        pass
+        mask_sum = mask_sum.astype(np.uint8)
+
+        # Create a structuring element (kernel)
+        kernel = np.ones((5, 5), np.uint8)
+        # Perform dilation to enlarge the mask
+        dilated_image = cv2.dilate(mask_sum, kernel, iterations=1)
+        # Apply the mask to the depth image
+        depth_image[dilated_image == 1] = 0
+
+        filtered_depth_message = self.cv_bridge.cv2_to_imgmsg(depth_image, "passthrough")
+        self.filtered_depth_pub.header = depth_msg.header
+        self.filtered_depth_pub.publish(filtered_depth_message)
 
 
 if __name__ == "__main__":

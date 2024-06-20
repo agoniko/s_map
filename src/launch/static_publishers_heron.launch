@@ -1,0 +1,41 @@
+<launch>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher1" args="0.0 0.0 0.0 0.0 0.0 -0.7071067811865475 0.7071067811865476 mir/cabinet_arm_base ur5e_base_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher2" args="0.0 0.0 0.0 -0.7071067811865475 0.0 0.0 0.7071067811865476 ur5e_ee_link connector_plate"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher3" args="0.037646 0.0 0.352 0.0 0.0 0.0 1.0 mir/base_link mir/surface"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher4" args="0.2405 0.1855 0.02 0.0 0.0 0.0 1.0 mir/cabinet_table mir/cabinet_arm_base"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher5" args="-0.38 -0.23 -0.25 0.0 0.0 0.0 1.0 mir/cabinet_centre mir/cabinet_lower"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher6" args="-0.45 0.0 0.14 0.0 0.0 0.0 1.0 mir/cabinet_centre mir/cabinet_pad"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher7" args="-0.34 -0.19 0.25 0.0 0.0 0.0 1.0 mir/cabinet_centre mir/cabinet_table"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher8" args="0.0 0.0 0.25 0.0 0.0 0.0 1.0 mir/surface mir/cabinet_centre"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher9" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 mir/imu_link mir/imu_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher10" args="0.45 -0.12 0.16 0.0 0.0 0.0 1.0 mir/base_link mir/us_1_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher11" args="0.45 0.12 0.16 0.0 0.0 0.0 1.0 mir/base_link mir/us_2_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher12" args="0.0 0.0 0.0 0.0 0.0 1.0 -6.123233995736766e-17 ur5e_base_link ur5e_base"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher13" args="0.0 0.0 0.0 0.4999999999999999 -0.5 0.5 0.5000000000000001 ur5e_wrist_3_link ur5e_ee_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher14" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 ur5e_wrist_3_link ur5e_tool0"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher15" args="0.0 0.0 0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_floor_left_link mir/camera_floor_left_depth_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher16" args="0.0 0.0 0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_floor_right_link mir/camera_floor_right_depth_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher17" args="0.0 0.0 0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_floor_left_color_frame mir/camera_floor_left_color_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher18" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 mir/base_footprint mir/base_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher19" args="0.0 0.0 0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_floor_right_color_frame mir/camera_floor_right_color_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher20" args="0.0 0.032 0.0 0.0 0.0 0.0 1.0 mir/camera_floor_left_link mir/camera_floor_left_color_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher21" args="0.439582 0.059175 0.107407 -0.7630991688685823 0.10949767719247713 -0.26024813960207716 0.5813439799251289 mir/base_link mir/camera_floor_left_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher22" args="0.0 0.032 0.0 0.0 0.0 0.0 1.0 mir/camera_floor_right_link mir/camera_floor_right_color_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher23" args="0.436845 -0.0726667 0.107892 -0.5826276000123163 -0.2516550984628626 0.104543507882804 0.7656927883172815 mir/base_link mir/camera_floor_right_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher24" args="0.0 -0.0 -0.0 0.0 0.0 0.0 1.0 mir/camera_floor_left_link mir/camera_infra1_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher25" args="0.0 -0.0 -0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_infra1_frame mir/camera_infra1_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher26" args="0.0 0.05000867694616318 -0.0 0.0 0.0 0.0 1.0 mir/camera_floor_left_link mir/camera_infra2_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher27" args="0.0 -0.0 -0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 mir/camera_infra2_frame mir/camera_infra2_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher28" args="0.4253 0.2345 0.2 0.0 0.0 0.38425939938162845 0.9232251697104397 mir/base_link mir/front_laser_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher29" args="0.0 0.0 0.25 0.0 0.0 0.0 1.0 mir/base_link mir/imu_link"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher30" args="-0.3609 -0.2345 0.2 0.0 0.0 -0.9222439210744264 0.3866085229806337 mir/base_link mir/back_laser_link"/>
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher31" args="0.0 -0.0 -0.0 0.0 0.0 0.0 1.0 realsense_link realsense_depth_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher32" args="0.0 -0.0 -0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 realsense_depth_frame realsense_depth_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher33" args="-0.0001378912420477718 0.015084629878401756 0.00011712957348208874 -0.013869673945009708 0.0007161743706092238 0.0008287413511425257 0.9999032020568848 realsense_link realsense_rgb_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher34" args="0.0 -0.0 -0.0 -0.5 0.4999999999999999 -0.5 0.5000000000000001 realsense_aligned_depth_to_rgb_frame_id realsense_rgb_optical_frame"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher35" args="-0.0001378912420477718 0.015084629878401756 0.00011712957348208874 -0.013869673945009708 0.0007161743706092238 0.0008287413511425257 0.9999032020568848 realsense_link realsense_aligned_depth_to_rgb_frame_id"/>
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher36" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 mir/base_footprint mir/base_link"/>
+
+    <node pkg="s_map" type="tf_filter.py" name="old_map_filter"/>
+</launch>

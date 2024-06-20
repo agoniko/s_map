@@ -1,0 +1,21 @@
+<launch>
+
+    <!-- Nodelet manager to manage the register nodelet -->
+    <arg name="camera_name" default="back"/>
+    <arg name="manager_name" default="rectify_manager"/>
+
+    <!-- Monochrome rectified image -->
+    <node pkg="nodelet" type="nodelet" name="rectify_rgb_$(arg camera_name)" args="load image_proc/rectify $(arg manager_name)" respawn="true" output="screen">
+        <remap from="image_mono" to="$(arg camera_name)/rgb/image_raw"/>
+        <remap from="camera_info" to="$(arg camera_name)/rgb/camera_info"/>
+        <remap from="image_rect" to="$(arg camera_name)/rgb/image_rect"/>
+    </node>
+
+    <!-- Monochrome rectified image -->
+    <node pkg="nodelet" type="nodelet" name="rectify_depth_$(arg camera_name)" args="load image_proc/rectify $(arg manager_name)" respawn="true" output="screen">
+        <remap from="image_mono" to="$(arg camera_name)/depth/image_raw"/>
+        <remap from="camera_info" to="$(arg camera_name)/depth/camera_info"/>
+        <remap from="image_rect" to="$(arg camera_name)/depth/image_rect"/>
+    </node>
+
+</launch>
