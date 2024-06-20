@@ -37,6 +37,7 @@ PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 MAX_DEPTH = 9.0
 MIN_DEPTH = 0.8
+EXPIRY_TIME = 20.0
 
 
 class Mapper(object):
@@ -52,9 +53,8 @@ class Mapper(object):
         self.world = World()
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
-        rospy.Timer(rospy.Duration(0.1), self.check_still_there)
-        rospy.Timer(rospy.Duration(0.1), self.remove_old_moving_objects)
-        rospy.Timer(rospy.Duration(0.1), self.plot_centroids)
+        rospy.Timer(rospy.Duration(0.3), self.clean_up)
+        #rospy.Timer(rospy.Duration(0.1), self.plot_centroids)
     
     def init_params(self):
         global CAMERA_INFO_TOPIC, WORLD_FRAME
@@ -81,7 +81,7 @@ class Mapper(object):
         boxes = np.array(msg.boxes).reshape(n, 4)
         scores = np.array(msg.scores)
         ids = np.array(msg.ids)
-        depth_image = self.cv_bridge.imgmsg_to_cv2(msg.depth, "passthrough")
+        depth_image = self.cv_bridge.imgmsg_to_cv2(msg.depth, "16UC1")
 
         masks = self.cv_bridge.imgmsg_to_cv2(msg.masks)
         if len(masks.shape) == 2:
@@ -134,27 +134,31 @@ class Mapper(object):
         self.publish_pointclouds(WORLD_FRAME, header.stamp)
 
     #@time_it
-    def check_still_there(self, event):
+    def clean_up(self, event):
         """
         This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
+        Then it cleans up the world from the objects that are not there anymore.
         """
         for camera_frame in self.pose_reliability_evaluator.keys():
             point = np.array([[0, 0, 2]]) # 1.5 meters in front of the camera
             point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
-            marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
-            self.marker_pub.publish(marker)
+            #marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
+            #self.marker_pub.publish(marker)
             if point_world_frame is None:
                 return
             objects = self.world.query_by_distance(point_world_frame[0], 1.5)
-            print("close objects: ", objects)
+            #print("close objects: ", objects)
             to_remove = []  
             for obj in objects:
-                print(obj.last_seen.to_sec(), rospy.Time.now().to_sec())
-                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 30.0:
+                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
                     to_remove.append(obj.id)
 
-            print("To remove: ", to_remove)
             self.world.remove_objects(to_remove)
+            try:
+                self.world.clean_up()
+            except Exception as e:
+                rospy.logerr("THIS : " + str(e))
+                rospy.signal_shutdown("Error in check_still_there: ")
 
     # @time_it
     def compute_object(self, id, box, depth_image, mask, label, score, header, pose_estimator):
@@ -203,10 +207,10 @@ class Mapper(object):
     # @time_it
     def publish_pointclouds(self, frame, stamp, objects = None):
         if objects is None:
-            objects = self.world.get_objects()
-        
+            objects = self.world.get_objects()        
         msg = create_pointcloud_message(objects, frame, stamp)
-        self.pc_pub.publish(msg)
+        if msg:
+            self.pc_pub.publish(msg)
 
     # @time_it
     def publish_markers(self, stamp):
@@ -222,9 +226,6 @@ class Mapper(object):
 
         if labels_msg:
             self.marker_pub.publish(labels_msg)
-    
-    def remove_old_moving_objects(self, event):
-        self.world.remove_old_moving_objects()
     
     def plot_centroids(self, event):
         centroids = self.world.get_kdtree_centroids()

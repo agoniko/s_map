@@ -63,34 +63,10 @@ class CameraPoseEstimator:
         return [x_3d, y_3d, z_3d]
 
     def multiple_pixels_to_3d(self, uvz):
-        """
-        Parallelized version of pixel_to_3d for mutliple points modified from the official library
-        :param uvz:        np.ndarray of rectified pixel coordinates + depth estimation in meters
-        :type uvz:         [(u, v, z), ...]
+        uv = np.array(uvz[:, :2])
+        z = np.array(uvz[:, 2])
 
-        Returns the unit vector which passes from the camera center to through rectified pixel (u, v),
-        using the camera :math:`P` matrix.
-        This is the inverse of :meth:`project3dToPixel`.
-        """
-        u = (uvz[:, 0] - self.camera.cx) / self.camera.fx
-        v = (uvz[:, 1] - self.camera.cy) / self.camera.fy
-        depth = uvz[:, 2]
-
-        # extracting unit 3dray
-        uv = np.stack((u, v, np.ones(len(u))), axis=1)
-        norms = np.linalg.norm(uv, axis=1, keepdims=False)
-
-        u /= norms
-        v /= norms
-        z = np.ones(len(norms)) / norms
-
-        # scaling the unit vector by the depth to get the 3d point
-        x_3d = u * depth
-        y_3d = v * depth
-        z_3d = z * depth
-
-        points = np.stack((x_3d, y_3d, z_3d), axis=1)
-        return points
+        return self.camera.batch_project_pixel_to_3d_ray(uv, z)
 
     def d3_to_pixel(self, x, y, z):
         return self.camera.project3dToPixel((x, y, z))

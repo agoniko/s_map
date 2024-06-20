@@ -47,6 +47,8 @@ def create_pointcloud_message(objects, frame, stamp):
         else:
             rospy.logerr(f"Label {obj.label} not found in label colors")
 
+    points = np.array(points, dtype=np.float32)
+
     fields = [
         PointField("x", 0, PointField.FLOAT32, 1),
         PointField("y", 4, PointField.FLOAT32, 1),
@@ -57,17 +59,21 @@ def create_pointcloud_message(objects, frame, stamp):
     header = Header()
     header.stamp = stamp
     header.frame_id = frame
+    try:
+        x = points[:, 0]
+        y = points[:, 1]
+        z = points[:, 2]
+        rgb = points[:, 3].astype(np.uint32)
 
-    x = points[:, 0]
-    y = points[:, 1]
-    z = points[:, 2]
-    rgb = points[:, 3].astype(np.uint32)
-
-    pc2 = point_cloud2.create_cloud(
-        header, fields, [list(i) for i in zip(x, y, z, rgb)]
-    )
-    # pc2 = point_cloud2.create_cloud_xyz32(header, points)
-    return pc2
+        pc2 = point_cloud2.create_cloud(
+            header, fields, [list(i) for i in zip(x, y, z, rgb)]
+        )
+        # pc2 = point_cloud2.create_cloud_xyz32(header, points)
+        return pc2
+    
+    except Exception as e:
+        rospy.logerr(f"Error creating point cloud message: {e}")
+        return None
 
 
 def create_delete_marker(frame):
@@ -110,7 +116,7 @@ def create_marker_text(label, position, marker_id, stamp, frame):
 
 def create_marker_array(objects, frame, stamp):
     if len(objects) == 0:
-        return None
+        return None, None
 
     msg = MarkerArray()
     label_msg = MarkerArray()
@@ -130,7 +136,7 @@ def create_marker_array(objects, frame, stamp):
     if label_msg.markers:
         return (msg, label_msg)
     else:
-        return (msg, None)
+        return (msg, -1)
 
 # Example usage
 # objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.

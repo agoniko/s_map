@@ -25,7 +25,7 @@ ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
 MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
-SUBSCRIPTION_QUEUE_SIZE = 50
+QUEUE_SIZE = 1
 MOVING_CLASSES = ["person"]
 
 class Node:
@@ -55,6 +55,7 @@ class Node:
         "box_annotator",
         "image_sub",
         "depth_sub",
+        "depth_confidence_sub",
         "laser_sub",
         "synchronizer",
         "annotated_image_pub",
@@ -82,18 +83,19 @@ class Node:
         # Subscribers
         self.image_sub = Subscriber(RGB_TOPIC, Image)
         self.depth_sub = Subscriber(DEPTH_TOPIC, Image)
-        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub], SUBSCRIPTION_QUEUE_SIZE)
+        self.depth_confidence_sub = Subscriber("/realsense/confidence/image_rect_raw", Image)
+        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub, self.depth_confidence_sub], QUEUE_SIZE)
         self.synchronizer.registerCallback(self.detection_callback)
 
         # Publishers
         self.annotated_image_pub = rospy.Publisher(
-            ANNOTATED_IMAGES_TOPIC, Image, queue_size=10
+            ANNOTATED_IMAGES_TOPIC, Image, queue_size=QUEUE_SIZE
         )
         self.results_pub = rospy.Publisher(
-            DETECTION_RESULTS_TOPIC, Detection, queue_size=10
+            DETECTION_RESULTS_TOPIC, Detection, queue_size=QUEUE_SIZE
         )
         self.filtered_depth_pub = rospy.Publisher(
-            "/s_map/depth_filtered", Image, queue_size=10
+            "/s_map/depth_filtered", Image, queue_size=1
         )
     
     def get_device(self):
@@ -148,8 +150,12 @@ class Node:
         except:
             return None
     
+    def preprocess_depth(self, depth_msg, conf_message):
+        conf_image = self.cv_bridge.imgmsg_to_cv2(conf_message, "passthrough")
+        print(conf_image.shape, np.min(conf_image), np.max(conf_image))
+    
     #@time_it
-    def detection_callback(self, image_msg, depth_msg):
+    def detection_callback(self, image_msg, depth_msg, confidence_msg):
         """
         Callback for processing images received from the RGB topic.
         Received images are already rectified and aligned with the depth image.
@@ -159,6 +165,7 @@ class Node:
             image_msg (Image): The incoming ROS message containing the image data.
             depth_msg (Image): The incoming ROS message containing the depth data.
         """
+        #self.preprocess_depth(depth_msg, confidence_msg)
         if image_msg.header.seq % 1 != 0:
             return
 
