@@ -8,9 +8,13 @@ from utils import averageQuaternions, weightedAverageQuaternions
 import rospy
 from scipy.spatial.transform import Rotation as R
 import copy
+import threading
 
 
 TIME_TO_BE_CONFIRMED = 0.2
+EXPIRY_TIME_MOVING_OBJECTS = 5.0
+STD_THR = 0.3
+VOXEL_SIZE = 0.05
 MOVING_CLASSES = ["person"]
 
 
@@ -62,19 +66,19 @@ class Obj:
         # saving other's centroid before registration
         other_centroid = np.asarray(other.pcd.points).mean(axis=0)
         self.centroids = np.concatenate((self.centroids, [other_centroid]), axis=0)
-
-        # saving other's quaternion before registration
+        #
+        ## saving other's quaternion before registration
         r = other.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
         self.quaternions = np.concatenate(
             (self.quaternions, [R.from_matrix(r).as_quat()]), axis=0
         )
-
+        #
         try:
             other = self.register_pointcloud_to_self(other)
         except Exception as e:
             rospy.logwarn(f"Error in registering point clouds: {e}")
             return
-
+        #
         self.last_seen = max(self.last_seen, other.last_seen)
 
         # Euristics: an object is confirmed if it has been seen multiple times
@@ -92,12 +96,12 @@ class Obj:
             combined_points = np.concatenate((old_points, new_points), axis=0)
             self.pcd.points = o3d.utility.Vector3dVector(combined_points)
 
-            #weights = linear_weights(len(self.quaternions))
-            #centroid = np.average(self.centroids, axis=0, weights=weights)
-            #quaternion = weightedAverageQuaternions(self.quaternions, weights)
-            #rot_matrix = R.from_quat(quaternion).as_matrix()
-            #self.pcd.translate(centroid, relative=False)
-            #self.pcd.rotate(rot_matrix)
+            weights = linear_weights(len(self.quaternions))
+            centroid = np.average(self.centroids, axis=0, weights=weights)
+            quaternion = weightedAverageQuaternions(self.quaternions, weights)
+            rot_matrix = R.from_quat(quaternion).as_matrix()
+            self.pcd.translate(centroid, relative=False)
+            self.pcd.rotate(rot_matrix)
 
         self.compute()
         self.label = other.label if other.score > self.score else self.label
@@ -155,16 +159,15 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute(self):
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=0.05)
+        self.pcd = self.pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
         self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=30, radius=0.5)
         # clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=0.1)
         # clean = self.pcd
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
-            return
 
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(clean.points).mean(axis=0)
@@ -179,6 +182,7 @@ class World:
         self.points_list = []
         self.id2index = {}
         self.index2id = {}
+        self.lock = threading.Lock()  # thread safe for deleting operations
         if o3d.core.cuda.is_available():
             print("CUDA is available in Open3D.")
         else:
@@ -203,20 +207,21 @@ class World:
     # @time_it
     def remove_objects(self, obj_ids):
         """Removes an object from the world."""
-        for obj_id in obj_ids:
-            if obj_id in self.objects:
-                self.objects.pop(obj_id)
+        with self.lock:
+            for obj_id in obj_ids:
+                if obj_id in self.objects:
+                    self.objects.pop(obj_id)
 
-        self.points_list = []
-        self.id2index = {}
-        self.index2id = {}
+            self.points_list = []
+            self.id2index = {}
+            self.index2id = {}
 
-        for i, (id, obj) in enumerate(self.objects.items()):
-            self.id2index[id] = i
-            self.index2id[i] = id
-            self.points_list.append(obj.centroid)
+            for i, (id, obj) in enumerate(self.objects.items()):
+                self.id2index[id] = i
+                self.index2id[i] = id
+                self.points_list.append(obj.centroid)
 
-        self._rebuild_kdtree()
+            self._rebuild_kdtree()
 
     def override_object(self, old_id, obj):
         old_obj = self.objects[old_id]
@@ -280,19 +285,23 @@ class World:
         world_id = self.get_world_id(obj)
         if world_id != obj.id:
             self.override_object(world_id, obj)
-        print(self.id2index.keys())
         return self.objects[obj.id]
 
-    def remove_old_moving_objects(self):
+    def clean_up(self):
+        """
+        Removes moving object that are not currently tracked or objects which Pointcloud has a std greater than a thr.
+        """
         to_remove = []
         for obj in self.objects.values():
+            print(f"Object {obj.id}:{obj.label}, STD: {np.std(np.asarray(obj.pcd.points), axis=0).max()}")
             if (
                 obj.label in MOVING_CLASSES
-                and obj.last_seen.to_sec() < rospy.Time.now().to_sec() - 1.0
-            ):
+                and obj.last_seen.to_sec()
+                < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
+            ) or np.std(np.asarray(obj.pcd.points), axis=0).max() > STD_THR:
                 to_remove.append(obj.id)
-
+        print("To remove: ", to_remove)
         self.remove_objects(to_remove)
-    
+
     def get_kdtree_centroids(self):
         return self.points_list
