@@ -1,0 +1,169 @@
+\usepackage{color}
+\definecolor{DecoratedSubheadingsSecColor}{rgb}{0.7, 0.7, 0.7}
+\definecolor{SecColor}{rgb}{0.7, 0.7, 0.7}
+
+%======================================================================
+% Chapter headings:
+%======================================================================
+
+% Numbered chapters:
+\def\@makechapterhead#1{
+  {
+        % \cleardoublepage
+    \vspace*{0.09\textheight}%
+    \noindent\hspace{-\oddsidemargin}%???
+    \addtolength\textwidth\oddsidemargin%???
+    \vrule \parbox{\textwidth}{%
+       \hspace{5pt}%
+       \noindent\Huge\sffamily\textbf{\textcolor{SecColor}{\thechapter}}%
+    \vspace{5pt}%
+    \hrule%
+    \vspace{5pt}%
+      \hspace{5pt}%
+      \parbox{\textwidth}{%
+      \hyphenpenalty=10000%
+      \tolerance=1000%
+      \noindent\raggedright\Huge\bfseries\sffamily#1
+    }
+    }
+    \vskip 0.1\textheight
+  }
+  %\thispagestyle{fancy}
+}
+
+% Un-numbered chapters:
+\def\@makeschapterhead#1{
+  {
+        % \cleardoublepage
+    \vspace*{0.09\textheight}%
+    \noindent%\hspace{-\oddsidemargin}%???
+    %\addtolength\textwidth\oddsidemargin%???
+    \phantom{\Huge \thechapter}%
+    \vspace{5pt}%
+    %\hspace{-\oddsidemargin}%???
+    \hrule%
+    \vspace{5pt}%
+    \noindent\raggedright\Huge\bfseries\sffamily#1
+    \vskip 0.1\textheight
+  }
+  %\thispagestyle{fancy}
+}
+
+
+%======================================================================
+% Section headings:
+%======================================================================
+\renewcommand\section{%
+%  \checkoddpage \ifcpoddpage
+    \@startsection {section}{1}%
+    {-\oddsidemargin}%
+    {-3.5ex \@plus -1ex \@minus -.2ex}%
+    {2.3ex \@plus.2ex}%
+    {
+      \normalfont\Large\bfseries\sffamily%\fontseries{eb}\selectfont%
+      \raggedright  %  Always use ragged right!!
+      % Put over-rule here!
+      \noindent\hspace{-\oddsidemargin}%
+      {\addtolength\oddsidemargin\linewidth % local temporary calc
+        \rule [1ex]{\oddsidemargin}{0.4pt}\@@par\nobreak
+      }% restore \oddsidemargin
+      \vspace{-3mm}
+    }%
+%   \else
+%    \@startsection {section}{1}%
+%     {\z@}%
+%     {-3.5ex \@plus -1ex \@minus -.2ex}%
+%     {2.3ex \@plus.2ex}%
+%     {
+%       \normalfont\Large\bfseries\sffamily%\fontseries{eb}\selectfont%
+%       \raggedright  %  Always use ragged right!!
+%       % Put over-rule here!
+%       \noindent\hspace{-\oddsidemargin}%
+%       {\addtolength\oddsidemargin\linewidth % local temporary calc
+%         \rule [1ex]{\oddsidemargin}{0.4pt}\@@par\nobreak
+%       }% restore \oddsidemargin
+%       \vspace{-3mm}
+%     }%
+%   \fi
+}
+
+
+%======================================================================
+% Subsection headings:
+%======================================================================
+\renewcommand\subsection{\@startsection{subsection}{2}%
+  {\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {%Grey box:
+    \noindent\textcolor{DecoratedSubheadingsSecColor}{%\hspace{-12mm}
+     \rule[-0.45mm]{4mm}{4mm}\hspace{2mm}}
+   %Font spec:
+   \reset@font\large\bfseries\sffamily
+   \raggedright
+   %Hyphenated headings are ugly:
+   \hyphenpenalty=5000
+   \tolerance=1000
+}}
+
+%======================================================================
+% Sub-subsection headings:
+%======================================================================
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}
+  {\z@}%
+  {-3.25ex\@plus -1ex \@minus -.2ex}%
+  {1.5ex \@plus .2ex}%
+  {\reset@font\normalsize\bfseries\sffamily%
+}}
+
+%======================================================================
+% Paragraph headings:
+%======================================================================
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+                {3.25ex \@plus1ex \@minus.2ex}%
+                {-1em}%
+                {\reset@font\normalsize\bfseries\sffamily%
+}}
+
+%======================================================================
+% Subparagraph headings:
+%======================================================================
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+                {3.25ex \@plus1ex \@minus .2ex}%
+                {-1em}%
+                {\reset@font\normalsize\bfseries\sffamily%
+}}
+
+
+
+%======================================================================
+% Title page:
+% (http://www.math.jussieu.fr/~zoonek/LaTeX/LaTeX_samples_title/0.html)
+%======================================================================
+\def\thickhrulefill{\leavevmode \leaders \hrule height 1pt\hfill \kern \z@}
+\renewcommand{\maketitle}{\begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \parindent \z@
+    \reset@font
+    \null\vfil
+    \hrule height 4pt
+    \vskip 10\p@
+    \begin{flushright}
+      \Huge\bfseries\sffamily%
+      \strut \@title \par
+      \vskip 30\p@
+      \Large\bfseries\sffamily%
+      \strut \@author
+    \vskip 5\p@
+    \hrule height 4pt
+    \vskip 300\p@
+    \vfil\null
+    \large\bfseries\sffamily \@date %
+    \ifnotfinished
+      \large\sffamily \\DRAFT
+    \fi
+    \end{flushright}
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+}
