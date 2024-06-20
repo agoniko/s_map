@@ -1,0 +1,60 @@
+\documentclass[bac, screen]{bai-thesis}
+\usepackage{thesis}
+
+%-------------------------------------------------------------------------------
+% Packages and macros
+\usepackage{verbatim}
+%-------------------------------------------------------------------------------
+%Uncomment if you want to use acronyms, and add your acronyms here
+
+%\usepackage[acronym,shortcuts,nonumberlist,nopostdot]{glossaries}
+%\makeglossaries
+%\newacronym{ros}{ROS}{Robot Operating System}
+%\newacronym{vr}{VR}{Virtual Reality}
+
+%-------------------------------------------------------------------------------
+% Title information
+%-------------------------------------------------------------------------------
+\title{The Bachelor in AI Thesis Using}
+
+\author{Nicolo Giovanni Agostara}
+\date{\today}
+
+% Select the subject
+\subject{Artificial Intelligence}
+
+% Academic Year
+\AY{2023/2024}
+
+\supervisor{First Supervisor, Affiliation}
+\supervisor{Second Supervisor, Affiliation}
+%-------------------------------------------------------------------------------
+
+%-------------------------------------------------------------------------------
+\begin{document}
+\maketitle
+%-------------------------------------------------------------------------------
+% \frontmatter
+%-------------------------------------------------------------------------------
+\include{contents}
+\include{content/abstract}
+%-------------------------------------------------------------------------------
+% \mainmatter
+%-------------------------------------------------------------------------------
+\include{content/introduction}
+\include{content/usage}
+\include{content/guidelines}
+\include{content/conclusions}
+%-------------------------------------------------------------------------------
+% \backmatter
+%-------------------------------------------------------------------------------
+% Uncomment if you use acronyms
+
+%\phantomsection
+%\pdfbookmark[1]{List of Acronyms}{listofacronyms}
+%\printglossary[type=\acronymtype]
+%-------------------------------------------------------------------------------
+\include{backmatter}
+%-------------------------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------------------------
