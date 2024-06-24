@@ -3,7 +3,10 @@
     <arg name="rtabmap_viz" default="false" />
 
     <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
-    <include file="$(find s_map)/src/launch/map_heron.launch"/>
+    <include file="$(find s_map)/src/launch/map_heron.launch">
+        <arg name="mapping" value="true"/>
+        <arg name="odom_topic" value="/odom/filtered"/>
+    </include>
 
     <!--node pkg="s_map" type="pc2_to_depth_image.py" name="pc2_to_depth_image"  output="screen">
         <param name="camera_info_topic" value="realsense/rgb/camera_info"/>

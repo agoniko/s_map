@@ -4,6 +4,9 @@ import rospy
 import tf2_ros
 import tf2_msgs.msg
 import geometry_msgs.msg
+from nav_msgs.msg import Odometry
+
+import numpy as np
 
 class TfFilterNode:
     def __init__(self):
@@ -17,20 +20,26 @@ class TfFilterNode:
         # Subscribe to the /tf topic
         rospy.Subscriber('/tf_old', tf2_msgs.msg.TFMessage, self.tf_callback)
         rospy.Subscriber('/tf_static_old', tf2_msgs.msg.TFMessage, self.tf_callback)
+        rospy.Subscriber("/odom", Odometry, self.odom_callback)
+
+        self.odom_pub = rospy.Publisher("/odom/filtered", Odometry, queue_size=10)
     
     def tf_callback(self, msg):
         filtered_transforms = []
         
         for transform in msg.transforms:
-            if transform.header.frame_id.lstrip("/") == "mir/base_footprint":
-                pass
-                #print(transform)
             if transform.child_frame_id not in self.unwanted_frames and transform.header.frame_id not in self.unwanted_frames:
                 filtered_transforms.append(transform)
         
         if filtered_transforms:
             filtered_msg = tf2_msgs.msg.TFMessage(transforms=filtered_transforms)
             self.tf_broadcaster.sendTransform(filtered_msg.transforms)
+    
+    def odom_callback(self, msg):
+        #overwrite the odom covariance matrix as 0.1 Identity
+        msg.pose.covariance = (np.identity(6)*0.1).flatten().tolist()
+        msg.twist.covariance = (np.identity(6)*0.1).flatten().tolist()
+        self.odom_pub.publish(msg)
 
 if __name__ == '__main__':
     rospy.init_node('tf_filter')
