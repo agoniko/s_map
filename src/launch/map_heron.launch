@@ -1,6 +1,7 @@
 <launch>
 
-  <arg name="max_range" default="0" />
+  <arg name="mapping" type="bool" default="true" />
+  <arg name="odom_topic" default="/odom"/>
   
   <!-- Point to Plane ICP? (has effect only when hector:=false) -->
   <arg name="p2n" default="true" />
@@ -39,35 +40,70 @@
       <param name="approx_sync"       value="true"/> 
       <param name="queue_size"        value="100"/>
     </node>
+
     <!-- SLAM -->
     <!-- args: "delete_db_on_start" and "udebug" -->
-    <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="">
-      <param name="Mem/IncrementalMemory" type="string" value="false"/>
-      <param name="Optimizer/Strategy" value="2"/> <!-- 0=TORO 1=g2o 2=GTSAM-->
-      <param name="subscribe_depth"  type="bool"   value="false"/>
-      <param name="subscribe_rgbd"   type="bool"   value="true"/>
-      <!--param name="subscribe_rgb"   type="bool"   value="true"/-->
-      <param name="frame_id"         type="string" value="mir/base_link"/>
-      <param name="subscribe_scan"   type="bool"   value="true"/>
-      <param name="GridGlobal/MinSize" value = "30" />
-      <param name="Grid/RangeMax" value = "9" />
-      <param name="Vis/MinInliers" value = "10" />
-      <param name="Vis/EstimationType" value = "0" />
-      <param name="queue_size"        value="100"/>
+    <group unless="$(arg mapping)">
+      <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="">
+        <param name="Mem/IncrementalMemory" type="string" value="false"/>
+        <param name="Optimizer/Strategy" value="2"/> <!-- 0=TORO 1=g2o 2=GTSAM-->
+        <param name="subscribe_depth"  type="bool"   value="false"/>
+        <param name="subscribe_rgbd"   type="bool"   value="true"/>
+        <!--param name="subscribe_rgb"   type="bool"   value="true"/-->
+        <param name="frame_id"         type="string" value="mir/base_link"/>
+        <param name="subscribe_scan"   type="bool"   value="true"/>
+        <param name="GridGlobal/MinSize" value = "30" />
+        <param name="Grid/RangeMax" value = "9" />
+        <param name="Vis/MinInliers" value = "10" />
+        <param name="Vis/EstimationType" value = "0" />
+        <param name="queue_size"        value="100"/>
 
-      <param name="Reg/Force3DoF"             type="string" value="true"/>
-      <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
+        <param name="Reg/Force3DoF"             type="string" value="true"/>
+        <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
 
-      <remap from="scan" to="/scan"/>
-      <remap from="odom" to="/odom"/>
+        <remap from="scan" to="/scan"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
 
-      <!--remap from="/rtabmap/rgb/image" to="/realsense/rgb/image_raw" />
-      <remap from="/rtabmap/rgb/camera_info" to="/realsense/rgb/camera_info" /-->
-      <param name="Grid/FromDepth"     type="string" value="true"/>
+        <!--remap from="/rtabmap/rgb/image" to="/realsense/rgb/image_raw" />
+        <remap from="/rtabmap/rgb/camera_info" to="/realsense/rgb/camera_info" /-->
+        <param name="Grid/FromDepth"     type="string" value="true"/>
 
-      <!-- RTAB-Map's parameters -->
-      <param name="Rtabmap/DetectionRate" type="int" value="30"/> <!-- 0=as fast as possible -->
-    </node>
+        <!-- RTAB-Map's parameters -->
+        <param name="Rtabmap/DetectionRate" type="int" value="30"/> <!-- 0=as fast as possible -->
+      </node>
+    </group>
+
+    <!-- SLAM -->
+    <!-- args: "delete_db_on_start" and "udebug" -->
+    <group if="$(arg mapping)">
+      <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="--delete_db_on_start">
+        <param name="Mem/IncrementalMemory" type="string" value="true"/>
+        <param name="Optimizer/Strategy" value="2"/> <!-- 0=TORO 1=g2o 2=GTSAM-->
+        <param name="subscribe_depth"  type="bool"   value="false"/>
+        <param name="subscribe_rgbd"   type="bool"   value="true"/>
+        <!--param name="subscribe_rgb"   type="bool"   value="true"/-->
+        <param name="frame_id"         type="string" value="mir/base_link"/>
+        <param name="subscribe_scan"   type="bool"   value="true"/>
+        <param name="GridGlobal/MinSize" value = "30" />
+        <param name="Grid/RangeMax" value = "9" />
+        <param name="Vis/MinInliers" value = "10" />
+        <param name="Vis/EstimationType" value = "0" />
+        <param name="queue_size"        value="100"/>
+
+        <param name="Reg/Force3DoF"             type="string" value="true"/>
+        <param name="Reg/Strategy"              type="string" value="1"/> <!-- 1=ICP -->
+
+        <remap from="scan" to="/scan"/>
+        <remap from="odom" to="$(arg odom_topic)"/>
+
+        <!--remap from="/rtabmap/rgb/image" to="/realsense/rgb/image_raw" />
+        <remap from="/rtabmap/rgb/camera_info" to="/realsense/rgb/camera_info" /-->
+        <param name="Grid/FromDepth"     type="string" value="true"/>
+
+        <!-- RTAB-Map's parameters -->
+        <param name="Rtabmap/DetectionRate" type="int" value="30"/> <!-- 0=as fast as possible -->
+      </node>
+    </group>
   </group>
 
 </launch>
