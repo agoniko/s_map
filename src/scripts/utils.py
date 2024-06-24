@@ -130,7 +130,7 @@ def create_marker_array(objects, frame, stamp):
             bbox = np.array(obj.bbox)
             central_position = bbox.mean(axis=0)
             if np.sum(np.abs(central_position)) > 0:
-                label_marker = create_marker_text(obj.label, central_position, obj.id, stamp, frame)
+                label_marker = create_marker_text(f"{obj.label}:{obj.id}", central_position, obj.id, stamp, frame)
                 label_msg.markers.append(label_marker)
             
     if label_msg.markers:

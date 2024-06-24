@@ -37,7 +37,7 @@ PKG_PATH = rospkg.RosPack().get_path("s_map")
 
 MAX_DEPTH = 9.0
 MIN_DEPTH = 0.8
-EXPIRY_TIME = 20.0
+EXPIRY_TIME = 30.0
 
 
 class Mapper(object):

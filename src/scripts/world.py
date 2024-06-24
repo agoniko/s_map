@@ -12,9 +12,9 @@ import threading
 
 
 TIME_TO_BE_CONFIRMED = 0.2
-EXPIRY_TIME_MOVING_OBJECTS = 5.0
-STD_THR = 0.3
-VOXEL_SIZE = 0.05
+EXPIRY_TIME_MOVING_OBJECTS = 2.0
+STD_THR = 0.5
+VOXEL_SIZE = 0.03
 MOVING_CLASSES = ["person"]
 
 
@@ -160,10 +160,10 @@ class Obj:
 
     def compute(self):
         self.pcd = self.pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
-        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=30, radius=0.5)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=16, radius=0.5)
         # clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=0.1)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=1.0)
         # clean = self.pcd
         if len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
@@ -191,11 +191,12 @@ class World:
     # @time_it
     def add_object(self, obj):
         """Adds a new object to the world and updates the KDTree."""
-        self.objects[obj.id] = obj
-        self.points_list.append(obj.centroid)  # Using centroid of the bounding box
-        self.id2index[obj.id] = len(self.points_list) - 1
-        self.index2id[len(self.points_list) - 1] = obj.id
-        self._rebuild_kdtree()
+        with self.lock:
+            self.objects[obj.id] = obj
+            self.points_list.append(obj.centroid)  # Using centroid of the bounding box
+            self.id2index[obj.id] = len(self.points_list) - 1
+            self.index2id[len(self.points_list) - 1] = obj.id
+            self._rebuild_kdtree()
 
     # @time_it
     def update_object(self, obj):
@@ -265,7 +266,7 @@ class World:
             if (
                 obj.id != close_obj.id
                 and obj.label == close_obj.label
-                and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
+                and abs(obj.last_seen - close_obj.last_seen).to_sec() > 5.0
             ):
                 # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
@@ -291,17 +292,22 @@ class World:
         """
         Removes moving object that are not currently tracked or objects which Pointcloud has a std greater than a thr.
         """
-        to_remove = []
+        to_remove = {}
         for obj in self.objects.values():
-            print(f"Object {obj.id}:{obj.label}, STD: {np.std(np.asarray(obj.pcd.points), axis=0).max()}")
             if (
-                obj.label in MOVING_CLASSES
-                and obj.last_seen.to_sec()
-                < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
-            ) or np.std(np.asarray(obj.pcd.points), axis=0).max() > STD_THR:
-                to_remove.append(obj.id)
-        print("To remove: ", to_remove)
-        self.remove_objects(to_remove)
+                    obj.label in MOVING_CLASSES
+                    and obj.last_seen.to_sec()
+                    < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
+            ):
+                to_remove[obj.id] = "Expired"
+            
+            std = np.std(np.asarray(obj.pcd.points), axis=0).max()
+            if  std > STD_THR:
+                to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
+
+        if len(to_remove) > 0:
+            print("To remove: ", to_remove)
+        self.remove_objects(list(to_remove.keys()))
 
     def get_kdtree_centroids(self):
         return self.points_list
