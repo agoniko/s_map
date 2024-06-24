@@ -23,7 +23,8 @@ class TfFilterNode:
         
         for transform in msg.transforms:
             if transform.header.frame_id.lstrip("/") == "mir/base_footprint":
-                print(transform)
+                pass
+                #print(transform)
             if transform.child_frame_id not in self.unwanted_frames and transform.header.frame_id not in self.unwanted_frames:
                 filtered_transforms.append(transform)
         

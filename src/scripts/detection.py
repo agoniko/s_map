@@ -83,8 +83,8 @@ class Node:
         # Subscribers
         self.image_sub = Subscriber(RGB_TOPIC, Image)
         self.depth_sub = Subscriber(DEPTH_TOPIC, Image)
-        self.depth_confidence_sub = Subscriber("/realsense/confidence/image_rect_raw", Image)
-        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub, self.depth_confidence_sub], QUEUE_SIZE)
+        #self.depth_confidence_sub = Subscriber("/realsense/confidence/image_rect_raw", Image)
+        self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub], QUEUE_SIZE)
         self.synchronizer.registerCallback(self.detection_callback)
 
         # Publishers
@@ -155,7 +155,7 @@ class Node:
         print(conf_image.shape, np.min(conf_image), np.max(conf_image))
     
     #@time_it
-    def detection_callback(self, image_msg, depth_msg, confidence_msg):
+    def detection_callback(self, image_msg, depth_msg):
         """
         Callback for processing images received from the RGB topic.
         Received images are already rectified and aligned with the depth image.
