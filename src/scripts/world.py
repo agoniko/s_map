@@ -14,7 +14,7 @@ import threading
 TIME_TO_BE_CONFIRMED = 0.2
 EXPIRY_TIME_MOVING_OBJECTS = 2.0
 STD_THR = 0.5
-VOXEL_SIZE = 0.03
+VOXEL_SIZE = 0.05
 MOVING_CLASSES = ["person"]
 
 
@@ -163,11 +163,12 @@ class Obj:
         self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=16, radius=0.5)
         # clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
 
-        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=100, std_ratio=1.0)
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=1.0)
         # clean = self.pcd
-        if len(clean.points) <= 10:
+        if clean.points is None or len(clean.points) <= 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
+            return
 
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(clean.points).mean(axis=0)
@@ -248,7 +249,13 @@ class World:
 
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:
-            self.kdtree = KDTree(np.array(self.points_list))
+            inf_index = np.where(self.points_list == np.repeat(np.inf, 3))
+            none_index = np.where(self.points_list == np.repeat(np.nan, 3))
+            #print(inf_index, none_index)
+            try:
+                self.kdtree = KDTree(np.array(self.points_list))
+            except:
+                print(self.points_list, inf_index, none_index)
 
     # @time_it
     def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.05):
@@ -307,7 +314,7 @@ class World:
 
         if len(to_remove) > 0:
             print("To remove: ", to_remove)
-        self.remove_objects(list(to_remove.keys()))
+            self.remove_objects(list(to_remove.keys()))
 
     def get_kdtree_centroids(self):
         return self.points_list
