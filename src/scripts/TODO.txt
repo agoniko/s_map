@@ -1,5 +1,2 @@
-Image rotate package fopr frontleft/frontright and right camera
-3d occupancy grid implementation
-Lidar - rgbd fusion
-DeepSORT for tracking
-GroundingDINO for open vocabulary detection
+- BUG: Check why bbox are noisy when tracked, shouldn't be
+- BUG: small objects cannot be represented due to voxel downsampling and cleaning
