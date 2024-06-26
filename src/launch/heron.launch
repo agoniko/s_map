@@ -1,17 +1,13 @@
 <launch>
-    <arg name="rviz"       default="true" />
+    <arg name="rviz"       default="false" />
     <arg name="rtabmap_viz" default="false" />
 
     <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
     <include file="$(find s_map)/src/launch/map_heron.launch">
         <arg name="mapping" value="true"/>
+        <arg name="rgbd" type="bool" value="false" />
         <arg name="odom_topic" value="/odom/filtered"/>
     </include>
-
-    <!--node pkg="s_map" type="pc2_to_depth_image.py" name="pc2_to_depth_image"  output="screen">
-        <param name="camera_info_topic" value="realsense/rgb/camera_info"/>
-        <param name="rgb_topic" value="/realsense/rgb/image_raw"/>
-    </node-->
 
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
         <param name="camera_name" value="front"/>
