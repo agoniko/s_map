@@ -13,7 +13,7 @@ import threading
 
 TIME_TO_BE_CONFIRMED = 0.2
 EXPIRY_TIME_MOVING_OBJECTS = 2.0
-STD_THR = 0.5
+STD_THR = 0.4
 VOXEL_SIZE = 0.03
 MOVING_CLASSES = ["person"]
 
@@ -61,19 +61,19 @@ class Obj:
         self.pcd = o3d.t.geometry.PointCloud(device=self.device)
 
         points = np.asarray(points, dtype=np.float32)
-        
+
         if points.ndim != 2 or points.shape[1] != 3:
             raise ValueError("Points should be a 2D array with shape (N, 3)")
-        
-        #If points are too much, randomly sample n points
+
+        # If points are too much, randomly sample n points
         if len(points) > 3000:
             idx = np.random.choice(len(points), 3000, replace=False)
             points = points[idx]
 
-        print(points.shape)
-
         try:
-            self.pcd.point.positions = o3d.core.Tensor(points, o3d.core.float32, self.device)
+            self.pcd.point.positions = o3d.core.Tensor(
+                points, o3d.core.float32, self.device
+            )
         except Exception as e:
             rospy.logerr(f"Error creating tensor for point cloud positions: {e}")
             raise
@@ -81,18 +81,27 @@ class Obj:
         self.last_seen = stamp
         self.first_seen = stamp
         self.is_confirmed = False
+        self.centroids = (
+            self.pcd.point.positions.cpu().numpy().mean(axis=0).reshape(1, 3)
+        )
+
+        r = self.pcd.cpu().to_legacy().get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
-        try:
-            other = self.register_pointcloud_to_self(other)
-        except Exception as e:
-            rospy.logwarn(f"Error in registering point clouds: {e}")
-            return
-
+        # saving other's centroid before registration
+        other_centroid = other.pcd.point.positions.cpu().numpy().mean(axis=0)
+        self.centroids = np.concatenate((self.centroids, [other_centroid]), axis=0)
+        #
+        ## saving other's quaternion before registration
+        r = other.pcd.cpu().to_legacy().get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.concatenate(
+            (self.quaternions, [R.from_matrix(r).as_quat()]), axis=0
+        )
+        #
         self.last_seen = max(self.last_seen, other.last_seen)
-
         # Euristics: an object is confirmed if it has been seen multiple times
         if not self.is_confirmed:
             self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(
@@ -101,11 +110,25 @@ class Obj:
 
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
-            self.pcd.point.positions = other.pcd.point.positions
+            self.release_resources()
+            self.pcd = other.pcd
         else:
-            self.pcd.point.positions = o3d.core.concatenate(
-                (self.pcd.point.positions, other.pcd.point.positions), axis=0
-            )
+            try:
+                other = self.register_pointcloud_to_self(other)
+                self.pcd.point.positions = o3d.core.concatenate(
+                    (self.pcd.point.positions, other.pcd.point.positions), axis=0
+                )
+                #weights = exponential_weights(len(self.quaternions), decay_rate=1)
+                #centroid = np.average(self.centroids, axis=0, weights=weights)
+                #quaternion = weightedAverageQuaternions(self.quaternions, weights)
+                #rot_matrix = R.from_quat(quaternion).as_matrix()
+                #self.pcd.translate(centroid, relative=False)
+                #self.pcd.rotate(rot_matrix, center=np.zeros(3))
+
+            except Exception as e:
+                rospy.logwarn(f"Error in registering point clouds: {e}, Keeping Last")
+                self.release_resources()
+                self.pcd = other.pcd
 
         self.compute()
 
@@ -113,21 +136,24 @@ class Obj:
         """Registers another point cloud to this one and returns the transformed point cloud."""
         source = other.pcd
         target = self.pcd
+        if len(source.point.positions) == 0 or len(target.point.positions) == 0:
+            raise ValueError("Empty point cloud")
 
         # Perform ICP registration on GPU
         criteria = o3d.t.pipelines.registration.ICPConvergenceCriteria(
             relative_fitness=1e-6, relative_rmse=1e-6, max_iteration=30
         )
+
         registration_result = o3d.t.pipelines.registration.icp(
             source,
             target,
             0.2,
             np.eye(4),
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
-            #criteria,
+            criteria,
         )
-        if registration_result.fitness < 0.2:
-            raise ValueError("ICP registration failed.")
+        if registration_result.fitness < 0.5:
+            raise ValueError("ICP registration failed")
 
         transformation = registration_result.transformation
         source.transform(transformation)
@@ -143,13 +169,21 @@ class Obj:
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
 
-        self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 10)
-        clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
+        self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 5)
+        if len(self.pcd.point.positions) == 0:
+            self.bbox = np.zeros((8, 3))
+            self.centroid = np.zeros(3)
+            print("ZEROOOO")
+            return
+
         self.pcd.estimate_normals(max_nn=30, radius=0.1)
+
+        clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
 
         if len(clean.point.positions) < 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
+            print("ZEROOO CLEANNN")
             return
 
         self.bbox = self.compute_z_oriented_bounding_box(clean)
@@ -220,6 +254,11 @@ class Obj:
         self.pcd = self.pcd.voxel_down_sample(voxel_size)
         return voxel_size
 
+    def release_resources(self):
+        """Safely releases all resources used by the object, including GPU memory."""
+        # Ensure all tensors are deallocated
+        self.pcd.clear()
+
 
 class World:
     """World class that uses a KDTree for efficient spatial management of objects."""
@@ -259,6 +298,7 @@ class World:
         with self.lock:
             for obj_id in obj_ids:
                 if obj_id in self.objects:
+                    self.objects[obj_id].release_resources()
                     self.objects.pop(obj_id)
 
             self.points_list = []
@@ -346,21 +386,23 @@ class World:
         """
         Removes moving object that are not currently tracked or objects which Pointcloud has a std greater than a thr.
         """
-        to_remove = {}
-        for obj in self.objects.values():
-            if (
-                obj.label in MOVING_CLASSES
-                and obj.last_seen.to_sec()
-                < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
-            ):
-                to_remove[obj.id] = "Expired"
+        with self.lock:
+            to_remove = {}
+            for obj in self.objects.values():
+                if (
+                    obj.label in MOVING_CLASSES
+                    and obj.last_seen.to_sec()
+                    < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
+                ):
+                    to_remove[obj.id] = "Expired"
 
-            std = np.std(obj.pcd.point.positions.cpu().numpy(), axis=0).max()
-            if std > STD_THR:
-                to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
+                if "positions" in obj.pcd.point:
+                    std = np.std(obj.pcd.point.positions.cpu().numpy(), axis=0).max()
+                    if std > STD_THR:
+                        to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
 
         if len(to_remove) > 0:
-            print("To remove: ", to_remove)
+            rospy.logwarn(f"Removing objects: {to_remove}")
             self.remove_objects(list(to_remove.keys()))
 
     def get_kdtree_centroids(self):

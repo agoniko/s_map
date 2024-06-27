@@ -35,9 +35,9 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-MAX_DEPTH = 6.0
+MAX_DEPTH = 8.0
 MIN_DEPTH = 0.8
-EXPIRY_TIME = 30.0
+EXPIRY_TIME = 10.0
 
 
 class Mapper(object):
@@ -53,7 +53,7 @@ class Mapper(object):
         self.world = World()
         self.pose_reliability_evaluator = {}
         rospy.loginfo("Mapping node initialized")
-        rospy.Timer(rospy.Duration(0.3), self.clean_up)
+        rospy.Timer(rospy.Duration(0.5), self.clean_up)
         #rospy.Timer(rospy.Duration(0.1), self.plot_centroids)
     
     def init_params(self):
