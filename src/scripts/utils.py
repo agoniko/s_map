@@ -37,7 +37,10 @@ def create_pointcloud_message(objects, frame, stamp):
         if obj.label.lower() in label_colors:
             r, g, b = label_colors[obj.label.lower()]
             a = 255
-            pc = np.asarray(obj.pcd.points)
+            try:
+                pc = obj.pcd.point.positions.cpu().numpy()
+            except:
+                pc = np.asarray(obj.pcd.points)
             rgb = struct.unpack("I", struct.pack("BBBB", b, g, r, a))[0] * np.ones(
                 (pc.shape[0], 1)
             )

@@ -35,7 +35,7 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-MAX_DEPTH = 9.0
+MAX_DEPTH = 6.0
 MIN_DEPTH = 0.8
 EXPIRY_TIME = 30.0
 
@@ -178,13 +178,17 @@ class Mapper(object):
                 Returns None if the computation fails.
         """
         pc = self.compute_pointcloud(depth_image, mask)
-        if len(pc) < 200:
+        if len(pc) < 10:
             return None
 
         pc_camera_frame = pose_estimator.multiple_pixels_to_3d(pc)
         pc_world_frame = self.transformer.fast_transform(
             header.frame_id, WORLD_FRAME, pc_camera_frame, header.stamp
         )
+
+        if pc_world_frame is None or len(pc_world_frame) < 10:
+            return None
+        
         obj = Obj(id, pc_world_frame, label, score, header.stamp)
         return obj
 
