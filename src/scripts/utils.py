@@ -40,7 +40,7 @@ def create_pointcloud_message(objects, frame, stamp):
             try:
                 pc = obj.pcd.point.positions.cpu().numpy()
             except:
-                pc = np.asarray(obj.pcd.points)
+                return None
             rgb = struct.unpack("I", struct.pack("BBBB", b, g, r, a))[0] * np.ones(
                 (pc.shape[0], 1)
             )
@@ -139,7 +139,7 @@ def create_marker_array(objects, frame, stamp):
     if label_msg.markers:
         return (msg, label_msg)
     else:
-        return (msg, -1)
+        return (msg, None)
 
 # Example usage
 # objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.

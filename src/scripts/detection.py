@@ -23,7 +23,7 @@ import sys
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
 MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
-DETECTION_CONFIDENCE = 0.5
+DETECTION_CONFIDENCE = 0.4
 TRACKER = "bytetrack.yaml"
 QUEUE_SIZE = 1
 MOVING_CLASSES = ["person"]
