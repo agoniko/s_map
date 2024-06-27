@@ -14,7 +14,7 @@ import threading
 TIME_TO_BE_CONFIRMED = 0.2
 EXPIRY_TIME_MOVING_OBJECTS = 2.0
 STD_THR = 0.5
-VOXEL_SIZE = 0.03
+VOXEL_SIZE = 0.05
 MOVING_CLASSES = ["person"]
 
 
@@ -26,13 +26,6 @@ def exponential_weights(length, decay_rate=0.1):
 def linear_weights(length):
     weights = np.linspace(1, 0, length)
     return weights / np.sum(weights)
-
-
-device = (
-    o3d.core.Device("CUDA:0")
-    if o3d.core.cuda.is_available()
-    else o3d.core.Device("CPU:0")
-)
 
 
 class Obj:
@@ -50,47 +43,42 @@ class Obj:
         "is_confirmed",
         "centroids",
         "quaternions",
-        "device",
     ]
 
     def __init__(self, id, points, label, score, stamp):
         self.id = id
         self.label = label
         self.score = score
-        self.device = device
-        self.pcd = o3d.t.geometry.PointCloud(device=self.device)
-
-        points = np.asarray(points, dtype=np.float32)
-        
-        if points.ndim != 2 or points.shape[1] != 3:
-            raise ValueError("Points should be a 2D array with shape (N, 3)")
-        
-        #If points are too much, randomly sample n points
-        if len(points) > 3000:
-            idx = np.random.choice(len(points), 3000, replace=False)
-            points = points[idx]
-
-        print(points.shape)
-
-        try:
-            self.pcd.point.positions = o3d.core.Tensor(points, o3d.core.float32, self.device)
-        except Exception as e:
-            rospy.logerr(f"Error creating tensor for point cloud positions: {e}")
-            raise
-
+        self.pcd = o3d.geometry.PointCloud()
+        self.pcd.points = o3d.utility.Vector3dVector(points)
         self.last_seen = stamp
         self.first_seen = stamp
         self.is_confirmed = False
+        self.centroids = np.asarray(self.pcd.points).mean(axis=0).reshape(1, 3)
+
+        r = self.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
+
+        # saving other's centroid before registration
+        other_centroid = np.asarray(other.pcd.points).mean(axis=0)
+        self.centroids = np.concatenate((self.centroids, [other_centroid]), axis=0)
+        #
+        ## saving other's quaternion before registration
+        r = other.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
+        self.quaternions = np.concatenate(
+            (self.quaternions, [R.from_matrix(r).as_quat()]), axis=0
+        )
+        #
         try:
             other = self.register_pointcloud_to_self(other)
         except Exception as e:
             rospy.logwarn(f"Error in registering point clouds: {e}")
             return
-
+        #
         self.last_seen = max(self.last_seen, other.last_seen)
 
         # Euristics: an object is confirmed if it has been seen multiple times
@@ -101,103 +89,65 @@ class Obj:
 
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
-            self.pcd.point.positions = other.pcd.point.positions
+            self.pcd.points = other.pcd.points
         else:
-            self.pcd.point.positions = o3d.core.concatenate(
-                (self.pcd.point.positions, other.pcd.point.positions), axis=0
+            old_points = np.asarray(self.pcd.points)
+            new_points = np.asarray(other.pcd.points)
+            combined_points = np.concatenate((old_points, new_points), axis=0)
+            self.pcd.points = o3d.utility.Vector3dVector(combined_points)
+
+            weights = exponential_weights(len(self.quaternions), decay_rate=0.2)
+            centroid = np.average(self.centroids, axis=0, weights=weights)
+            quaternion = weightedAverageQuaternions(self.quaternions, weights)
+            rot_matrix = R.from_quat(quaternion).as_matrix()
+            self.pcd.translate(centroid, relative=False)
+            self.pcd.rotate(rot_matrix)
+
+        self.compute()
+        self.label = other.label if other.score > self.score else self.label
+        self.score = max(self.score, other.score)
+
+    def register_pointcloud_to_self(self, other: "Obj", threshold=0.2):
+        """Aligns other point cloud to self using ICP registration."""
+        try:
+            reg_p2p = o3d.pipelines.registration.registration_icp(
+                other.pcd,
+                self.pcd,
+                threshold,
+                np.eye(4),
+                o3d.pipelines.registration.TransformationEstimationPointToPoint(),
             )
 
-        self.compute()
+            if reg_p2p.inlier_rmse > threshold:
+                raise ValueError("High registration error, skipping this frame")
 
-    def register_pointcloud_to_self(self, other: "Obj"):
-        """Registers another point cloud to this one and returns the transformed point cloud."""
-        source = other.pcd
-        target = self.pcd
+            transformation = reg_p2p.transformation
 
-        # Perform ICP registration on GPU
-        criteria = o3d.t.pipelines.registration.ICPConvergenceCriteria(
-            relative_fitness=1e-6, relative_rmse=1e-6, max_iteration=30
-        )
-        registration_result = o3d.t.pipelines.registration.icp(
-            source,
-            target,
-            0.2,
-            np.eye(4),
-            o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
-            #criteria,
-        )
-        if registration_result.fitness < 0.2:
-            raise ValueError("ICP registration failed.")
-
-        transformation = registration_result.transformation
-        source.transform(transformation)
-        return Obj(
-            other.id,
-            source.point.positions.cpu().numpy(),
-            other.label,
-            other.score,
-            other.last_seen,
-        )
-
-    def compute(self):
-        """Computes bounding box and centroid for the point cloud."""
-        self.downsample()
-
-        self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 10)
-        clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
-        self.pcd.estimate_normals(max_nn=30, radius=0.1)
-
-        if len(clean.point.positions) < 10:
-            self.bbox = np.zeros((8, 3))
-            self.centroid = np.zeros(3)
-            return
-
-        self.bbox = self.compute_z_oriented_bounding_box(clean)
-        self.centroid = np.asarray(self.bbox.mean(axis=0))
-
-    def merge(self, other: "Obj"):
-        """Merges another object into this one."""
-        self.pcd.point.positions = o3d.core.concatenate(
-            (self.pcd.point.positions, other.pcd.point.positions), axis=0
-        )
-        self.compute()
-
-    def downsample(self):
-        """Downsamples the point cloud."""
-        self.pcd = self.pcd.voxel_down_sample(voxel_size=np.float32(VOXEL_SIZE))
-
-    def to_cpu(self):
-        """Moves the point cloud to CPU."""
-        self.device = o3d.core.Device("CPU:0")
-        self.pcd = self.pcd.to(self.device)
-
-    def to_gpu(self):
-        """Moves the point cloud to GPU."""
-        self.device = device
-        self.pcd = self.pcd.to(self.device)
-
-    def __repr__(self):
-        return f"Obj(id={self.id}, label={self.label}, score={self.score}, centroid={self.centroid}, last_seen={self.last_seen})"
+            # Transform the source point cloud
+            other.pcd.transform(transformation)
+            return other
+        except Exception as e:
+            print(f"ICP registration failed: {e}")
+            raise e
 
     def compute_z_oriented_bounding_box(self, pcd):
-        temp = pcd.cpu().to_legacy()
-
-        points = np.asarray(temp.points)
-
-        mean = np.mean(np.asarray(points), axis=0)
+        # Compute the mean of the points
+        if not pcd.points:
+            return None
+        mean = np.mean(np.asarray(pcd.points), axis=0)
 
         # Compute PCA on the XY components only
-        xy_points = np.asarray(points)[:, :2] - mean[:2]
+        xy_points = np.asarray(pcd.points)[:, :2] - mean[:2]
         cov_matrix = np.dot(xy_points.T, xy_points) / len(xy_points)
         eigvals, eigvecs = np.linalg.eig(cov_matrix)
 
         # Align primary component with the X-axis
         angle = np.arctan2(eigvecs[1, 0], eigvecs[0, 0])
-        R = temp.get_rotation_matrix_from_xyz((0, 0, -angle))
-        temp.rotate(R, center=mean)
+        R = pcd.get_rotation_matrix_from_xyz((0, 0, -angle))
+        pcd.rotate(R, center=mean)
 
         # Compute the axis-aligned bounding box of the rotated point cloud
-        aabb = temp.get_axis_aligned_bounding_box()
+        aabb = pcd.get_axis_aligned_bounding_box()
         # convert aabb to oriented bbox
         aabb = o3d.geometry.OrientedBoundingBox.create_from_axis_aligned_bounding_box(
             aabb
@@ -219,6 +169,23 @@ class Obj:
         # Perform voxel downsampling
         self.pcd = self.pcd.voxel_down_sample(voxel_size)
         return voxel_size
+
+    def compute(self):
+        #self.pcd = self.pcd.voxel_down_sample(voxel_size=VOXEL_SIZE)
+        voxel_size = self.dynamic_voxel_downsample()
+        print(self.label, self.id, voxel_size)
+        self.pcd, _ = self.pcd.remove_radius_outlier(nb_points=16, radius=0.5)
+        # clean, _ = self.pcd.remove_radius_outlier(nb_points=10, radius=0.5)
+
+        clean, _ = self.pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=1.0)
+        # clean = self.pcd
+        if clean.points is None or len(clean.points) <= 10:
+            self.bbox = np.zeros((8, 3))
+            self.centroid = np.zeros(3)
+            return
+
+        self.bbox = self.compute_z_oriented_bounding_box(clean)
+        self.centroid = np.asarray(clean.points).mean(axis=0)
 
 
 class World:
@@ -298,7 +265,7 @@ class World:
         if len(self.points_list) > 0:
             inf_index = np.where(self.points_list == np.repeat(np.inf, 3))
             none_index = np.where(self.points_list == np.repeat(np.nan, 3))
-            # print(inf_index, none_index)
+            #print(inf_index, none_index)
             try:
                 self.kdtree = KDTree(np.array(self.points_list))
             except:
@@ -349,14 +316,14 @@ class World:
         to_remove = {}
         for obj in self.objects.values():
             if (
-                obj.label in MOVING_CLASSES
-                and obj.last_seen.to_sec()
-                < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
+                    obj.label in MOVING_CLASSES
+                    and obj.last_seen.to_sec()
+                    < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
             ):
                 to_remove[obj.id] = "Expired"
-
-            std = np.std(obj.pcd.point.positions.cpu().numpy(), axis=0).max()
-            if std > STD_THR:
+            
+            std = np.std(np.asarray(obj.pcd.points), axis=0).max()
+            if  std > STD_THR:
                 to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
 
         if len(to_remove) > 0:
