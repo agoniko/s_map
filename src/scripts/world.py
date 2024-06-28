@@ -11,11 +11,12 @@ import copy
 import threading
 
 
-TIME_TO_BE_CONFIRMED = 0.2
-EXPIRY_TIME_MOVING_OBJECTS = 2.0
+TIME_TO_BE_CONFIRMED = 0.1
+EXPIRY_TIME_MOVING_OBJECTS = 0.0
 STD_THR = 0.4
-VOXEL_SIZE = 0.05
+VOXEL_SIZE = 0.03
 MOVING_CLASSES = ["person"]
+IOU_THR = 0.2
 
 
 def exponential_weights(length, decay_rate=0.1):
@@ -118,12 +119,12 @@ class Obj:
                 self.pcd.point.positions = o3d.core.concatenate(
                     (self.pcd.point.positions, other.pcd.point.positions), axis=0
                 )
-                #weights = exponential_weights(len(self.quaternions), decay_rate=1)
-                #centroid = np.average(self.centroids, axis=0, weights=weights)
-                #quaternion = weightedAverageQuaternions(self.quaternions, weights)
-                #rot_matrix = R.from_quat(quaternion).as_matrix()
-                #self.pcd.translate(centroid, relative=False)
-                #self.pcd.rotate(rot_matrix, center=np.zeros(3))
+                weights = exponential_weights(len(self.quaternions), decay_rate=0.1)
+                centroid = np.average(self.centroids, axis=0, weights=weights)
+                quaternion = weightedAverageQuaternions(self.quaternions, weights)
+                rot_matrix = R.from_quat(quaternion).as_matrix()
+                self.pcd.translate(centroid, relative=False)
+                self.pcd.rotate(rot_matrix, center=np.zeros(3))
 
             except Exception as e:
                 rospy.logwarn(f"Error in registering point clouds: {e}, Keeping Last")
@@ -132,12 +133,19 @@ class Obj:
 
         self.compute()
 
-    def register_pointcloud_to_self(self, other: "Obj"):
+    def register_pointcloud_to_self(self, other: "Obj", min_size=100):
         """Registers another point cloud to this one and returns the transformed point cloud."""
         source = other.pcd
         target = self.pcd
         if len(source.point.positions) == 0 or len(target.point.positions) == 0:
             raise ValueError("Empty point cloud")
+
+        if (
+            len(source.point.positions) < min_size
+            or len(target.point.positions) < min_size
+        ):
+            # It does not make sense to register two small point clouds, let's build them up first
+            return other
 
         # Perform ICP registration on GPU
         criteria = o3d.t.pipelines.registration.ICPConvergenceCriteria(
@@ -150,51 +158,38 @@ class Obj:
             0.2,
             np.eye(4),
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
-            criteria,
+            # criteria,
         )
         if registration_result.fitness < 0.5:
             raise ValueError("ICP registration failed")
 
         transformation = registration_result.transformation
         source.transform(transformation)
-        return Obj(
-            other.id,
-            source.point.positions.cpu().numpy(),
-            other.label,
-            other.score,
-            other.last_seen,
-        )
+        other.pcd = source
+        return other
 
     def compute(self):
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
-
-        self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 5)
-        if len(self.pcd.point.positions) == 0:
-            self.bbox = np.zeros((8, 3))
-            self.centroid = np.zeros(3)
-            print("ZEROOOO")
-            return
-
         self.pcd.estimate_normals(max_nn=30, radius=0.1)
+        if len(self.pcd.point.positions) > 100:
+            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 5)
+            if len(self.pcd.point.positions) == 0:
+                self.bbox = np.zeros((8, 3))
+                self.centroid = np.zeros(3)
+                raise ValueError("Empty point cloud")
 
-        clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
+            clean, _ = self.pcd.remove_statistical_outliers(30, 1.0)
+        else:
+            clean = self.pcd
 
         if len(clean.point.positions) < 10:
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
-            print("ZEROOO CLEANNN")
-            return
+            raise ValueError("Empty point cloud after cleaning")
 
         self.bbox = self.compute_z_oriented_bounding_box(clean)
         self.centroid = np.asarray(self.bbox.mean(axis=0))
-
-    def merge(self, other: "Obj"):
-        """Merges another object into this one."""
-        self.pcd.point.positions = o3d.core.concatenate(
-            (self.pcd.point.positions, other.pcd.point.positions), axis=0
-        )
-        self.compute()
 
     def downsample(self):
         """Downsamples the point cloud."""
@@ -360,7 +355,7 @@ class World:
             if (
                 obj.id != close_obj.id
                 and obj.label == close_obj.label
-                and abs(obj.last_seen - close_obj.last_seen).to_sec() > 5.0
+                and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
                 # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
@@ -370,17 +365,22 @@ class World:
 
     # @time_it
     def manage_object(self, obj: Obj):
-        if obj.id in self.objects:
-            self.update_object(obj)
-            # taking the updated object
-            obj = self.objects[obj.id]
-        else:
-            self.add_object(obj)
+        try:
+            if obj.id in self.objects:
+                self.update_object(obj)
+                # taking the updated object
+                obj = self.objects[obj.id]
+            else:
+                self.add_object(obj)
 
-        world_id = self.get_world_id(obj)
-        if world_id != obj.id:
-            self.override_object(world_id, obj)
-        return self.objects[obj.id]
+            world_id = self.get_world_id(obj, iou_thr=IOU_THR)
+            if world_id != obj.id:
+                self.override_object(world_id, obj)
+            return self.objects[obj.id]
+        except Exception as e:
+            rospy.logerr(f"Error in managing object: {e}")
+            if obj.id in self.objects:
+                self.remove_objects([obj.id])
 
     def clean_up(self):
         """

@@ -38,6 +38,7 @@ PKG_PATH = rospkg.RosPack().get_path("s_map")
 MAX_DEPTH = 8.0
 MIN_DEPTH = 0.8
 EXPIRY_TIME = 10.0
+QUEUE_SIZE = 5
 
 
 class Mapper(object):
@@ -66,12 +67,12 @@ class Mapper(object):
 
     def init_subscribers(self):
         self.result_subscriber = rospy.Subscriber(
-            RESULT_TOPIC, Detection, self.process_data, queue_size=50
+            RESULT_TOPIC, Detection, self.process_data, queue_size=2*QUEUE_SIZE
             )
 
     def init_publishers(self):
-        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
-        self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=2)
+        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=QUEUE_SIZE)
+        self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=QUEUE_SIZE)
 
     # @time_it
     def preprocess_msg(self, msg: Detection):
@@ -127,7 +128,7 @@ class Mapper(object):
             )
             if obj is None:
                 continue
-
+            
             self.world.manage_object(obj)
 
         self.publish_markers(header.stamp)
@@ -140,19 +141,19 @@ class Mapper(object):
         Then it cleans up the world from the objects that are not there anymore.
         """
         for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 2]]) # 1.5 meters in front of the camera
+            point = np.array([[0, 0, 2]]) # meters in front of the camera
             point_world_frame = self.transformer.fast_transform(camera_frame, WORLD_FRAME, point, rospy.Time.now())
             #marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
             #self.marker_pub.publish(marker)
-            if point_world_frame is None:
+            if point_world_frame is None or len(point_world_frame) == 0:
                 return
-            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
+            objects = self.world.query_by_distance(point_world_frame[0], 1)
             #print("close objects: ", objects)
             to_remove = []  
             for obj in objects:
                 if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
+                    rospy.loginfo(f"Object {obj.id}: {obj.label} is not there anymore")
                     to_remove.append(obj.id)
-
             self.world.remove_objects(to_remove)
             try:
                 self.world.clean_up()
@@ -188,8 +189,12 @@ class Mapper(object):
 
         if pc_world_frame is None or len(pc_world_frame) < 10:
             return None
+        try:
+            obj = Obj(id, pc_world_frame, label, score, header.stamp)
+        except Exception as e:
+            rospy.logerr(f"Error in creating object: {e}")
+            return None
         
-        obj = Obj(id, pc_world_frame, label, score, header.stamp)
         return obj
 
     # @time_it
