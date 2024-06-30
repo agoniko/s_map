@@ -1,0 +1,5 @@
+# QueryObjects.srv
+geometry_msgs/Point point  # The point from which the distance is measured
+float64 threshold          # The distance threshold
+---
+ObjectList objects         # List of objects within the distance threshold

@@ -9,6 +9,7 @@ import rospy
 from scipy.spatial.transform import Rotation as R
 import copy
 import threading
+from s_map.msg import Object, ObjectList
 
 
 TIME_TO_BE_CONFIRMED = 0.2
@@ -59,6 +60,18 @@ class Obj:
         r = self.pcd.get_rotation_matrix_from_xyz((0, 0, 0))
         self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
+
+
+    def get_object_for_message(self):
+        """Returns the object in the format of the Object message."""
+        obj = Object()
+        obj.header.stamp = self.last_seen
+        obj.id = self.id
+        obj.points = np.asarray(self.pcd.points).flatten().tolist()
+        obj.label = self.label
+        obj.score = self.score
+        obj.bbox = self.bbox.flatten().tolist()
+        return obj
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
@@ -235,7 +248,14 @@ class World:
 
     def get_objects(self):
         """Returns all objects in the world."""
-        return list([obj for obj in self.objects.values() if obj.is_confirmed])
+        msg = ObjectList()
+        msg.header.stamp = rospy.Time.now()
+        msg.objects = [
+            obj.get_object_for_message()
+            for obj in self.objects.values()
+            if obj.is_confirmed
+        ]
+        return msg
 
     def query_by_distance(self, point, threshold):
         """Queries objects within a certain distance threshold."""
@@ -251,7 +271,7 @@ class World:
         if len(self.points_list) > 0:
             inf_index = np.where(self.points_list == np.repeat(np.inf, 3))
             none_index = np.where(self.points_list == np.repeat(np.nan, 3))
-            #print(inf_index, none_index)
+            # print(inf_index, none_index)
             try:
                 self.kdtree = KDTree(np.array(self.points_list))
             except:
@@ -302,14 +322,14 @@ class World:
         to_remove = {}
         for obj in self.objects.values():
             if (
-                    obj.label in MOVING_CLASSES
-                    and obj.last_seen.to_sec()
-                    < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
+                obj.label in MOVING_CLASSES
+                and obj.last_seen.to_sec()
+                < rospy.Time.now().to_sec() - EXPIRY_TIME_MOVING_OBJECTS
             ):
                 to_remove[obj.id] = "Expired"
-            
+
             std = np.std(np.asarray(obj.pcd.points), axis=0).max()
-            if  std > STD_THR:
+            if std > STD_THR:
                 to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
 
         if len(to_remove) > 0:

@@ -22,7 +22,7 @@ import sys
 #Global Configuration Variables
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8s-seg.pt"
 DETECTION_CONFIDENCE = 0.6
 TRACKER = "bytetrack.yaml"
 QUEUE_SIZE = 1
