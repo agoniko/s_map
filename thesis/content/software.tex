@@ -1,0 +1,48 @@
+\chapter{Software Structure}
+
+\section{High-Level Architecture}
+In this section, we provide an overview of the software architecture used in this project. The architecture integrates various components and frameworks to achieve 3D semantic mapping and 6DoF object pose estimation. Figure~\ref{fig:architecture} illustrates the high-level architecture of the system.
+
+\begin{figure}[h!]
+    \centering
+    \caption{High-Level Architecture of the Software System}
+    \label{fig:architecture}
+\end{figure}
+
+\section{Configuration}
+The configuration component is crucial for setting up the system parameters and ensuring accurate operation. This includes calibration procedures and backend settings.
+
+\subsection{Hand in Eye Calibration}
+Hand in Eye calibration aligns the camera's coordinate system with the robotic arm's coordinate system. This calibration is essential for precise object manipulation and interaction.
+
+\subsection{SLAM Backend}
+Simultaneous Localization and Mapping (SLAM) backend is responsible for creating and updating the robot's map of the environment. This section details the SLAM algorithms and their implementation.
+
+\section{Detector}
+The detector module is responsible for identifying and locating objects within the environment. It utilizes YOLO (You Only Look Once) for real-time object detection and instance segmentation.
+
+\section{World}
+The world module manages the representation of the environment, including point clouds and spatial data structures.
+
+\subsection{KDTrees}
+K-Dimensional Trees (KDTrees) are used for efficient nearest neighbor searches within the point cloud data. This section explains the implementation and optimization of KDTrees.
+
+\subsection{Pointcloud Management}
+Pointcloud management involves processing and organizing the 3D point data. This includes filtering, segmentation, and storage.
+
+\subsection{Clean-Up Thread}
+The clean-up thread ensures the continuous maintenance of the point cloud data, removing outliers and ensuring data integrity. This section describes the clean-up algorithms and their integration into the system.
+
+\begin{algorithm}[h!]
+\caption{Clean-Up Thread Algorithm}
+\label{alg:cleanup}
+\begin{algorithmic}[1]
+\STATE Initialize clean-up parameters
+\WHILE{true}
+    \STATE Retrieve current point cloud data
+    \STATE Apply outlier removal filter
+    \STATE Update point cloud storage
+    \STATE Sleep for predefined interval
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}

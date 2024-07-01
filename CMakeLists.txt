@@ -48,14 +48,18 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   Detection.msg
+  Object.msg
+  ObjectList.msg
 )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  ManageObject.srv
+  RemoveObjects.srv
+  QueryObjects.srv
+  GetAllObjects.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -67,7 +71,7 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs sensor_msgs  # Or other packages containing msgs
+  std_msgs sensor_msgs # Or other packages containing msgs
 )
 
 ################################################
