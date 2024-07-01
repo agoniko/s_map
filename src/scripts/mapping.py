@@ -8,8 +8,10 @@ from sensor_msgs import point_cloud2
 from cv_bridge import CvBridge
 from visualization_msgs.msg import MarkerArray
 from s_map.msg import Detection, Object, ObjectList
-from s_map.srv import ManageObject, RemoveObjects
+from s_map.srv import ManageObject, RemoveObjects, GetAllObjects, GetAllObjectsResponse, QueryObjects, QueryObjectsResponse, CleanUp
 import rospkg
+import copy
+from geometry_msgs.msg import Point
 
 # Local modules
 from utils import (
@@ -54,13 +56,20 @@ class Mapper(object):
         self.init_publishers()
         self.init_services()
         rospy.loginfo("Mapping node initialized")
-        # rospy.Timer(rospy.Duration(0.3), self.clean_up)
+        self.tracked_id = None
+        rospy.Timer(rospy.Duration(0.3), self.clean_up)
     
     def init_services(self):
         rospy.wait_for_service("manage_object")
         rospy.wait_for_service("remove_objects")
+        rospy.wait_for_service("get_all_objects")
+        rospy.wait_for_service("query_objects")
+        rospy.wait_for_service("clean_up")
         self.world_manager_client = rospy.ServiceProxy("manage_object", ManageObject)
         self.world_remove_client = rospy.ServiceProxy("remove_objects", RemoveObjects)
+        self.world_all_objects_client = rospy.ServiceProxy("get_all_objects", GetAllObjects)
+        self.world_query_client = rospy.ServiceProxy("query_objects", QueryObjects)
+        self.world_clean_up_client = rospy.ServiceProxy("clean_up", CleanUp)
         rospy.loginfo("World Manager Services initialized for Mapping node")
 
     def init_params(self):
@@ -117,7 +126,6 @@ class Mapper(object):
 
     # @time_it
     def process_data(self, detection):
-        rospy.logerr("Processing data")
         if not self.is_reliable(detection.header):
             return
 
@@ -144,7 +152,7 @@ class Mapper(object):
         Then it cleans up the world from the objects that are not there anymore.
         """
         for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 2]])  # 1.5 meters in front of the camera
+            point = np.array([[0, 0, 3]])  # meters in front of the camera
             point_world_frame = self.transformer.fast_transform(
                 camera_frame, WORLD_FRAME, point, rospy.Time.now()
             )
@@ -152,16 +160,23 @@ class Mapper(object):
             # self.marker_pub.publish(marker)
             if point_world_frame is None:
                 return
-            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
+            point_world_frame = point_world_frame.flatten()
+            point_msg = Point(x = point_world_frame[0], y = point_world_frame[1], z = point_world_frame[2])
+            
+            # query the world for objects in front of the camera
+            objects = self.world_query_client(point_msg, 1.0).objects.objects
             # print("close objects: ", objects)
             to_remove = []
             for obj in objects:
-                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
+                if obj.header.stamp.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
                     rospy.loginfo(f"Object {obj.id}: {obj.label} is not there anymore")
                     to_remove.append(obj.id)
-            self.world.remove_objects(to_remove)
+            
+            if to_remove:
+                self.world_remove_client(to_remove)
             try:
-                self.world.clean_up()
+                res = self.world_clean_up_client()
+                rospy.logwarn(f"Clean up: {res}")
             except Exception as e:
                 rospy.logerr("THIS : " + str(e))
                 rospy.signal_shutdown("Error in check_still_there: ")
@@ -196,13 +211,12 @@ class Mapper(object):
 
         if pc_world_frame is None:
             return None
-        
-        print("MAPPING: ", pc_world_frame[:10])
+
         obj = Object()
-        obj.header = header
+        obj.header = copy.deepcopy(header)
         obj.header.frame_id = WORLD_FRAME
         obj.id = int(id)
-        obj.points = pc_world_frame.flatten().tolist()
+        obj.points = pc_world_frame.astype(np.float32).flatten().tolist()
         obj.label = label
         obj.score = score
         return obj
@@ -245,12 +259,17 @@ class Mapper(object):
 
         if labels_msg:
             self.marker_pub.publish(labels_msg)
-    
+    """
     def plot_centroids(self, event):
-        centroids = self.world.get_kdtree_centroids()
+        objects = self.world_all_objects_client().objects.objects
+        centroids = []
+        for obj in objects:
+            points = np.array(obj.points).reshape(-1, 3)
+            centroid = np.mean(points, axis=0)
+            centroids.append(centroid)
+
         marker = create_marker_point(centroids, rospy.Time.now(), WORLD_FRAME)
         self.marker_pub.publish(marker)
-"""
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 import rospy
 from world import World, Obj
-from s_map.srv import ManageObject, RemoveObjects, QueryObjects, QueryObjectsResponse, GetAllObjects, GetAllObjectsResponse
+from s_map.srv import ManageObject, RemoveObjects, QueryObjects, QueryObjectsResponse, GetAllObjects, GetAllObjectsResponse, CleanUp
 from s_map.msg import Object, ObjectList
 import numpy as np
 
@@ -16,6 +16,7 @@ class WorldManager:
         self.remove_object_service = rospy.Service('remove_objects', RemoveObjects, self.handle_remove_object)
         self.query_objects_service = rospy.Service('query_objects', QueryObjects, self.handle_query_objects)
         self.get_all_objects_service = rospy.Service('get_all_objects', GetAllObjects, self.handle_get_all_objects)
+        self.clean_up_service = rospy.Service('clean_up', CleanUp, self.handle_clean_up)
 
     def handle_manage_object(self, req):
         points = np.array(req.object.points).reshape(-1, 3)
@@ -28,9 +29,9 @@ class WorldManager:
         return True
 
     def handle_query_objects(self, req):
-        objects = self.world.query_by_distance([req.point.x, req.point.y, req.point.z], req.threshold)
+        objects = self.world.query_close_objects_service([req.point.x, req.point.y, req.point.z], req.threshold)
         res = QueryObjectsResponse()
-        res.objects = [self.convert_obj_to_msg(obj) for obj in objects]
+        res.objects = objects
         return res
     
     def handle_get_all_objects(self, req):
@@ -43,6 +44,10 @@ class WorldManager:
             res = GetAllObjectsResponse()
         
         return res
+    
+    def handle_clean_up(self, req):
+        self.world.clean_up()
+        return True
 
     def convert_obj_to_msg(self, obj):
         msg = Object()
