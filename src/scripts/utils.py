@@ -138,7 +138,7 @@ def create_marker_array(objects, frame, stamp):
     if label_msg.markers:
         return (msg, label_msg)
     else:
-        return (msg, -1)
+        return (msg, None)
 
 # Example usage
 # objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.

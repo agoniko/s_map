@@ -28,7 +28,6 @@ class CameraPoseEstimator:
                 self.camera = PinholeCameraModel.from_camera_info(x)
 
         data = Dummy()
-        print(info_topic)
         sub = rospy.Subscriber(info_topic, CameraInfo, callback=data.callback)
 
         r = rospy.Rate(10)
@@ -49,7 +48,6 @@ class CameraPoseEstimator:
             (self.height, self.width),
             self.camera,
         ) = self.receive_camera_info(info_topic)
-        print(self.cx, self.cy)
 
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         # getting the unit vector that represent the 3d ray from pixel (pix_x, pix_y) = (u, v)
