@@ -35,9 +35,10 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-MAX_DEPTH = 9.0
+MAX_DEPTH = 8.0
 MIN_DEPTH = 0.8
-EXPIRY_TIME = 30.0
+EXPIRY_TIME = 10.0
+QUEUE_SIZE = 5
 
 
 class Mapper(object):
@@ -72,12 +73,12 @@ class Mapper(object):
 
     def init_subscribers(self):
         self.result_subscriber = rospy.Subscriber(
-            RESULT_TOPIC, Detection, self.process_data, queue_size=50
-        )
+            RESULT_TOPIC, Detection, self.process_data, queue_size=2*QUEUE_SIZE
+            )
 
     def init_publishers(self):
-        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=10)
-        self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=2)
+        self.marker_pub = rospy.Publisher(MARKERS_TOPIC, MarkerArray, queue_size=QUEUE_SIZE)
+        self.pc_pub = rospy.Publisher(PC_TOPIC, PointCloud2, queue_size=QUEUE_SIZE)
 
     # @time_it
     def preprocess_msg(self, msg: Detection):
@@ -156,8 +157,8 @@ class Mapper(object):
             to_remove = []
             for obj in objects:
                 if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
+                    rospy.loginfo(f"Object {obj.id}: {obj.label} is not there anymore")
                     to_remove.append(obj.id)
-
             self.world.remove_objects(to_remove)
             try:
                 self.world.clean_up()
@@ -185,7 +186,7 @@ class Mapper(object):
                 Returns None if the computation fails.
         """
         pc = self.compute_pointcloud(depth_image, mask)
-        if len(pc) < 200:
+        if len(pc) < 10:
             return None
 
         pc_camera_frame = pose_estimator.multiple_pixels_to_3d(pc)
@@ -195,6 +196,7 @@ class Mapper(object):
 
         if pc_world_frame is None:
             return None
+        
         print("MAPPING: ", pc_world_frame[:10])
         obj = Object()
         obj.header = header
