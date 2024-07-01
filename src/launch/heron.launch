@@ -14,7 +14,7 @@
     <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
     <include file="$(find s_map)/src/launch/map_heron.launch">
         <arg name="mapping" value="true"/>
-        <arg name="rgbd" type="bool" value="false" />
+        <arg name="rgbd" type="bool" value="true" />
         <arg name="odom_topic" value="/odom/filtered"/>
     </include>
 
