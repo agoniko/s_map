@@ -687,8 +687,22 @@ class World:
             return [
                 self.objects[obj_id]
                 for obj_id in np.array(list(self.objects.keys()))[indexes]
-            ]
+                    ]
         return []
+    
+    def query_close_objects_service(self, point, threshold):
+        """Queries objects within a certain distance threshold."""
+        msg = ObjectList()
+        msg.header.stamp = rospy.Time.now() #stamp of the query
+        if self.kdtree is not None:
+            indexes = self.kdtree.query_ball_point(point, r=threshold)
+            objects = [
+                self.objects[obj_id].get_object_for_message()
+                for obj_id in np.array(list(self.objects.keys()))[indexes]
+            ]
+            msg.objects = objects
+        
+        return msg
 
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:

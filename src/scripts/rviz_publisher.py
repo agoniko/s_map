@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import rospy
 from sensor_msgs.msg import PointCloud2
@@ -18,7 +18,7 @@ class PublisherNode:
         self.init_services()
         self.world_objects = None
 
-        rospy.Timer(rospy.Duration(0.1), self.publish_data)
+        rospy.Timer(rospy.Duration(0.03), self.publish_data)
 
     def init_params(self):
         self.world_frame = rospy.get_param("~world_frame", "map")
