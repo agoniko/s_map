@@ -1,0 +1,4 @@
+#GetAllObjects.srv
+
+---
+ObjectList objects         # List of all the objects

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  20 JUN 2024 12:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  30 JUN 2024 15:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -427,7 +427,7 @@ File: t1pplx.fd 2004/09/06 font definitions for T1/pplx.
 File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count305
 \l__pdf_internal_box=\box58
-) (./thesis.aux (./contents.aux) (./content/abstract.aux) (./content/introduction.aux) (./content/usage.aux) (./content/guidelines.aux) (./content/conclusions.aux) (./backmatter.aux))
+) (./thesis.aux (./contents.aux) (./content/abstract.aux) (./content/introduction.aux) (./content/software.aux) (./content/usage.aux) (./content/guidelines.aux) (./content/conclusions.aux) (./backmatter.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
@@ -519,17 +519,17 @@ LaTeX Font Info:    Trying to load font information for T1+pplj on input line 39
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/psnfss/t1pplj.fd
 File: t1pplj.fd 2004/09/06 font definitions for T1/pplj.
 )
-<logo/unimi.png, id=76, 770.88pt x 770.88pt>
+<logo/unimi.png, id=116, 770.88pt x 770.88pt>
 File: logo/unimi.png Graphic file (type png)
 <use logo/unimi.png>
 Package pdftex.def Info: logo/unimi.png  used on input line 39.
 (pdftex.def)             Requested size: 113.81102pt x 113.80379pt.
-<logo/unimib.jpg, id=78, 99.7326pt x 106.7187pt>
+<logo/unimib.jpg, id=118, 99.7326pt x 106.7187pt>
 File: logo/unimib.jpg Graphic file (type jpg)
 <use logo/unimib.jpg>
 Package pdftex.def Info: logo/unimib.jpg  used on input line 39.
 (pdftex.def)             Requested size: 113.81102pt x 121.78922pt.
-<logo/unipv.pdf, id=79, 501.875pt x 618.33511pt>
+<logo/unipv.pdf, id=119, 501.875pt x 618.33511pt>
 File: logo/unipv.pdf Graphic file (type pdf)
 <use logo/unipv.pdf>
 Package pdftex.def Info: logo/unipv.pdf  used on input line 39.
@@ -664,10 +664,22 @@ LaTeX Font Info:    Font shape `T1/FiraSans-OsF/bold/n' will be
 
 
 ]
+\openout2 = `content/software.aux'.
+
+ (./content/software.tex
+Chapter 2.
+[4
+
+
+
+
+]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 37.
+) [5]
 \openout2 = `content/usage.aux'.
 
  (./content/usage.tex
-Chapter 2.
+Chapter 3.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 7.
 (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
@@ -675,35 +687,33 @@ File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
-) [4
+) [6
 
 
 
 
 {/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
-<figures/typewriter.jpg, id=147, 1027.84pt x 1027.84pt>
+<figures/typewriter.jpg, id=217, 1027.84pt x 1027.84pt>
 File: figures/typewriter.jpg Graphic file (type jpg)
 <use figures/typewriter.jpg>
 Package pdftex.def Info: figures/typewriter.jpg  used on input line 74.
 (pdftex.def)             Requested size: 298.75394pt x 298.75604pt.
- [5 <./figures/typewriter.jpg>]
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 143.
-) [6]
+ [7 <./figures/typewriter.jpg>]) [8]
 \openout2 = `content/guidelines.aux'.
 
  (./content/guidelines.tex
-Chapter 3.
-[7
+Chapter 4.
+[9
 
 
 
 
-]) [8]
+]) [10]
 \openout2 = `content/conclusions.aux'.
 
  (./content/conclusions.tex
-Chapter 4.
-) [9
+Chapter 5.
+) [11
 
 
 
@@ -715,13 +725,13 @@ Chapter 4.
 \tf@brf=\write6
 \openout6 = `thesis.brf'.
 
-)) [10
+)) [12
 
 
 
 
 
-] (./thesis.aux (./contents.aux) (./content/abstract.aux) (./content/introduction.aux) (./content/usage.aux) (./content/guidelines.aux) (./content/conclusions.aux) (./backmatter.aux))
+] (./thesis.aux (./contents.aux) (./content/abstract.aux) (./content/introduction.aux) (./content/software.aux) (./content/usage.aux) (./content/guidelines.aux) (./content/conclusions.aux) (./backmatter.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -731,23 +741,23 @@ L3 programming layer <2024-02-20>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 0444DB713F93DE897FA4C1F24D263C67;2326.
+(rerunfilecheck)             Checksum: 4D3A5645F240C89B0FBF0E937EFBE16F;3919.
 Package rerunfilecheck Info: File `thesis.brf' has not changed.
-(rerunfilecheck)             Checksum: 8A31F05E3FBEF9721B8D9D7E98FCC480;98.
+(rerunfilecheck)             Checksum: 3D5E5DCC553F7EA23554BF3953418E1C;98.
  ) 
 Here is how much of TeX's memory you used:
- 12914 strings out of 474116
- 213341 string characters out of 5733619
+ 12976 strings out of 474116
+ 214650 string characters out of 5733619
  1937187 words of memory out of 5000000
- 34852 multiletter control sequences out of 15000+600000
- 745121 words of font info for 139 fonts, out of 8000000 for 9000
+ 34885 multiletter control sequences out of 15000+600000
+ 747012 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  105i,13n,107p,678b,629s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/fira/FiraSans-Regular.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/fira/FiraSans-SemiBold.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/fpl/fplrc8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on thesis.pdf (12 pages, 645912 bytes).
+Output written on thesis.pdf (14 pages, 651318 bytes).
 PDF statistics:
- 251 PDF objects out of 1000 (max. 8388607)
- 212 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 165 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 325 PDF objects out of 1000 (max. 8388607)
+ 284 compressed objects within 3 object streams
+ 73 named destinations out of 1000 (max. 500000)
+ 245 words of extra memory for PDF output out of 10000 (max. 10000000)
 

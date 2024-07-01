@@ -9,6 +9,7 @@ import rospy
 from scipy.spatial.transform import Rotation as R
 import copy
 import threading
+from s_map.msg import Object, ObjectList
 
 
 TIME_TO_BE_CONFIRMED = 0.1
