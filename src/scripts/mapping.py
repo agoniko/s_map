@@ -37,7 +37,7 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-MAX_DEPTH = 8.0
+MAX_DEPTH = 6.0
 MIN_DEPTH = 0.8
 EXPIRY_TIME = 10.0
 QUEUE_SIZE = 5
@@ -151,6 +151,7 @@ class Mapper(object):
         This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
         Then it cleans up the world from the objects that are not there anymore.
         """
+        """
         for camera_frame in self.pose_reliability_evaluator.keys():
             point = np.array([[0, 0, 3]])  # meters in front of the camera
             point_world_frame = self.transformer.fast_transform(
@@ -174,12 +175,13 @@ class Mapper(object):
             
             if to_remove:
                 self.world_remove_client(to_remove)
-            try:
-                res = self.world_clean_up_client()
-                rospy.logwarn(f"Clean up: {res}")
-            except Exception as e:
-                rospy.logerr("THIS : " + str(e))
-                rospy.signal_shutdown("Error in check_still_there: ")
+        """
+        try:
+            res = self.world_clean_up_client()
+            rospy.logwarn(f"Clean up: {res}")
+        except Exception as e:
+            rospy.logerr("THIS : " + str(e))
+            rospy.signal_shutdown("Error in check_still_there: ")
 
     # @time_it
     def compute_object(

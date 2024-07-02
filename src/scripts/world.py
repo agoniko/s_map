@@ -137,16 +137,16 @@ class Obj:
                     (self.pcd.point.positions, other.pcd.point.positions), axis=0
                 )
         
-        #weights = exponential_weights(len(self.quaternions), decay_rate=0.1)
-        #centroid = np.average(self.centroids, axis=0, weights=weights)
-        #quaternion = weightedAverageQuaternions(self.quaternions, weights)
+        #indices = np.where(self.centroids != np.zeros(3))[0]
+        #weights = exponential_weights(len(indices), decay_rate=0.1)
+        #centroid = np.average(self.centroids[indices], axis=0, weights=weights)
+        #quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
         #rot_matrix = R.from_quat(quaternion).as_matrix()
         #self.pcd.translate(centroid, relative=False)
         #self.pcd.rotate(rot_matrix, center=np.zeros(3))
 
         self.compute()
-        if self.label=="laptop":
-            print(self.pcd.point.positions.cpu().numpy().mean(axis = 0))
+        print(self.bbox)
 
     def register_pointcloud_to_self(self, other: "Obj", min_size=100):
         """Registers another point cloud to this one and returns the transformed point cloud."""
@@ -170,10 +170,10 @@ class Obj:
         registration_result = o3d.t.pipelines.registration.icp(
             source,
             target,
-            0.5,
+            0.1,
             np.eye(4),
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
-            # criteria,
+            #criteria,
         )
         if registration_result.fitness < 0.5:
             raise ValueError("ICP registration failed")
@@ -186,26 +186,24 @@ class Obj:
     def compute(self):
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
-        self.pcd.estimate_normals(max_nn=30, radius=0.1)
-        if len(self.pcd.point.positions) > 100:
-            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 5)
-            if len(self.pcd.point.positions) == 0:
-                self.bbox = np.zeros((8, 3))
-                self.centroid = np.zeros(3)
-                raise ValueError("Empty point cloud")
+        if len(self.pcd.point.positions) > 30:
+            
+            self.pcd.estimate_normals(max_nn=30, radius=0.1)
+            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
 
-            clean, _ = self.pcd.remove_statistical_outliers(30, 1.0)
-        else:
-            clean = self.pcd
-
-        if len(clean.point.positions) < 10:
-            self.bbox = np.zeros((8, 3))
-            self.centroid = np.zeros(3)
-            raise ValueError("Empty point cloud after cleaning")
-
-        #self.bbox = self.compute_z_oriented_bounding_box(clean)
-        self.bbox = self.compute_oriented_bounding_box(clean)
-        self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+            if len(self.pcd.point.positions) > 50:
+                clean, _ = self.pcd.remove_statistical_outliers(10, 1.0)
+        
+                if len(clean.point.positions) < 10:
+                    clean = self.pcd
+                
+                #self.bbox = self.compute_z_oriented_bounding_box(clean)
+                self.bbox = self.compute_oriented_bounding_box(clean)
+                self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+                return
+        
+        self.bbox = np.zeros((8, 3))
+        self.centroid = np.zeros(3)
 
     def downsample(self):
         """Downsamples the point cloud."""
@@ -381,7 +379,7 @@ class World:
                 print(self.points_list, inf_index, none_index)
 
     # @time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.05):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
