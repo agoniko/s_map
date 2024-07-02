@@ -1,0 +1,33 @@
+2024-07-02 18:34:51,008 - WARNING : Unknown export strategy 'binary'. Proceeding with default (centroid_abs)!
+2024-07-02 18:34:51,008 - INFO    : Set export strategy to CentroidFormat.
+2024-07-02 18:34:51,009 - INFO    : Saving rotations absolutely to positve x-axis in degrees (0..360°).
+2024-07-02 18:35:03,686 - INFO    : Loading next point cloud...
+2024-07-02 18:35:03,687 - INFO    : Loading point cloud from pointclouds/rtabmap_cloud.ply using Open3DHandler.
+2024-07-02 18:35:03,808 - INFO    : Loading segmentation labels from labels/segmentation/rtabmap_cloud.bin.
+2024-07-02 18:35:03,809 - INFO    : =============================================================================================================================== Loading rtabmap_cloud.ply ================================================================================================================================
+2024-07-02 18:35:03,837 - INFO    : Successfully loaded point cloud from pointclouds/rtabmap_cloud.ply!
+2024-07-02 18:35:03,838 - INFO    : Number of Points:       894473         
+2024-07-02 18:35:03,838 - INFO    : Number of Colors:       894473         
+2024-07-02 18:35:03,838 - INFO    : Point Cloud Center:     [-4.76 -3.09  1.23]     
+2024-07-02 18:35:03,838 - INFO    : Point Cloud Minimums:   [-11.11 -10.33  -0.27]  
+2024-07-02 18:35:03,838 - INFO    : Point Cloud Maximums:   [0.84 4.83 2.89]        
+2024-07-02 18:35:03,838 - INFO    : Initial Translation:    [  4.76   3.09 -20.79]  
+2024-07-02 18:35:03,838 - INFO    : ==========================================================================================================================================================================================================================================================================================
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - INFO    : Alignmode was changed to False!
+2024-07-02 18:35:03,838 - INFO    : Imported 18 labels from labels/rtabmap_cloud.json.
+2024-07-02 18:35:03,838 - INFO    : Loaded 18 bboxes!
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,838 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-02 18:35:03,858 - INFO    : Intialized widget.
+2024-07-02 18:35:03,921 - INFO    : Resized widget.
+2024-07-02 18:35:03,950 - INFO    : Showing GUI...
+2024-07-02 18:35:23,855 - INFO    : Closing window after saving ...
+2024-07-02 18:35:23,855 - INFO    : File labels/rtabmap_cloud.json already exists, replacing file ...
+2024-07-02 18:35:23,856 - INFO    : Exported 18 labels to labels/rtabmap_cloud.json in CentroidFormat formatting!
+2024-07-02 18:35:23,860 - INFO    : Writing segmentation labels to labels/segmentation/rtabmap_cloud.bin
