@@ -4,7 +4,7 @@
 	"path": "pointclouds/rtabmap_cloud.ply",
 	"objects": [
 		{
-			"name": "chair",
+			"name": "laptop",
 			"centroid": {
 				"x": -3.64792596,
 				"y": -1.37497909,
@@ -184,7 +184,7 @@
 			}
 		},
 		{
-			"name": "mouse",
+			"name": "tv",
 			"centroid": {
 				"x": -4.89916331,
 				"y": -5.20610324,
@@ -274,7 +274,7 @@
 			}
 		},
 		{
-			"name": "chair",
+			"name": "couch",
 			"centroid": {
 				"x": -7.48017903,
 				"y": 3.45777271,
