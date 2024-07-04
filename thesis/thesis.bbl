@@ -1,18 +1,8 @@
 \begin{thebibliography}{1}
 
-\bibitem{ChenZH23}
-Ting Chen, Ruixiang Zhang, and Geoffrey~E. Hinton.
-\newblock Analog bits: Generating discrete data using diffusion models with self-conditioning.
-\newblock In {\em The Eleventh International Conference on Learning Representations, {ICLR} 2023, Kigali, Rwanda, May 1-5, 2023}. OpenReview.net, 2023.
-
-\bibitem{latex2e}
-Leslie Lamport.
-\newblock {\em {\LaTeX}: a Document Preparation System}.
-\newblock Addison Wesley, Massachusetts, 2 edition, 1994.
-
-\bibitem{LiVR22}
-Jianwen Li, Moshe~Y. Vardi, and Kristin~Y. Rozier.
-\newblock Satisfiability checking for mission-time {LTL} {(MLTL)}.
-\newblock {\em Inf. Comput.}, 289(Part):104923, 2022.
+\bibitem{example-citation}
+Tullio Facchinetti.
+\newblock How to write a thesis in latex, 2021.
+\newblock \url{http://robot.unipv.it/toolleeo}, Last Access 2021.06.21.
 
 \end{thebibliography}
