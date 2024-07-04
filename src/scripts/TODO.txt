@@ -1,2 +1,0 @@
-- BUG: Check why bbox are noisy when tracked, shouldn't be
-- BUG: small objects cannot be represented due to voxel downsampling and cleaning
