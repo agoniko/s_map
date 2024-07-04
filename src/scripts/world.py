@@ -146,7 +146,6 @@ class Obj:
         #self.pcd.rotate(rot_matrix, center=np.zeros(3))
 
         self.compute()
-        print(self.bbox)
 
     def register_pointcloud_to_self(self, other: "Obj", min_size=100):
         """Registers another point cloud to this one and returns the transformed point cloud."""
@@ -284,9 +283,9 @@ class World:
         self.index2id = {}
         self.lock = threading.Lock()  # thread safe for deleting operations
         if o3d.core.cuda.is_available():
-            print("CUDA is available in Open3D.")
+            rospy.loginfo("CUDA is available in Open3D, PointCloud operations will be managed on GPU")
         else:
-            print("CUDA is not available in Open3D.")
+            rospy.loginfo("CUDA is not available in Open3D, PointCloud operations will be managed on CPU")
 
     # @time_it
     def add_object(self, obj):
@@ -370,13 +369,10 @@ class World:
 
     def _rebuild_kdtree(self):
         if len(self.points_list) > 0:
-            inf_index = np.where(self.points_list == np.repeat(np.inf, 3))
-            none_index = np.where(self.points_list == np.repeat(np.nan, 3))
-            # print(inf_index, none_index)
             try:
                 self.kdtree = KDTree(np.array(self.points_list))
             except:
-                print(self.points_list, inf_index, none_index)
+                rospy.logerr("Error in rebuilding KDTree")
 
     # @time_it
     def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
@@ -396,7 +392,6 @@ class World:
                 and obj.label == close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
-                # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
 
@@ -415,7 +410,10 @@ class World:
             world_id = self.get_world_id(obj, iou_thr=IOU_THR)
             if world_id != obj.id:
                 self.override_object(world_id, obj)
-            return self.objects[obj.id]
+            
+            # If we have to less data points we do not add the object to the world
+            if np.sum(self.objects[world_id].bbox) == 0:
+                self.remove_objects([world_id])
         except Exception as e:
             rospy.logerr(f"Error in managing object: {e}")
             if obj.id in self.objects:

@@ -1,7 +1,7 @@
 <launch>
     <arg name="rviz"       default="true" />
     <arg name="rtabmap_viz" default="false" />
-    <arg name="world_frame" type="string" default="map" />
+    <arg name="world_frame" default="mir/odom" />
     <rosparam>
         use_sim_time: true
     </rosparam>
@@ -12,11 +12,11 @@
     </node>
 
     <include file="$(find s_map)/src/launch/static_publishers_heron.launch"/>
-    <include file="$(find s_map)/src/launch/map_heron.launch">
+    <!--include file="$(find s_map)/src/launch/map_heron.launch">
         <arg name="mapping" value="true"/>
         <arg name="rgbd" type="bool" value="true" />
         <arg name="odom_topic" value="/odom/filtered"/>
-    </include>
+    </include-->
 
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
         <param name="camera_name" value="front"/>
