@@ -74,8 +74,6 @@ Visualization Manager:
           Value: true
         gripper_link:
           Value: true
-        map:
-          Value: true
         map_old:
           Value: true
         mir/back_laser_link:
@@ -197,99 +195,98 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          mir/odom:
-            mir/base_footprint:
-              mir/base_link:
-                mir/back_laser_link:
-                  {}
-                mir/bl_caster_rotation_link:
-                  mir/bl_caster_wheel_link:
-                    {}
-                mir/br_caster_rotation_link:
-                  mir/br_caster_wheel_link:
-                    {}
-                mir/camera_floor_left_link:
-                  mir/camera_floor_left_color_frame:
-                    mir/camera_floor_left_color_optical_frame:
-                      {}
-                  mir/camera_floor_left_depth_optical_frame:
-                    {}
-                mir/camera_floor_right_link:
-                  mir/camera_floor_right_color_frame:
-                    mir/camera_floor_right_color_optical_frame:
-                      {}
-                  mir/camera_floor_right_depth_optical_frame:
-                    {}
-                  mir/camera_infra1_frame:
-                    mir/camera_infra1_optical_frame:
-                      {}
-                  mir/camera_infra2_frame:
-                    mir/camera_infra2_optical_frame:
-                      {}
-                mir/fl_caster_rotation_link:
-                  mir/fl_caster_wheel_link:
-                    {}
-                mir/fr_caster_rotation_link:
-                  mir/fr_caster_wheel_link:
-                    {}
-                mir/front_laser_link:
-                  {}
-                mir/imu_link:
-                  mir/imu_frame:
-                    {}
-                mir/left_wheel_link:
-                  {}
-                mir/right_wheel_link:
-                  {}
-                mir/surface:
-                  mir/cabinet_centre:
-                    mir/cabinet_lower:
-                      {}
-                    mir/cabinet_pad:
-                      {}
-                    mir/cabinet_table:
-                      mir/cabinet_arm_base:
-                        ur5e_base_link:
-                          ur5e_base:
-                            ur5e_tool0_controller:
-                              {}
-                          ur5e_shoulder_link:
-                            ur5e_upper_arm_link:
-                              ur5e_forearm_link:
-                                ur5e_wrist_1_link:
-                                  ur5e_wrist_2_link:
-                                    ur5e_wrist_3_link:
-                                      ur5e_ee_link:
-                                        connector_plate:
-                                          gripper_link:
-                                            finger1_link:
-                                              {}
-                                            finger2_link:
-                                              {}
-                                            ur5e_tcp_link:
-                                              {}
-                                        realsense_link:
-                                          camera_confidence_frame:
-                                            camera_confidence_optical_frame:
-                                              {}
-                                          realsense_aligned_depth_to_rgb_frame_id:
-                                            realsense_rgb_optical_frame:
-                                              {}
-                                          realsense_depth_frame:
-                                            realsense_depth_optical_frame:
-                                              {}
-                                          realsense_rgb_frame:
-                                            {}
-                                      ur5e_tool0:
-                                        {}
-                mir/us_1_frame:
-                  {}
-                mir/us_2_frame:
-                  {}
         map_old:
           mir/old_odom:
             {}
+        mir/odom:
+          mir/base_footprint:
+            mir/base_link:
+              mir/back_laser_link:
+                {}
+              mir/bl_caster_rotation_link:
+                mir/bl_caster_wheel_link:
+                  {}
+              mir/br_caster_rotation_link:
+                mir/br_caster_wheel_link:
+                  {}
+              mir/camera_floor_left_link:
+                mir/camera_floor_left_color_frame:
+                  mir/camera_floor_left_color_optical_frame:
+                    {}
+                mir/camera_floor_left_depth_optical_frame:
+                  {}
+              mir/camera_floor_right_link:
+                mir/camera_floor_right_color_frame:
+                  mir/camera_floor_right_color_optical_frame:
+                    {}
+                mir/camera_floor_right_depth_optical_frame:
+                  {}
+                mir/camera_infra1_frame:
+                  mir/camera_infra1_optical_frame:
+                    {}
+                mir/camera_infra2_frame:
+                  mir/camera_infra2_optical_frame:
+                    {}
+              mir/fl_caster_rotation_link:
+                mir/fl_caster_wheel_link:
+                  {}
+              mir/fr_caster_rotation_link:
+                mir/fr_caster_wheel_link:
+                  {}
+              mir/front_laser_link:
+                {}
+              mir/imu_link:
+                mir/imu_frame:
+                  {}
+              mir/left_wheel_link:
+                {}
+              mir/right_wheel_link:
+                {}
+              mir/surface:
+                mir/cabinet_centre:
+                  mir/cabinet_lower:
+                    {}
+                  mir/cabinet_pad:
+                    {}
+                  mir/cabinet_table:
+                    mir/cabinet_arm_base:
+                      ur5e_base_link:
+                        ur5e_base:
+                          ur5e_tool0_controller:
+                            {}
+                        ur5e_shoulder_link:
+                          ur5e_upper_arm_link:
+                            ur5e_forearm_link:
+                              ur5e_wrist_1_link:
+                                ur5e_wrist_2_link:
+                                  ur5e_wrist_3_link:
+                                    ur5e_ee_link:
+                                      connector_plate:
+                                        gripper_link:
+                                          finger1_link:
+                                            {}
+                                          finger2_link:
+                                            {}
+                                          ur5e_tcp_link:
+                                            {}
+                                      realsense_link:
+                                        camera_confidence_frame:
+                                          camera_confidence_optical_frame:
+                                            {}
+                                        realsense_aligned_depth_to_rgb_frame_id:
+                                          realsense_rgb_optical_frame:
+                                            {}
+                                        realsense_depth_frame:
+                                          realsense_depth_optical_frame:
+                                            {}
+                                        realsense_rgb_frame:
+                                          {}
+                                    ur5e_tool0:
+                                      {}
+              mir/us_1_frame:
+                {}
+              mir/us_2_frame:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -523,7 +520,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: map
+    Fixed Frame: mir/odom
     Frame Rate: 30
   Name: root
   Tools:
