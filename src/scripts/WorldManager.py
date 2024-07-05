@@ -8,12 +8,14 @@ from std_srvs.srv import Trigger, TriggerResponse
 import numpy as np
 import json
 import rospkg
+from threading import Lock
 
 PREDICTIONS_PATH = rospkg.RosPack().get_path("s_map") + "/predictions.json"
 
 class WorldManager:
     def __init__(self):
         self.world = World()
+        self.lock = Lock()
         self.init_services()
 
     def init_services(self):
@@ -27,24 +29,30 @@ class WorldManager:
     def handle_manage_object(self, req):
         points = np.array(req.object.points).reshape(-1, 3)
         obj = Obj(req.object.id, points, req.object.label, req.object.score, req.object.header.stamp)
-        try:
-            self.world.manage_object(obj)
-            return True
-        except:
-            return False
+        with self.lock:
+            try:
+                self.world.manage_object(obj)
+                return True
+            except Exception as e:
+                rospy.logerr("Error managing object: ", e)
+                return False
 
     def handle_remove_object(self, req):
-        self.world.remove_objects(req.object_ids)
-        return True
+        with self.lock:
+            self.world.remove_objects(req.object_ids)
+            return True
 
     def handle_query_objects(self, req):
-        objects = self.world.query_close_objects_service([req.point.x, req.point.y, req.point.z], req.threshold)
+        with self.lock:
+            objects = self.world.query_close_objects_service([req.point.x, req.point.y, req.point.z], req.threshold)
+
         res = QueryObjectsResponse()
         res.objects = objects
         return res
     
     def handle_get_all_objects(self, req):
-        objects = self.world.get_objects()
+        with self.lock:
+            objects = self.world.get_objects()
         if isinstance(objects, ObjectList):
             res = GetAllObjectsResponse()
             res.objects.objects = objects.objects
@@ -55,11 +63,13 @@ class WorldManager:
         return res
     
     def handle_clean_up(self, req):
-        self.world.clean_up()
-        return True
+        with self.lock:
+            self.world.clean_up()
+            return True
     
     def handle_export_predictions(self, req):
-        objects = self.world.get_objects()
+        with self.lock:
+            objects = self.world.get_objects()
         if isinstance(objects, ObjectList):
             objects = objects.objects
 

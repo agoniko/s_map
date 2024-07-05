@@ -12,6 +12,7 @@ from s_map.srv import ManageObject, RemoveObjects, GetAllObjects, GetAllObjectsR
 import rospkg
 import copy
 from geometry_msgs.msg import Point
+import cv2
 
 # Local modules
 from utils import (
@@ -147,41 +148,11 @@ class Mapper(object):
 
     # @time_it
     def clean_up(self, event):
-        """
-        This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
-        Then it cleans up the world from the objects that are not there anymore.
-        """
-        """
-        for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 3]])  # meters in front of the camera
-            point_world_frame = self.transformer.fast_transform(
-                camera_frame, WORLD_FRAME, point, rospy.Time.now()
-            )
-            # marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
-            # self.marker_pub.publish(marker)
-            if point_world_frame is None:
-                return
-            point_world_frame = point_world_frame.flatten()
-            point_msg = Point(x = point_world_frame[0], y = point_world_frame[1], z = point_world_frame[2])
-            
-            # query the world for objects in front of the camera
-            objects = self.world_query_client(point_msg, 1.0).objects.objects
-            # print("close objects: ", objects)
-            to_remove = []
-            for obj in objects:
-                if obj.header.stamp.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
-                    rospy.loginfo(f"Object {obj.id}: {obj.label} is not there anymore")
-                    to_remove.append(obj.id)
-            
-            if to_remove:
-                self.world_remove_client(to_remove)
-        """
         try:
             res = self.world_clean_up_client()
-            rospy.logwarn(f"Clean up: {res}")
+            #rospy.logwarn(f"Clean up: {res}")
         except Exception as e:
-            rospy.logerr("THIS : " + str(e))
-            rospy.signal_shutdown("Error in check_still_there: ")
+            rospy.logerr("Clean up service exception: : " + str(e))
 
     # @time_it
     def compute_object(
@@ -239,28 +210,6 @@ class Mapper(object):
 
         return pointcloud
 
-    # @time_it
-    """def publish_pointclouds(self, frame, stamp, objects = None):
-        if objects is None:
-            objects = self.world.get_objects()        
-        msg = create_pointcloud_message(objects, frame, stamp)
-        if msg:
-            self.pc_pub.publish(msg)
-
-    # @time_it
-    def publish_markers(self, stamp):
-        marker = create_delete_marker(WORLD_FRAME)
-        self.marker_pub.publish(marker)
-        objects = self.world.get_objects()
-        # for obj in objects:
-        #    points = np.asarray(obj.pcd.points)
-        #    np.savetxt(PKG_PATH + f"/pc/{obj.id}_{obj.label}.txt", points, delimiter=",")
-        (boxes_msg, labels_msg) = create_marker_array(objects, WORLD_FRAME, stamp)
-        if boxes_msg:
-            self.marker_pub.publish(boxes_msg)
-
-        if labels_msg:
-            self.marker_pub.publish(labels_msg)
     """
     def plot_centroids(self, event):
         objects = self.world_all_objects_client().objects.objects
@@ -272,6 +221,7 @@ class Mapper(object):
 
         marker = create_marker_point(centroids, rospy.Time.now(), WORLD_FRAME)
         self.marker_pub.publish(marker)
+        """
 
 
 if __name__ == "__main__":

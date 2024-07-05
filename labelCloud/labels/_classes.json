@@ -39,6 +39,16 @@
             "name": "couch",
             "id": 8,
             "color": "#ffd77f"
+        },
+        {
+            "name": "person",
+            "id": 9,
+            "color": "#7fff89"
+        },
+        {
+            "name": "handbag",
+            "id": 10,
+            "color": "#66cc9c"
         }
     ],
     "default": 1,
