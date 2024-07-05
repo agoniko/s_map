@@ -49,6 +49,11 @@
             "name": "handbag",
             "id": 10,
             "color": "#66cc9c"
+        },
+        {
+            "name": "backpack",
+            "id": 11,
+            "color": "#bccc66"
         }
     ],
     "default": 1,
