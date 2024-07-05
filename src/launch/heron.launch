@@ -16,6 +16,7 @@
         <arg name="mapping" value="true"/>
         <arg name="rgbd" type="bool" value="true" />
         <arg name="odom_topic" value="/odom/filtered"/>
+        <arg name="map_frame" value="$(arg world_frame)" />
     </include>
 
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">

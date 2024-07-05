@@ -12,7 +12,7 @@ import threading
 from s_map.msg import Object, ObjectList
 
 
-TIME_TO_BE_CONFIRMED = 0.5
+TIME_TO_BE_CONFIRMED = 1.0
 EXPIRY_TIME_MOVING_OBJECTS = 0.0
 STD_THR = 0.6
 VOXEL_SIZE = 0.03
@@ -412,14 +412,14 @@ class World:
                     return close_obj.id
 
             # If the object was detected but misclassified
-            """if (
+            if (
                 obj.id != close_obj.id
                 and obj.label != close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() < 1.0
             ):
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.8:
                     return close_obj.id
-            """
+            
         return obj.id
 
     # @time_it
