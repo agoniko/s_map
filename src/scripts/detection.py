@@ -144,8 +144,6 @@ class Node:
             res.labels = labels
             res.depth = depth
             res.camera_name = self.camera_name
-            #rospy.loginfo(f"Publishing detection results for {self.camera_name} camera: ")
-            #rospy.loginfo(f"{[(label, id) for label, id in zip(labels, res.ids)]}")
 
             return res
         except:
