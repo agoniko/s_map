@@ -9,6 +9,9 @@ from geometry_msgs.msg import Point32
 import open3d as o3d
 import tf
 from geometric_transformations import TransformHelper
+import rospkg
+
+SAVE_PATH = rospkg.RosPack().get_path("s_map") + "/pointclouds/notebooks/map_evaluation/"
 
 class LaserScanToPointCloud:
     def __init__(self):
@@ -28,7 +31,7 @@ class LaserScanToPointCloud:
 
     def write_on_file_callback(self, msg):
         if msg.data:
-            self.save_point_cloud("accumulated_laserscan.ply", self.combined_points)
+            self.save_point_cloud(SAVE_PATH + "accumulated_laserscan.ply", self.combined_points)
 
             if self.last_rtabmap_cloud is not None:
                 rtabmap_points = list(point_cloud2.read_points(
@@ -36,7 +39,7 @@ class LaserScanToPointCloud:
                     field_names=("x", "y", "z"),
                     skip_nans=True
                 ))
-                self.save_point_cloud("rtabmap_pointcloud.ply", rtabmap_points)
+                self.save_point_cloud(SAVE_PATH + "rtabmap_pointcloud.ply", rtabmap_points)
 
     def save_point_cloud(self, filename, points):
         pc = o3d.geometry.PointCloud()
