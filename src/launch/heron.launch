@@ -14,7 +14,7 @@
         <arg name="map_frame" value="$(arg world_frame)" />
     </include>
     <node pkg="s_map" type="accumulate_laser.py" name="laser_rtabmap_save"  output="screen">
-        <param name="world_frame" value="$(arg map_frame)"/>
+        <param name="world_frame" value="$(arg world_frame)"/>
     </node>
     <!--
     <node pkg="s_map" type="WorldManager.py" name="world_manager"  output="screen"/>
