@@ -1,0 +1,4 @@
+# ManageObject.srv
+Object object  # Object to be added or updated
+---
+bool success   # Whether the operation was successful

@@ -37,7 +37,7 @@ def create_pointcloud_message(objects, frame, stamp):
         if obj.label.lower() in label_colors:
             r, g, b = label_colors[obj.label.lower()]
             a = 255
-            pc = np.asarray(obj.pcd.points)
+            pc = np.array(obj.points).reshape(-1, 3)
             rgb = struct.unpack("I", struct.pack("BBBB", b, g, r, a))[0] * np.ones(
                 (pc.shape[0], 1)
             )
@@ -59,6 +59,8 @@ def create_pointcloud_message(objects, frame, stamp):
     header = Header()
     header.stamp = stamp
     header.frame_id = frame
+    if len(points) == 0:
+        return None
     try:
         x = points[:, 0]
         y = points[:, 1]
@@ -122,12 +124,12 @@ def create_marker_array(objects, frame, stamp):
     label_msg = MarkerArray()
 
     for obj in objects:
-        marker = create_marker_vertices(obj.bbox, obj.label, obj.id, stamp, frame)
+        bbox = np.array(obj.bbox).reshape(8, 3)
+        marker = create_marker_vertices(bbox, obj.label, obj.id, stamp, frame)
         if marker is not None:
             msg.markers.append(marker)
             
             # Calculate central position of the bounding box
-            bbox = np.array(obj.bbox)
             central_position = bbox.mean(axis=0)
             if np.sum(np.abs(central_position)) > 0:
                 label_marker = create_marker_text(f"{obj.label}:{obj.id}", central_position, obj.id, stamp, frame)
@@ -136,7 +138,7 @@ def create_marker_array(objects, frame, stamp):
     if label_msg.markers:
         return (msg, label_msg)
     else:
-        return (msg, -1)
+        return (msg, None)
 
 # Example usage
 # objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.
