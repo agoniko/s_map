@@ -1,0 +1,25 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{extref}[2006/04/30 Defines useful commands for references]
+
+\@ifpackageloaded{hyperref}{
+	\PackageWarning{extref}{I've detected you loaded the hyperref package, so extref has been disabled. You should load extref BEFORE hyperref, not after, or you'll run into problems.}
+}{
+
+	\RequirePackage{varioref}
+	
+	\newcommand{\fref}[1]{\figurename~\ref{#1}}
+	\newcommand{\fvref}[1]{\figurename~\vref{#1}}
+	\newcommand{\tref}[1]{\tablename~\ref{#1}}
+	\newcommand{\tvref}[1]{\tablename~\vref{#1}}
+	\newcommand{\pref}[1]{\partname~\ref{#1}}
+	\newcommand{\pvref}[1]{\partname~\vref{#1}}
+	\newcommand{\cref}[1]{\chaptername~\ref{#1}}
+	\newcommand{\cvref}[1]{\chaptername~\vref{#1}}
+	\newcommand{\sref}[1]{\sectionname~\ref{#1}}
+	\newcommand{\svref}[1]{\sectionname~\vref{#1}}
+	\newcommand{\ssref}[1]{\subsectionname~\ref{#1}}
+	\newcommand{\ssvref}[1]{\subsectionname~\vref{#1}}
+	\newcommand{\aref}[1]{\appendixname~\ref{#1}}
+	\newcommand{\avref}[1]{\appendixname~\vref{#1}}
+
+}

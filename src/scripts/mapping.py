@@ -8,8 +8,11 @@ from sensor_msgs import point_cloud2
 from cv_bridge import CvBridge
 from visualization_msgs.msg import MarkerArray
 from s_map.msg import Detection, Object, ObjectList
-from s_map.srv import ManageObject, RemoveObjects
+from s_map.srv import ManageObject, RemoveObjects, GetAllObjects, GetAllObjectsResponse, QueryObjects, QueryObjectsResponse, CleanUp
 import rospkg
+import copy
+from geometry_msgs.msg import Point
+import cv2
 
 # Local modules
 from utils import (
@@ -35,7 +38,7 @@ WORLD_FRAME = None
 # Frame constants
 PKG_PATH = rospkg.RosPack().get_path("s_map")
 
-MAX_DEPTH = 8.0
+MAX_DEPTH = 6.0
 MIN_DEPTH = 0.8
 EXPIRY_TIME = 10.0
 QUEUE_SIZE = 5
@@ -54,13 +57,20 @@ class Mapper(object):
         self.init_publishers()
         self.init_services()
         rospy.loginfo("Mapping node initialized")
-        # rospy.Timer(rospy.Duration(0.3), self.clean_up)
+        self.tracked_id = None
+        rospy.Timer(rospy.Duration(0.3), self.clean_up)
     
     def init_services(self):
         rospy.wait_for_service("manage_object")
         rospy.wait_for_service("remove_objects")
+        rospy.wait_for_service("get_all_objects")
+        rospy.wait_for_service("query_objects")
+        rospy.wait_for_service("clean_up")
         self.world_manager_client = rospy.ServiceProxy("manage_object", ManageObject)
         self.world_remove_client = rospy.ServiceProxy("remove_objects", RemoveObjects)
+        self.world_all_objects_client = rospy.ServiceProxy("get_all_objects", GetAllObjects)
+        self.world_query_client = rospy.ServiceProxy("query_objects", QueryObjects)
+        self.world_clean_up_client = rospy.ServiceProxy("clean_up", CleanUp)
         rospy.loginfo("World Manager Services initialized for Mapping node")
 
     def init_params(self):
@@ -117,7 +127,6 @@ class Mapper(object):
 
     # @time_it
     def process_data(self, detection):
-        rospy.logerr("Processing data")
         if not self.is_reliable(detection.header):
             return
 
@@ -139,32 +148,11 @@ class Mapper(object):
 
     # @time_it
     def clean_up(self, event):
-        """
-        This function checks if the objects saved in the world, that now should be infront of the camera, are still there.
-        Then it cleans up the world from the objects that are not there anymore.
-        """
-        for camera_frame in self.pose_reliability_evaluator.keys():
-            point = np.array([[0, 0, 2]])  # 1.5 meters in front of the camera
-            point_world_frame = self.transformer.fast_transform(
-                camera_frame, WORLD_FRAME, point, rospy.Time.now()
-            )
-            # marker = create_marker_point(point_world_frame, rospy.Time.now(), WORLD_FRAME)
-            # self.marker_pub.publish(marker)
-            if point_world_frame is None:
-                return
-            objects = self.world.query_by_distance(point_world_frame[0], 1.5)
-            # print("close objects: ", objects)
-            to_remove = []
-            for obj in objects:
-                if obj.last_seen.to_sec() < rospy.Time.now().to_sec() - EXPIRY_TIME:
-                    rospy.loginfo(f"Object {obj.id}: {obj.label} is not there anymore")
-                    to_remove.append(obj.id)
-            self.world.remove_objects(to_remove)
-            try:
-                self.world.clean_up()
-            except Exception as e:
-                rospy.logerr("THIS : " + str(e))
-                rospy.signal_shutdown("Error in check_still_there: ")
+        try:
+            res = self.world_clean_up_client()
+            #rospy.logwarn(f"Clean up: {res}")
+        except Exception as e:
+            rospy.logerr("Clean up service exception: : " + str(e))
 
     # @time_it
     def compute_object(
@@ -196,13 +184,12 @@ class Mapper(object):
 
         if pc_world_frame is None:
             return None
-        
-        print("MAPPING: ", pc_world_frame[:10])
+
         obj = Object()
-        obj.header = header
+        obj.header = copy.deepcopy(header)
         obj.header.frame_id = WORLD_FRAME
         obj.id = int(id)
-        obj.points = pc_world_frame.flatten().tolist()
+        obj.points = pc_world_frame.astype(np.float32).flatten().tolist()
         obj.label = label
         obj.score = score
         return obj
@@ -223,34 +210,18 @@ class Mapper(object):
 
         return pointcloud
 
-    # @time_it
-    """def publish_pointclouds(self, frame, stamp, objects = None):
-        if objects is None:
-            objects = self.world.get_objects()        
-        msg = create_pointcloud_message(objects, frame, stamp)
-        if msg:
-            self.pc_pub.publish(msg)
-
-    # @time_it
-    def publish_markers(self, stamp):
-        marker = create_delete_marker(WORLD_FRAME)
-        self.marker_pub.publish(marker)
-        objects = self.world.get_objects()
-        # for obj in objects:
-        #    points = np.asarray(obj.pcd.points)
-        #    np.savetxt(PKG_PATH + f"/pc/{obj.id}_{obj.label}.txt", points, delimiter=",")
-        (boxes_msg, labels_msg) = create_marker_array(objects, WORLD_FRAME, stamp)
-        if boxes_msg:
-            self.marker_pub.publish(boxes_msg)
-
-        if labels_msg:
-            self.marker_pub.publish(labels_msg)
-    
+    """
     def plot_centroids(self, event):
-        centroids = self.world.get_kdtree_centroids()
+        objects = self.world_all_objects_client().objects.objects
+        centroids = []
+        for obj in objects:
+            points = np.array(obj.points).reshape(-1, 3)
+            centroid = np.mean(points, axis=0)
+            centroids.append(centroid)
+
         marker = create_marker_point(centroids, rospy.Time.now(), WORLD_FRAME)
         self.marker_pub.publish(marker)
-"""
+        """
 
 
 if __name__ == "__main__":
