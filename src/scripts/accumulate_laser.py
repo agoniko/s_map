@@ -11,7 +11,7 @@ import tf
 from geometric_transformations import TransformHelper
 import rospkg
 
-SAVE_PATH = rospkg.RosPack().get_path("s_map") + "/pointclouds/notebooks/map_evaluation/"
+SAVE_PATH = rospkg.RosPack().get_path("s_map") + "/notebooks/map_evaluation/"
 
 class LaserScanToPointCloud:
     def __init__(self):
