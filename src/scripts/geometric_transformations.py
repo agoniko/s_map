@@ -28,7 +28,6 @@ class CameraPoseEstimator:
                 self.camera = PinholeCameraModel.from_camera_info(x)
 
         data = Dummy()
-        print(info_topic)
         sub = rospy.Subscriber(info_topic, CameraInfo, callback=data.callback)
 
         r = rospy.Rate(10)
@@ -49,7 +48,6 @@ class CameraPoseEstimator:
             (self.height, self.width),
             self.camera,
         ) = self.receive_camera_info(info_topic)
-        print(self.cx, self.cy)
 
     def pixel_to_3d(self, pix_x, pix_y, depth_m):
         # getting the unit vector that represent the 3d ray from pixel (pix_x, pix_y) = (u, v)
@@ -148,22 +146,6 @@ class TransformHelper(metaclass=SingletonMeta):
             tf2_ros.ExtrapolationException,
         ) as e:
             rospy.logwarn("Failed to lookup transform: %s", str(e))
-            try:
-                # Wait for the transform to become available
-                self.tf_buffer.can_transform(
-                    target_frame, source_frame, stamp, rospy.Duration(1.0)
-                )
-                transform = self.tf_buffer.lookup_transform(
-                    target_frame, source_frame, stamp
-                )
-                return transform
-            except (
-                tf2_ros.LookupException,
-                tf2_ros.ConnectivityException,
-                tf2_ros.ExtrapolationException,
-            ) as ex:
-                rospy.logerr("Lookup after waiting also failed: %s", str(ex))
-                return None
 
     def transform_coordinates(self, source_frame, target_frame, points, stamp):
         """

@@ -1,0 +1,12 @@
+% reallyblank - LaTeX package
+% (c)2006 Davide Cavalca <davide.cavalca@tiscali.it>
+% This package is under the LaTeX Project Public License
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{reallyblank}[2006/04/30 Makes empty pages really blank, without headings]
+
+\let\origdoublepage\cleardoublepage
+\newcommand{\clearemptydoublepage}{
+  \clearpage
+  {\pagestyle{empty}\origdoublepage}
+}
+\let\cleardoublepage\clearemptydoublepage

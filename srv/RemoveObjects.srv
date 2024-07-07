@@ -1,0 +1,4 @@
+# RemoveObject.srv
+int32[] object_ids  # IDs of the objects to be removed
+---
+bool success      # Whether the operation was successful
