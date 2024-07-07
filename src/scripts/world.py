@@ -9,14 +9,15 @@ import rospy
 from scipy.spatial.transform import Rotation as R
 import copy
 import threading
+from s_map.msg import Object, ObjectList
 
 
-TIME_TO_BE_CONFIRMED = 0.1
+TIME_TO_BE_CONFIRMED = 1.0
 EXPIRY_TIME_MOVING_OBJECTS = 0.0
-STD_THR = 0.4
+STD_THR = 0.6
 VOXEL_SIZE = 0.03
-MOVING_CLASSES = ["person"]
-IOU_THR = 0.2
+MOVING_CLASSES = []
+IOU_THR = 0.0
 
 
 def exponential_weights(length, decay_rate=0.1):
@@ -77,7 +78,7 @@ class Obj:
             )
         except Exception as e:
             rospy.logerr(f"Error creating tensor for point cloud positions: {e}")
-            raise
+            raise ValueError("Error creating tensor for point cloud positions")
 
         self.last_seen = stamp
         self.first_seen = stamp
@@ -89,6 +90,17 @@ class Obj:
         r = self.pcd.cpu().to_legacy().get_rotation_matrix_from_xyz((0, 0, 0))
         self.quaternions = np.array([R.from_matrix(r).as_quat()])
         self.compute()
+
+    def to_msg(self):
+        """Returns the object in the format of the Object message."""
+        obj = Object()
+        obj.header.stamp = self.last_seen
+        obj.id = self.id
+        obj.points = self.pcd.point.positions.cpu().numpy().flatten().tolist()
+        obj.label = self.label
+        obj.score = self.score
+        obj.bbox = self.bbox.flatten().tolist()
+        return obj
 
     def update(self, other: "Obj"):
         """Updates the object's points and score and stores the historical state."""
@@ -103,6 +115,7 @@ class Obj:
         )
         #
         self.last_seen = max(self.last_seen, other.last_seen)
+        self.is_confirmed = self.is_confirmed or other.is_confirmed
         # Euristics: an object is confirmed if it has been seen multiple times
         if not self.is_confirmed:
             self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(
@@ -114,38 +127,42 @@ class Obj:
             self.release_resources()
             self.pcd = other.pcd
         else:
-            try:
-                other = self.register_pointcloud_to_self(other)
-                self.pcd.point.positions = o3d.core.concatenate(
-                    (self.pcd.point.positions, other.pcd.point.positions), axis=0
-                )
-                weights = exponential_weights(len(self.quaternions), decay_rate=0.1)
-                centroid = np.average(self.centroids, axis=0, weights=weights)
-                quaternion = weightedAverageQuaternions(self.quaternions, weights)
-                rot_matrix = R.from_quat(quaternion).as_matrix()
-                self.pcd.translate(centroid, relative=False)
-                self.pcd.rotate(rot_matrix, center=np.zeros(3))
+            if self.first_seen < other.first_seen:
+                target = self
+                source = other
+            else:
+                target = other
+                source = self
 
-            except Exception as e:
-                rospy.logwarn(f"Error in registering point clouds: {e}, Keeping Last")
-                self.release_resources()
-                self.pcd = other.pcd
+            source, res = self.register_pointcloud(source, target)
+            self.pcd.point.positions = o3d.core.concatenate(
+                (source.pcd.point.positions, target.pcd.point.positions), axis=0
+            )
+
+        self.label = self.label if self.score > other.score else other.label
+        self.score = max(self.score, other.score)
+
+        # indices = np.where(self.centroids != np.zeros(3))[0]
+        # weights = exponential_weights(len(indices), decay_rate=0.1)
+        # centroid = np.average(self.centroids[indices], axis=0, weights=weights)
+        # quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
+        # rot_matrix = R.from_quat(quaternion).as_matrix()
+        # self.pcd.translate(centroid, relative=False)
+        # self.pcd.rotate(rot_matrix, center=np.zeros(3))
 
         self.compute()
 
-    def register_pointcloud_to_self(self, other: "Obj", min_size=100):
+    def register_pointcloud(self, source, target: "Obj", min_size=100):
         """Registers another point cloud to this one and returns the transformed point cloud."""
-        source = other.pcd
-        target = self.pcd
-        if len(source.point.positions) == 0 or len(target.point.positions) == 0:
-            raise ValueError("Empty point cloud")
+        source_pcd = source.pcd
+        target_pcd = target.pcd
 
         if (
-            len(source.point.positions) < min_size
-            or len(target.point.positions) < min_size
+            len(source_pcd.point.positions) < min_size
+            or len(target_pcd.point.positions) < min_size
         ):
             # It does not make sense to register two small point clouds, let's build them up first
-            return other
+            return source, False
 
         # Perform ICP registration on GPU
         criteria = o3d.t.pipelines.registration.ICPConvergenceCriteria(
@@ -153,43 +170,43 @@ class Obj:
         )
 
         registration_result = o3d.t.pipelines.registration.icp(
-            source,
-            target,
-            0.2,
+            source_pcd,
+            target_pcd,
+            0.5,
             np.eye(4),
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
             # criteria,
         )
-        if registration_result.fitness < 0.5:
-            raise ValueError("ICP registration failed")
+        if registration_result.fitness < 0.3:
+            rospy.logwarn("ICP registration failed, skipping registration")
+            return source, False
 
         transformation = registration_result.transformation
-        source.transform(transformation)
-        other.pcd = source
-        return other
+        source_pcd.transform(transformation)
+        source.pcd = source_pcd
+        return source, True
 
     def compute(self):
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
-        self.pcd.estimate_normals(max_nn=30, radius=0.1)
-        if len(self.pcd.point.positions) > 100:
-            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 5)
-            if len(self.pcd.point.positions) == 0:
-                self.bbox = np.zeros((8, 3))
-                self.centroid = np.zeros(3)
-                raise ValueError("Empty point cloud")
+        if len(self.pcd.point.positions) > 30:
 
-            clean, _ = self.pcd.remove_statistical_outliers(30, 1.0)
-        else:
-            clean = self.pcd
+            self.pcd.estimate_normals(max_nn=30, radius=0.1)
+            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
 
-        if len(clean.point.positions) < 10:
-            self.bbox = np.zeros((8, 3))
-            self.centroid = np.zeros(3)
-            raise ValueError("Empty point cloud after cleaning")
+            if len(self.pcd.point.positions) > 50:
+                clean, _ = self.pcd.remove_statistical_outliers(30, 1.0)
 
-        self.bbox = self.compute_z_oriented_bounding_box(clean)
-        self.centroid = np.asarray(self.bbox.mean(axis=0))
+                if len(clean.point.positions) < 10:
+                    clean = self.pcd
+
+                # self.bbox = self.compute_z_oriented_bounding_box(clean)
+                self.bbox = self.compute_oriented_bounding_box(clean)
+                self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+                return
+
+        self.bbox = np.zeros((8, 3))
+        self.centroid = np.zeros(3)
 
     def downsample(self):
         """Downsamples the point cloud."""
@@ -237,6 +254,10 @@ class Obj:
 
         return np.asarray(aabb.get_box_points())
 
+    def compute_oriented_bounding_box(self, pcd):
+        bbox = self.pcd.get_oriented_bounding_box()
+        return bbox.get_box_points().cpu().numpy()
+
     def dynamic_voxel_downsample(self, factor=0.15):
         # Compute the bounding box
         bbox = self.pcd.get_axis_aligned_bounding_box()
@@ -266,58 +287,76 @@ class World:
         self.index2id = {}
         self.lock = threading.Lock()  # thread safe for deleting operations
         if o3d.core.cuda.is_available():
-            print("CUDA is available in Open3D.")
+            rospy.loginfo(
+                "CUDA is available in Open3D, PointCloud operations will be managed on GPU"
+            )
         else:
-            print("CUDA is not available in Open3D.")
+            rospy.loginfo(
+                "CUDA is not available in Open3D, PointCloud operations will be managed on CPU"
+            )
 
     # @time_it
     def add_object(self, obj):
         """Adds a new object to the world and updates the KDTree."""
-        with self.lock:
-            self.objects[obj.id] = obj
-            self.points_list.append(obj.centroid)  # Using centroid of the bounding box
-            self.id2index[obj.id] = len(self.points_list) - 1
-            self.index2id[len(self.points_list) - 1] = obj.id
-            self._rebuild_kdtree()
+
+        self.objects[obj.id] = obj
+        self.points_list.append(obj.centroid)  # Using centroid of the bounding box
+        self.id2index[obj.id] = len(self.points_list) - 1
+        self.index2id[len(self.points_list) - 1] = obj.id
+        self._rebuild_kdtree()
 
     # @time_it
     def update_object(self, obj):
         """Updates an existing object in the world."""
+
         self.objects[obj.id].update(obj)
         self.points_list[self.id2index[obj.id]] = self.objects[obj.id].centroid
+
         self._rebuild_kdtree()
 
     # @time_it
     def remove_objects(self, obj_ids):
         """Removes an object from the world."""
-        with self.lock:
-            for obj_id in obj_ids:
-                if obj_id in self.objects:
-                    self.objects[obj_id].release_resources()
-                    self.objects.pop(obj_id)
+        print("Removing objects: ", [self.objects[obj_id].label for obj_id in obj_ids])
+        for obj_id in obj_ids:
+            if obj_id in self.objects:
+                self.objects[obj_id].release_resources()
+                self.objects.pop(obj_id)
 
-            self.points_list = []
-            self.id2index = {}
-            self.index2id = {}
+        self.points_list = []
+        self.id2index = {}
+        self.index2id = {}
 
-            for i, (id, obj) in enumerate(self.objects.items()):
-                self.id2index[id] = i
-                self.index2id[i] = id
-                self.points_list.append(obj.centroid)
+        for i, (id, obj) in enumerate(self.objects.items()):
+            self.id2index[id] = i
+            self.index2id[i] = id
+            self.points_list.append(obj.centroid)
 
-            self._rebuild_kdtree()
+        self._rebuild_kdtree()
 
     def override_object(self, old_id, obj):
         old_obj = self.objects[old_id]
-        rospy.loginfo(
-            f"Overriding object {old_id}:{old_obj.label} with {obj.id}:{obj.label}"
-        )
-        self.objects[obj.id].update(old_obj)
+
+        print("Is in world:", self.objects[obj.id].label)
+        try:
+            self.objects[obj.id].update(old_obj)
+        except Exception as e:
+            rospy.logerr(f"Error in overriding object: {e}")
+            return
         self.remove_objects([old_id])
+        rospy.loginfo(
+            f"Overriding object {old_obj.id}:{old_obj.label} with {obj.id}:{obj.label}"
+        )
 
     def get_objects(self):
         """Returns all objects in the world."""
-        return list([obj for obj in self.objects.values() if obj.is_confirmed])
+        msg = ObjectList()
+        msg.header.stamp = rospy.Time.now()
+
+        msg.objects = list(self.objects.values())
+        msg.objects = [obj.to_msg() for obj in msg.objects if obj.is_confirmed]
+
+        return msg
 
     def query_by_distance(self, point, threshold):
         """Queries objects within a certain distance threshold."""
@@ -329,18 +368,30 @@ class World:
             ]
         return []
 
+    def query_close_objects_service(self, point, threshold):
+        """Queries objects within a certain distance threshold."""
+        msg = ObjectList()
+        msg.header.stamp = rospy.Time.now()  # stamp of the query
+        if self.kdtree is not None:
+            indexes = self.kdtree.query_ball_point(point, r=threshold)
+            objects = [
+                self.objects[obj_id].to_msg()
+                for obj_id in np.array(list(self.objects.keys()))[indexes]
+            ]
+            msg.objects = objects
+
+        return msg
+
     def _rebuild_kdtree(self):
+
         if len(self.points_list) > 0:
-            inf_index = np.where(self.points_list == np.repeat(np.inf, 3))
-            none_index = np.where(self.points_list == np.repeat(np.nan, 3))
-            # print(inf_index, none_index)
             try:
                 self.kdtree = KDTree(np.array(self.points_list))
             except:
-                print(self.points_list, inf_index, none_index)
+                rospy.logerr("Error in rebuilding KDTree")
 
     # @time_it
-    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.05):
+    def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects
         args:
@@ -357,14 +408,25 @@ class World:
                 and obj.label == close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
-                # print(f"Distance: {distance} between {obj.id}:{obj.label} and {close_obj.id}:{close_obj.label}")
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
                     return close_obj.id
 
+            # If the object was detected but misclassified
+            if (
+                obj.id != close_obj.id
+                and obj.label != close_obj.label
+                and abs(obj.last_seen - close_obj.last_seen).to_sec() < 1.0
+            ):
+                if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.8:
+                    return close_obj.id
+            
         return obj.id
 
     # @time_it
     def manage_object(self, obj: Obj):
+        std = np.std(obj.pcd.point.positions.cpu().numpy(), axis=0).max()
+        if np.sum(obj.bbox) == 0 or std > STD_THR:
+            return
         try:
             if obj.id in self.objects:
                 self.update_object(obj)
@@ -374,9 +436,14 @@ class World:
                 self.add_object(obj)
 
             world_id = self.get_world_id(obj, iou_thr=IOU_THR)
+
             if world_id != obj.id:
                 self.override_object(world_id, obj)
-            return self.objects[obj.id]
+
+            assert obj.id in self.objects
+            if world_id != obj.id:
+                assert world_id not in self.objects
+
         except Exception as e:
             rospy.logerr(f"Error in managing object: {e}")
             if obj.id in self.objects:
@@ -386,7 +453,7 @@ class World:
         """
         Removes moving object that are not currently tracked or objects which Pointcloud has a std greater than a thr.
         """
-        with self.lock:
+        try:
             to_remove = {}
             for obj in self.objects.values():
                 if (
@@ -399,11 +466,15 @@ class World:
                 if "positions" in obj.pcd.point:
                     std = np.std(obj.pcd.point.positions.cpu().numpy(), axis=0).max()
                     if std > STD_THR:
-                        to_remove[obj.id] = f"STD above Thr: {std}> {STD_THR}"
+                        to_remove[obj.id] = (
+                            f"->{obj.label}: STD above Thr: {std}> {STD_THR}"
+                        )
 
-        if len(to_remove) > 0:
-            rospy.logwarn(f"Removing objects: {to_remove}")
-            self.remove_objects(list(to_remove.keys()))
+            if len(to_remove) > 0:
+                rospy.loginfo(f"Removing objects: {to_remove}")
+                self.remove_objects(list(to_remove.keys()))
+        except Exception as e:
+            rospy.logerr(f"Error in cleaning up: {e}")
 
     def get_kdtree_centroids(self):
         return self.points_list
