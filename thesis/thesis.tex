@@ -1,60 +1,88 @@
-\documentclass[bac, screen]{bai-thesis}
-\usepackage{thesis}
+\documentclass{styles/tthesis}
 
-%-------------------------------------------------------------------------------
-% Packages and macros
-\usepackage{verbatim}
-%-------------------------------------------------------------------------------
-%Uncomment if you want to use acronyms, and add your acronyms here
+\newcommand{\dspic}{dsPIC$^{\text{\textregistered}}$ DSC}
+\newcommand{\dcbus}{DC-BUS\texttrademark }
 
-%\usepackage[acronym,shortcuts,nonumberlist,nopostdot]{glossaries}
-%\makeglossaries
-%\newacronym{ros}{ROS}{Robot Operating System}
-%\newacronym{vr}{VR}{Virtual Reality}
+% change the reference to the desired frontpage
+\renewcommand{\frontpagefile}{frontpages/frontpage-ai4st.inc}
 
-%-------------------------------------------------------------------------------
-% Title information
-%-------------------------------------------------------------------------------
-\title{The Bachelor in AI Thesis Using}
+\title{This is the title of my thesis}
+\author{Name Surname}
+\renewcommand{\regnumber}{AB512WX}
+\graduation{Master Degree in Computer Engineering}
+\academicyear{2021/2022}
+\supervisor{
+Prof. Name Surname \\
+Co-supervisor: \\
+Dr. Name Surname \\
+}
 
-\author{Nicolo Giovanni Agostara}
-\date{\today}
-
-% Select the subject
-\subject{Artificial Intelligence}
-
-% Academic Year
-\AY{2023/2024}
-
-\supervisor{First Supervisor, Affiliation}
-\supervisor{Second Supervisor, Affiliation}
-%-------------------------------------------------------------------------------
-
-%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------
 \begin{document}
-\maketitle
-%-------------------------------------------------------------------------------
-% \frontmatter
-%-------------------------------------------------------------------------------
-\include{contents}
-\include{content/abstract}
-%-------------------------------------------------------------------------------
-% \mainmatter
-%-------------------------------------------------------------------------------
-\include{content/introduction}
-\include{content/usage}
-\include{content/guidelines}
-\include{content/conclusions}
-%-------------------------------------------------------------------------------
-% \backmatter
-%-------------------------------------------------------------------------------
-% Uncomment if you use acronyms
+%-------------------------------------------------------------------
 
-%\phantomsection
-%\pdfbookmark[1]{List of Acronyms}{listofacronyms}
-%\printglossary[type=\acronymtype]
-%-------------------------------------------------------------------------------
-\include{backmatter}
-%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------
+% Frontpage
+%-------------------------------------------------------------------
+
+% All "variable" data in the frontpage are set using the above commands.
+\printfrontpage
+
+%-------------------------------------------------------------------
+% Abstract
+%-------------------------------------------------------------------
+
+\input{chapters/abstract.inc}
+
+\chapter*{\mbox{}}
+
+\begin{flushright}
+\thispagestyle{empty}
+\null\vspace*{\stretch{1}}
+{\it Here you can write whatever you want
+
+\vspace{10pt}
+and here too.
+}
+\vspace{\stretch{2}}\null
+\end{flushright}
+%
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
+%-------------------------------------------------------------------
+% Acknowledgments
+%-------------------------------------------------------------------
+
+\input{chapters/acknowledgments.inc}
+
+%-------------------------------------------------------------------
+% Indexes
+%-------------------------------------------------------------------
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\input{chapters/chapter_acronyms.inc}
+\input{chapters/chapter_intro.inc}
+\input{chapters/chapter_sota.inc}
+\input{chapters/chapter_tools.inc}
+\input{chapters/chapter_implementation.inc}
+\input{chapters/chapter_results.inc}
+\input{chapters/chapter_conclusions.inc}
+
+%\backmatter
+
+%-------------------------------------------------------------------
+% Bibliography
+%-------------------------------------------------------------------
+
+\label{Bibliography}
+\bibliographystyle{plain}
+\bibliography{biblio}
+
 \end{document}
-%-------------------------------------------------------------------------------
