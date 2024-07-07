@@ -1,0 +1,183 @@
+2024-07-05 18:04:57,822 - WARNING : Unknown export strategy 'binary'. Proceeding with default (centroid_abs)!
+2024-07-05 18:04:57,822 - INFO    : Set export strategy to CentroidFormat.
+2024-07-05 18:04:57,822 - INFO    : Saving rotations absolutely to positve x-axis in degrees (0..360°).
+2024-07-05 18:05:07,015 - INFO    : Loading next point cloud...
+2024-07-05 18:05:07,015 - INFO    : Loading point cloud from pointclouds/cloud_scene1.ply using Open3DHandler.
+2024-07-05 18:05:07,105 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene1.bin.
+2024-07-05 18:05:07,105 - INFO    : ================================================================================================================================ Loading cloud_scene1.ply ================================================================================================================================
+2024-07-05 18:05:07,126 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene1.ply!
+2024-07-05 18:05:07,127 - INFO    : Number of Points:       668355         
+2024-07-05 18:05:07,127 - INFO    : Number of Colors:       668355         
+2024-07-05 18:05:07,127 - INFO    : Point Cloud Center:     [-5.79 -3.21  1.03]     
+2024-07-05 18:05:07,127 - INFO    : Point Cloud Minimums:   [-10.55  -8.15  -0.42]  
+2024-07-05 18:05:07,127 - INFO    : Point Cloud Maximums:   [-0.93  1.71  2.8 ]     
+2024-07-05 18:05:07,127 - INFO    : Initial Translation:    [  5.79   3.21 -15.18]  
+2024-07-05 18:05:07,127 - INFO    : ==========================================================================================================================================================================================================================================================================================
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - INFO    : Alignmode was changed to False!
+2024-07-05 18:05:07,127 - INFO    : Imported 0 labels from labels/cloud_scene1.json.
+2024-07-05 18:05:07,127 - INFO    : Loaded 0 bboxes!
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,127 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:07,152 - INFO    : Intialized widget.
+2024-07-05 18:05:07,214 - INFO    : Resized widget.
+2024-07-05 18:05:07,241 - INFO    : Showing GUI...
+2024-07-05 18:05:08,975 - INFO    : File labels/cloud_scene1.json already exists, replacing file ...
+2024-07-05 18:05:08,976 - INFO    : Exported 0 labels to labels/cloud_scene1.json in CentroidFormat formatting!
+2024-07-05 18:05:08,979 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene1.bin
+2024-07-05 18:05:08,979 - INFO    : Loading next point cloud...
+2024-07-05 18:05:08,979 - INFO    : Loading point cloud from pointclouds/cloud_scene2.ply using Open3DHandler.
+2024-07-05 18:05:09,057 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene2.bin.
+2024-07-05 18:05:09,058 - INFO    : ================================================================================================================================ Loading cloud_scene2.ply ================================================================================================================================
+2024-07-05 18:05:09,096 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene2.ply!
+2024-07-05 18:05:09,096 - INFO    : Number of Points:       659121         
+2024-07-05 18:05:09,096 - INFO    : Number of Colors:       659121         
+2024-07-05 18:05:09,096 - INFO    : Point Cloud Center:     [-6.48 -3.94  1.04]     
+2024-07-05 18:05:09,096 - INFO    : Point Cloud Minimums:   [-11.12  -9.01  -0.37]  
+2024-07-05 18:05:09,096 - INFO    : Point Cloud Maximums:   [-1.73  1.51  2.8 ]     
+2024-07-05 18:05:09,096 - INFO    : Initial Translation:    [  6.48   3.94 -15.49]  
+2024-07-05 18:05:09,096 - INFO    : ==========================================================================================================================================================================================================================================================================================
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - INFO    : Alignmode was changed to False!
+2024-07-05 18:05:09,097 - INFO    : Imported 0 labels from labels/cloud_scene2.json.
+2024-07-05 18:05:09,097 - INFO    : Loaded 0 bboxes!
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,097 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,752 - INFO    : File labels/cloud_scene2.json already exists, replacing file ...
+2024-07-05 18:05:09,753 - INFO    : Exported 0 labels to labels/cloud_scene2.json in CentroidFormat formatting!
+2024-07-05 18:05:09,766 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene2.bin
+2024-07-05 18:05:09,766 - INFO    : Loading next point cloud...
+2024-07-05 18:05:09,766 - INFO    : Loading point cloud from pointclouds/cropped_scene1.ply using Open3DHandler.
+2024-07-05 18:05:09,800 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene1.bin.
+2024-07-05 18:05:09,800 - INFO    : =============================================================================================================================== Loading cropped_scene1.ply ===============================================================================================================================
+2024-07-05 18:05:09,814 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene1.ply!
+2024-07-05 18:05:09,814 - INFO    : Number of Points:      304639        
+2024-07-05 18:05:09,814 - INFO    : Number of Colors:      304639        
+2024-07-05 18:05:09,814 - INFO    : Point Cloud Center:    [-6.09 -4.12  1.  ]    
+2024-07-05 18:05:09,814 - INFO    : Point Cloud Minimums:  [-8.   -7.8  -0.17]    
+2024-07-05 18:05:09,814 - INFO    : Point Cloud Maximums:  [-4. -1.  2.]          
+2024-07-05 18:05:09,814 - INFO    : Initial Translation:   [ 6.09  4.12 -9.19]    
+2024-07-05 18:05:09,814 - INFO    : ==========================================================================================================================================================================================================================================================================================
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - INFO    : Alignmode was changed to False!
+2024-07-05 18:05:09,815 - INFO    : Imported 3 labels from labels/cropped_scene1.json.
+2024-07-05 18:05:09,815 - INFO    : Loaded 3 bboxes!
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:09,815 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:05:21,967 - INFO    : Resized widget.
+2024-07-05 18:05:26,217 - INFO    : Enabled spanning mode.
+2024-07-05 18:05:37,225 - WARNING : Rotations around the x- or y-axis are not supported in this mode.
+2024-07-05 18:05:37,432 - WARNING : Rotations around the x- or y-axis are not supported in this mode.
+2024-07-05 18:05:37,608 - WARNING : Rotations around the x- or y-axis are not supported in this mode.
+2024-07-05 18:05:38,008 - WARNING : Rotations around the x- or y-axis are not supported in this mode.
+2024-07-05 18:05:38,232 - WARNING : Rotations around the x- or y-axis are not supported in this mode.
+2024-07-05 18:06:34,169 - INFO    : Enabled spanning mode.
+2024-07-05 18:07:53,646 - INFO    : Enabled spanning mode.
+2024-07-05 18:08:05,913 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:08:05,914 - INFO    : Exported 6 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:08:05,920 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:09:35,873 - INFO    : Enabled spanning mode.
+2024-07-05 18:10:23,640 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:10:23,641 - INFO    : Exported 7 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:10:23,642 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:10:31,449 - INFO    : Enabled spanning mode.
+2024-07-05 18:11:13,178 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:11:13,179 - INFO    : Exported 8 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:11:13,185 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:11:26,489 - INFO    : Enabled spanning mode.
+2024-07-05 18:11:29,833 - INFO    : Resetted drawn points!
+2024-07-05 18:11:34,017 - INFO    : Enabled spanning mode.
+2024-07-05 18:12:47,228 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:12:47,229 - INFO    : Exported 9 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:12:47,232 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:14:39,752 - INFO    : Enabled spanning mode.
+2024-07-05 18:15:37,842 - INFO    : Enabled spanning mode.
+2024-07-05 18:17:43,099 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:17:43,100 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:17:43,105 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:17:58,413 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:17:58,413 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:17:58,416 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:17:59,195 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:17:59,199 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:17:59,202 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:18:00,364 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-05 18:18:00,365 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-05 18:18:00,371 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-05 18:18:00,371 - INFO    : Loading next point cloud...
+2024-07-05 18:18:00,371 - INFO    : Loading point cloud from pointclouds/cropped_scene2.ply using Open3DHandler.
+2024-07-05 18:18:00,422 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene2.bin.
+2024-07-05 18:18:00,422 - INFO    : =============================================================================================================================== Loading cropped_scene2.ply ===============================================================================================================================
+2024-07-05 18:18:00,441 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene2.ply!
+2024-07-05 18:18:00,441 - INFO    : Number of Points:      375760        
+2024-07-05 18:18:00,441 - INFO    : Number of Colors:      375760        
+2024-07-05 18:18:00,441 - INFO    : Point Cloud Center:    [-6.57 -3.38  0.89]    
+2024-07-05 18:18:00,441 - INFO    : Point Cloud Minimums:  [-8.5  -6.   -0.37]    
+2024-07-05 18:18:00,441 - INFO    : Point Cloud Maximums:  [-3.5 -0.5  2. ]       
+2024-07-05 18:18:00,441 - INFO    : Initial Translation:   [ 6.57  3.38 -8.69]    
+2024-07-05 18:18:00,441 - INFO    : ==========================================================================================================================================================================================================================================================================================
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - INFO    : Alignmode was changed to False!
+2024-07-05 18:18:00,442 - INFO    : Imported 0 labels from labels/cropped_scene2.json.
+2024-07-05 18:18:00,442 - INFO    : Loaded 0 bboxes!
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:00,442 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-05 18:18:13,467 - INFO    : Enabled spanning mode.
+2024-07-05 18:19:04,172 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-05 18:19:04,176 - INFO    : Exported 1 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-05 18:19:04,184 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-05 18:19:06,779 - INFO    : Enabled spanning mode.
+2024-07-05 18:20:37,099 - INFO    : Enabled spanning mode.
+2024-07-05 18:21:21,706 - INFO    : Enabled spanning mode.
+2024-07-05 18:22:34,454 - INFO    : Enabled spanning mode.
+2024-07-05 18:23:03,162 - INFO    : Enabled spanning mode.
+2024-07-05 18:24:11,755 - INFO    : Enabled spanning mode.
+2024-07-05 18:25:14,136 - INFO    : Enabled spanning mode.
+2024-07-05 18:27:34,536 - INFO    : Enabled spanning mode.
+2024-07-05 18:28:59,642 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-05 18:28:59,643 - INFO    : Exported 9 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-05 18:28:59,647 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-05 18:31:02,274 - INFO    : Enabled spanning mode.
+2024-07-05 18:32:01,132 - INFO    : Enabled spanning mode.
+2024-07-05 18:32:33,595 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-05 18:32:33,596 - INFO    : Exported 11 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-05 18:32:33,601 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-05 18:32:34,572 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-05 18:32:34,572 - INFO    : Exported 11 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-05 18:32:34,576 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-05 18:32:43,051 - INFO    : Closing window after saving ...
+2024-07-05 18:32:43,053 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-05 18:32:43,054 - INFO    : Exported 11 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-05 18:32:43,061 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
