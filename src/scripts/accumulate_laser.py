@@ -48,7 +48,7 @@ class LaserScanToPointCloud:
 
     def laserscan_callback(self, msg):
         points = self.laserscan_to_pointcloud(msg)
-        points_world_frame = self.tf_helper.fast_transform(msg.header.frame_id, self.world_frame, points)
+        points_world_frame = self.tf_helper.fast_transform(msg.header.frame_id, self.world_frame, points, msg.header.stamp)
         self.combined_points.extend(points_world_frame)
 
     def laserscan_to_pointcloud(self, scan):
