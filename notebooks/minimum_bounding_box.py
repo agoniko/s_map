@@ -25,9 +25,8 @@ def oriented_bounding_box_numpy(points, tol=None):
 
     Parameters
     ----------
-    points : array_like[point]
-        XYZ coordinates of the points.
-    tol : float, optional
+    - points : array_like[point] XYZ coordinates of the points.
+    - tol : float, optional
         Tolerance for evaluating if the length of the local z-axis is (close to) zero.
         In that case, the points are essentially 2D and the minimum area rectangle is computed instead.
         Default is :attr:`TOL.absolute`
