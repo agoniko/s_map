@@ -13,6 +13,7 @@
         <arg name="odom_topic" value="/odom/filtered"/>
         <arg name="map_frame" value="$(arg world_frame)" />
     </include>
+    <node pkg="s_map" type="project_map_to_laser.py" name="project_map_to_laser"  output="screen"/>
     <!--
     <node pkg="s_map" type="WorldManager.py" name="world_manager"  output="screen"/>
     <node pkg="s_map" type="rviz_publisher.py" name="rviz_objects_publisher"  output="screen">
