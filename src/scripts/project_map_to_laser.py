@@ -21,7 +21,7 @@ def convert_to_laserscan(points):
     # Create a LaserScan message
     laser_scan = LaserScan()
     laser_scan.header.stamp = rospy.Time.now()
-    laser_scan.header.frame_id = "laser_frame"
+    laser_scan.header.frame_id = "mir/odom"
     laser_scan.angle_min = -np.pi
     laser_scan.angle_max = np.pi
     laser_scan.angle_increment = np.pi / 180.0  # 1 degree resolution
