@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
-
 import rospy
 import sensor_msgs.point_cloud2 as pc2
 from sensor_msgs.msg import PointCloud2, LaserScan
 import numpy as np
-import pclpy
-from pclpy import pcl
 
 def point_cloud_callback(msg):
-    # Convert ROS PointCloud2 message to PCL point cloud
-    point_cloud = pcl.PointCloud.PointXYZ()
-    pclpy.pcl.fromROSMsg(msg, point_cloud)
-
-    # Create a passthrough filter to get points at z = 0.5 ± 0.1
-    passthrough = point_cloud.make_passthrough_filter()
-    passthrough.set_filter_field_name('z')
-    passthrough.set_filter_limits(0.4, 0.6)
-    filtered_cloud = passthrough.filter()
-
-    # Convert filtered point cloud to a numpy array
-    points = np.array(filtered_cloud.to_array())
+    # Convert ROS PointCloud2 message to a list of points
+    points = []
+    for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
+        if 0.4 <= point[2] <= 0.6:
+            points.append((point[0], point[1]))
 
     # Convert points to LaserScan message
     laser_scan = convert_to_laserscan(points)
@@ -31,7 +21,7 @@ def convert_to_laserscan(points):
     # Create a LaserScan message
     laser_scan = LaserScan()
     laser_scan.header.stamp = rospy.Time.now()
-    laser_scan.header.frame_id = "mir/odom"
+    laser_scan.header.frame_id = "laser_frame"
     laser_scan.angle_min = -np.pi
     laser_scan.angle_max = np.pi
     laser_scan.angle_increment = np.pi / 180.0  # 1 degree resolution
@@ -43,8 +33,7 @@ def convert_to_laserscan(points):
     ranges = np.full(num_readings, np.inf)
 
     # Populate the ranges
-    for point in points:
-        x, y = point[0], point[1]
+    for x, y in points:
         angle = np.arctan2(y, x)
         range_distance = np.sqrt(x**2 + y**2)
         if laser_scan.angle_min <= angle <= laser_scan.angle_max:
