@@ -63,7 +63,6 @@ class Node:
         "camera_name",
         "filtered_depth_pub"
     ]
-
     def __init__(self):
         """Initialize the node, its publications, subscriptions, and model."""
         global RGB_TOPIC, DEPTH_TOPIC, CAMERA_INFO_TOPIC, ANNOTATED_IMAGES_TOPIC
