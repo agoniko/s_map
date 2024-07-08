@@ -10,6 +10,7 @@ from scipy.spatial.transform import Rotation as R
 import copy
 import threading
 from s_map.msg import Object, ObjectList
+from compas.geometry import oriented_bounding_box_numpy
 
 
 TIME_TO_BE_CONFIRMED = 1.0
@@ -175,7 +176,7 @@ class Obj:
             0.5,
             np.eye(4),
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
-            # criteria,
+            criteria,
         )
         if registration_result.fitness < 0.3:
             rospy.logwarn("ICP registration failed, skipping registration")
@@ -189,24 +190,24 @@ class Obj:
     def compute(self):
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
-        if len(self.pcd.point.positions) > 30:
+        if len(self.pcd.point.positions) > 40:
 
             self.pcd.estimate_normals(max_nn=30, radius=0.1)
             self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
 
-            if len(self.pcd.point.positions) > 50:
-                clean, _ = self.pcd.remove_statistical_outliers(30, 1.0)
+            if len(self.pcd.point.positions) > 30:
+                clean, _ = self.pcd.remove_statistical_outliers(10, 1.0)
+            else:
+                clean = self.pcd
 
-                if len(clean.point.positions) < 10:
-                    clean = self.pcd
-
-                # self.bbox = self.compute_z_oriented_bounding_box(clean)
-                self.bbox = self.compute_oriented_bounding_box(clean)
-                self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
-                return
-
-        self.bbox = np.zeros((8, 3))
-        self.centroid = np.zeros(3)
+            self.bbox = self.compute_minimum_oriented_box(clean)
+            self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+            return
+        else:
+            self.bbox = np.zeros((8, 3))
+            self.centroid = np.zeros(3)
+        
+           
 
     def downsample(self):
         """Downsamples the point cloud."""
@@ -224,6 +225,12 @@ class Obj:
 
     def __repr__(self):
         return f"Obj(id={self.id}, label={self.label}, score={self.score}, centroid={self.centroid}, last_seen={self.last_seen})"
+
+    def compute_minimum_oriented_box(self, pcd):
+        points = pcd.point.positions.cpu().numpy()
+        box = np.array(oriented_bounding_box_numpy(points))
+        obb = o3d.geometry.OrientedBoundingBox.create_from_points(o3d.utility.Vector3dVector(box))
+        return np.asarray(obb.get_box_points())
 
     def compute_z_oriented_bounding_box(self, pcd):
         temp = pcd.cpu().to_legacy()
@@ -419,7 +426,7 @@ class World:
             ):
                 if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.8:
                     return close_obj.id
-            
+
         return obj.id
 
     # @time_it
