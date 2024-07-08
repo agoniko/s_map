@@ -16,11 +16,19 @@
     <node pkg="s_map" type="accumulate_laser.py" name="laser_rtabmap_save"  output="screen">
         <param name="world_frame" value="$(arg world_frame)"/>
     </node>
-    <!--
+    
     <node pkg="s_map" type="WorldManager.py" name="world_manager"  output="screen"/>
     <node pkg="s_map" type="rviz_publisher.py" name="rviz_objects_publisher"  output="screen">
         <param name="world_frame" value="$(arg world_frame)"/>
     </node>
+
+    <!--include file="$(find s_map)/src/launch/static_publishers_heron.launch"/-->
+    <include file="$(find s_map)/src/launch/map_heron.launch">
+        <arg name="mapping" value="true"/>
+        <arg name="rgbd" type="bool" value="true" />
+        <arg name="odom_topic" value="/odom"/>
+        <arg name="map_frame" value="$(arg world_frame)" />
+    </include>
 
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
         <param name="camera_name" value="front"/>
@@ -33,7 +41,7 @@
         <param name="world_frame" value="$(arg world_frame)"/>
         <param name="camera_info_topic" value="realsense/rgb/camera_info"/>
     </node>
-    -->
+
     <!--node if="$(arg rtabmap_viz)" pkg="rtabmap_viz" type="rtabmap_viz" name="rtabmap_viz" args="~/.ros/rtabmap_gui.ini" output="screen">
       <param name="subscribe_depth"  type="bool"   value="false"/>
       <param name="subscribe_rgbd"   type="bool"   value="true"/>
