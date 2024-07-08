@@ -1,7 +1,7 @@
 <launch>
     <arg name="rviz"       default="true" />
     <arg name="rtabmap_viz" default="false" />
-    <arg name="world_frame" default="map" />
+    <arg name="world_frame" default="mir/odom" />
     <rosparam>
         use_sim_time: true
     </rosparam>
@@ -15,7 +15,7 @@
     <include file="$(find s_map)/src/launch/map_heron.launch">
         <arg name="mapping" value="true"/>
         <arg name="rgbd" type="bool" value="true" />
-        <arg name="odom_topic" value="/odom/filtered"/>
+        <arg name="odom_topic" value="/odom"/>
         <arg name="map_frame" value="$(arg world_frame)" />
     </include>
 
