@@ -11,7 +11,7 @@ import tf
 from geometric_transformations import TransformHelper
 import rospkg
 
-SAVE_PATH = rospkg.RosPack().get_path("s_map") + "/notebooks/map_evaluation/"
+SAVE_PATH = rospkg.RosPack().get_path("s_map") + "/notebooks/map_evaluation/pointclouds/"
 
 class LaserScanToPointCloud:
     def __init__(self):
@@ -20,6 +20,8 @@ class LaserScanToPointCloud:
 
         self.world_frame = rospy.get_param("~world_frame", "map")
         self.combined_points = []
+        self.frequency = 20.0
+        self.last_received = None
         self.last_rtabmap_cloud = None
 
         self.laserscan_sub = rospy.Subscriber("/scan", LaserScan, self.laserscan_callback)
@@ -31,7 +33,7 @@ class LaserScanToPointCloud:
 
     def write_on_file_callback(self, msg):
         if msg.data:
-            self.save_point_cloud(SAVE_PATH + "accumulated_laserscan.ply", self.combined_points)
+            self.save_point_cloud(SAVE_PATH + "accumulated_laserscan_scene3.ply", self.combined_points)
 
             if self.last_rtabmap_cloud is not None:
                 rtabmap_points = list(point_cloud2.read_points(
@@ -39,7 +41,7 @@ class LaserScanToPointCloud:
                     field_names=("x", "y", "z"),
                     skip_nans=True
                 ))
-                self.save_point_cloud(SAVE_PATH + "rtabmap_pointcloud.ply", rtabmap_points)
+                self.save_point_cloud(SAVE_PATH + "rtabmap_pointcloud_scene3.ply", rtabmap_points)
 
     def save_point_cloud(self, filename, points):
         pc = o3d.geometry.PointCloud()
@@ -47,9 +49,11 @@ class LaserScanToPointCloud:
         o3d.io.write_point_cloud(filename, pc)
 
     def laserscan_callback(self, msg):
-        points = self.laserscan_to_pointcloud(msg)
-        points_world_frame = self.tf_helper.fast_transform(msg.header.frame_id, self.world_frame, np.array(points), msg.header.stamp)
-        self.combined_points.extend(points_world_frame)
+        if self.last_received is None or (msg.header.stamp - self.last_received).to_sec() >= self.frequency:
+            self.last_received = msg.header.stamp                
+            points = self.laserscan_to_pointcloud(msg)
+            points_world_frame = self.tf_helper.fast_transform(msg.header.frame_id, self.world_frame, np.array(points), msg.header.stamp)
+            self.combined_points.extend(points_world_frame)
 
     def laserscan_to_pointcloud(self, scan):
         points = []
