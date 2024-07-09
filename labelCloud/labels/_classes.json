@@ -54,6 +54,11 @@
             "name": "backpack",
             "id": 11,
             "color": "#bccc66"
+        },
+        {
+            "name": "scissors",
+            "id": 12,
+            "color": "#7d00cc"
         }
     ],
     "default": 1,

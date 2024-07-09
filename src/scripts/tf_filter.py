@@ -15,7 +15,7 @@ class TfFilterNode:
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
 
         # Define the list of frame ids to filter out
-        self.unwanted_frames = []
+        self.unwanted_frames = [""]
         self.rename_frames = []
 
         # Subscribe to the /tf topic

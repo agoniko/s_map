@@ -128,14 +128,14 @@ class Obj:
             self.release_resources()
             self.pcd = other.pcd
         else:
-            if self.first_seen < other.first_seen:
+            if len(self.pcd.point.positions) > len(other.pcd.point.positions):
                 target = self
                 source = other
             else:
                 target = other
                 source = self
 
-            source, res = self.register_pointcloud(source, target)
+            #source, res = self.register_pointcloud(source, target)
             self.pcd.point.positions = o3d.core.concatenate(
                 (source.pcd.point.positions, target.pcd.point.positions), axis=0
             )
@@ -178,7 +178,7 @@ class Obj:
             o3d.t.pipelines.registration.TransformationEstimationPointToPlane(),
             criteria,
         )
-        if registration_result.fitness < 0.3:
+        if registration_result.fitness < 0.5:
             rospy.logwarn("ICP registration failed, skipping registration")
             return source, False
 
@@ -196,7 +196,7 @@ class Obj:
             self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
 
             if len(self.pcd.point.positions) > 30:
-                clean, _ = self.pcd.remove_statistical_outliers(10, 1.0)
+                clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
             else:
                 clean = self.pcd
 
