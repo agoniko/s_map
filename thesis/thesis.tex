@@ -1,4 +1,6 @@
 \documentclass{styles/tthesis}
+\usepackage[utf8]{inputenc} % Ensure UTF-8 encoding
+\usepackage[T1]{fontenc}
 
 \newcommand{\dspic}{dsPIC$^{\text{\textregistered}}$ DSC}
 \newcommand{\dcbus}{DC-BUS\texttrademark }
@@ -67,13 +69,13 @@ and here too.
 
 \mainmatter
 
-\input{chapters/chapter_acronyms.inc}
-\input{chapters/chapter_intro.inc}
-\input{chapters/chapter_sota.inc}
-\input{chapters/chapter_tools.inc}
-\input{chapters/chapter_implementation.inc}
-\input{chapters/chapter_results.inc}
-\input{chapters/chapter_conclusions.inc}
+\include{chapters/chapter_acronyms.inc}
+\include{chapters/chapter_intro.inc}
+\include{chapters/chapter_sota.inc}
+\include{chapters/chapter_tools.inc}
+\include{chapters/chapter_implementation.inc}
+\include{chapters/chapter_results.inc}
+\include{chapters/chapter_conclusions.inc}
 
 %\backmatter
 
