@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  4 JUL 2024 11:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  10 JUL 2024 18:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/Users/nicoloagostara/catkin_ws/src/s_map/thesis_template/thesis-templatex/thesis.tex
-(/Users/nicoloagostara/catkin_ws/src/s_map/thesis_template/thesis-templatex/thesis.tex
+**/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex
+(/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
 (./styles/tthesis.cls
@@ -55,9 +55,7 @@ Package babel Info: Importing font and identification data for english
 Package: inputenc 2021/02/14 v1.3d Input encoding file
 \inpenc@prehook=\toks17
 \inpenc@posthook=\toks18
- (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/base/latin1.def
-File: latin1.def 2021/02/14 v1.3d Input encoding file
-)) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/lmodern.sty
+) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/lmodern.sty
 Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
@@ -365,7 +363,9 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 Package: cleveref 2018/03/27 v0.21.4 Intelligent cross-referencing
 Package cleveref Info: `listings' support loaded on input line 3131.
 Package cleveref Info: `subfig' support loaded on input line 3164.
-))
+)) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+)
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
@@ -374,23 +374,23 @@ Package csquotes Info: Redefining alias 'default' -> 'english'.
 File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count303
 \l__pdf_internal_box=\box59
-) (./thesis.aux)
+) (./thesis.aux (./chapters/chapter_acronyms.inc.aux) (./chapters/chapter_intro.inc.aux) (./chapters/chapter_sota.inc.aux) (./chapters/chapter_tools.inc.aux) (./chapters/chapter_implementation.inc.aux) (./chapters/chapter_results.inc.aux) (./chapters/chapter_conclusions.inc.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
 \c@lstlisting=\count304
 
 *geometry* driver: auto-detecting
@@ -432,60 +432,60 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 21.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 23.
 (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<ot1.cmap>>
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 21.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 21.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<oms.cmap>>
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 21.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 21.
+(Font)              <10.95> on input line 23.
 <<omx.cmap>>
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 21.
+(Font)              <8> on input line 23.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 21.
-LaTeX Font Info:    Trying to load font information for U+wasy on input line 21.
+(Font)              <6> on input line 23.
+LaTeX Font Info:    Trying to load font information for U+wasy on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 21.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 21.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 21.
+LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 21.
+LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<ot1tt.cmap>>
 \symgns@font=\mathgroup7
 LaTeX Font Info:    Overwriting symbol font `gns@font' in version `bold'
-(Font)                  TS1/lmr/m/n --> TS1/lmr/b/n on input line 21.
-Package gensymb Info: Math companion symbols declared on input line 21.
-LaTeX Info: Redefining \degree on input line 21.
-LaTeX Info: Redefining \celsius on input line 21.
-Package gensymb Info: Using text companion symbols for \degree, \celsius and \perthousand on input line 21.
-LaTeX Info: Redefining \ohm on input line 21.
-Package gensymb Info: Using \textohm for \ohm on input line 21.
-LaTeX Info: Redefining \micro on input line 21.
-Package gensymb Info: Using \textmu for \micro on input line 21.
+(Font)                  TS1/lmr/m/n --> TS1/lmr/b/n on input line 23.
+Package gensymb Info: Math companion symbols declared on input line 23.
+LaTeX Info: Redefining \degree on input line 23.
+LaTeX Info: Redefining \celsius on input line 23.
+Package gensymb Info: Using text companion symbols for \degree, \celsius and \perthousand on input line 23.
+LaTeX Info: Redefining \ohm on input line 23.
+Package gensymb Info: Using \textohm for \ohm on input line 23.
+LaTeX Info: Redefining \micro on input line 23.
+Package gensymb Info: Using \textmu for \micro on input line 23.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count305
@@ -501,7 +501,28 @@ Package gensymb Info: Using \textmu for \micro on input line 21.
 \everyMPtoPDFconversion=\toks34
 ) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+ (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/grfext/grfext.sty
+Package: grfext 2019/12/03 v1.3 Manage graphics extensions (HO)
+ (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+ (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+)) (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 504.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 )) (./frontpages/frontpage-ai4st.inc.tex
@@ -594,18 +615,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--76
 ] [7]) [8
 
 
-] (./thesis.toc)
+] (./thesis.toc [9])
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
 
- [9] [10
-
-
-] (./thesis.lof)
+ [10] (./thesis.lof)
 \tf@lof=\write5
 \openout5 = `thesis.lof'.
 
- [11] [12
+ [11
+
+
+] [12
 
 
 ] (./thesis.lot)
@@ -615,10 +636,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--76
  [13] [14
 
 
-] (./chapters/chapter_acronyms.inc.tex) (./chapters/chapter_intro.inc.tex [1
+]
+\openout2 = `chapters/chapter_acronyms.inc.aux'.
+
+ (./chapters/chapter_acronyms.inc.tex) [1
 
 
-] [2
+
+]
+\openout2 = `chapters/chapter_intro.inc.aux'.
+
+ (./chapters/chapter_intro.inc.tex [2
+
+
+
 
 
 ]
@@ -640,7 +671,7 @@ File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 24.
  [3{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/base/8r.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
-<figs/logo-unipv-bw.png, id=82, 246.6816pt x 246.4407pt>
+<figs/logo-unipv-bw.png, id=83, 246.6816pt x 246.4407pt>
 File: figs/logo-unipv-bw.png Graphic file (type png)
 <use figs/logo-unipv-bw.png>
 Package pdftex.def Info: figs/logo-unipv-bw.png  used on input line 85.
@@ -658,53 +689,99 @@ Package acronym Info: Label `acro:Robolab' newly defined as it shall be overridd
 although it is yet undefined on input line 185.
 Package acronym Info: Label `acro:LED' newly defined as it shall be overridden
 although it is yet undefined on input line 185.
-) (./chapters/chapter_sota.inc.tex [7] [8]
+) [7] [8]
+\openout2 = `chapters/chapter_sota.inc.aux'.
+
+ (./chapters/chapter_sota.inc.tex
 Chapter 2.
-) (./chapters/chapter_tools.inc.tex [9
+) [9
 
 
-] [10
+
+
+
+]
+\openout2 = `chapters/chapter_tools.inc.aux'.
+
+ (./chapters/chapter_tools.inc.tex [10
+
+
+
 
 
 ]
 Chapter 3.
-) (./chapters/chapter_implementation.inc.tex [11] [12
+) [11]
+\openout2 = `chapters/chapter_implementation.inc.aux'.
+
+ (./chapters/chapter_implementation.inc.tex [12
+
+
+
 
 
 ]
 Chapter 4.
-) (./chapters/chapter_results.inc.tex [13] [14
+(./chapters/sections/package_structure.tex
+<figs/SW-struct.png, id=118, 1310.64656pt x 474.27188pt>
+File: figs/SW-struct.png Graphic file (type png)
+<use figs/SW-struct.png>
+Package pdftex.def Info: figs/SW-struct.png  used on input line 17.
+(pdftex.def)             Requested size: 396.0pt x 143.2958pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [13]) (./chapters/sections/hand_eye_calibration.inc.tex [14 <./figs/SW-struct.png>]
+Overfull \hbox (11.33951pt too wide) in paragraph at lines 27--27
+[]\T1/pcr/m/n/10.95 roslaunch moveit_calibration_gui moveit_calibration_gui.launch 
+ []
+
+[15] [16])) [17]
+\openout2 = `chapters/chapter_results.inc.aux'.
+
+ (./chapters/chapter_results.inc.tex [18
+
+
+
 
 
 ]
 Chapter 5.
-) (./chapters/chapter_conclusions.inc.tex [15] [16
+) [19]
+\openout2 = `chapters/chapter_conclusions.inc.aux'.
+
+ (./chapters/chapter_conclusions.inc.tex [20
+
+
+
 
 
 ]
 Chapter 6.
-) (./thesis.bbl [17] [18
+) [21] (./thesis.bbl [22
 
 
-]) [19] (./thesis.aux)
+
+
+]) [23] (./thesis.aux (./chapters/chapter_acronyms.inc.aux) (./chapters/chapter_intro.inc.aux) (./chapters/chapter_sota.inc.aux) (./chapters/chapter_tools.inc.aux) (./chapters/chapter_implementation.inc.aux) (./chapters/chapter_results.inc.aux) (./chapters/chapter_conclusions.inc.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 11856 strings out of 474116
- 207634 string characters out of 5733619
+ 12514 strings out of 474116
+ 225003 string characters out of 5733619
  1942187 words of memory out of 5000000
- 33859 multiletter control sequences out of 15000+600000
+ 34461 multiletter control sequences out of 15000+600000
  670414 words of font info for 125 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 87i,10n,93p,439b,1418s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr6.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr9.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
-Output written on thesis.pdf (33 pages, 576130 bytes).
+ 87i,10n,93p,579b,1419s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr6.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr9.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/courier/ucrb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb>
+Output written on thesis.pdf (37 pages, 678461 bytes).
 PDF statistics:
- 198 PDF objects out of 1000 (max. 8388607)
- 129 compressed objects within 2 object streams
+ 222 PDF objects out of 1000 (max. 8388607)
+ 146 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 50 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 55 words of extra memory for PDF output out of 10000 (max. 10000000)
 
