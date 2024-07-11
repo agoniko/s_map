@@ -3,6 +3,7 @@
 
 \LoadClass[a4paper,english,twoside,openright,11pt]{book}
 
+%including my own python style file
 % makes PDF searchable
 \usepackage{cmap}
 

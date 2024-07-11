@@ -1,0 +1,88 @@
+\usepackage[scaled]{beramono} % Using Bera Mono font
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Custom colors
+\definecolor{codebg}{rgb}{0.12, 0.12, 0.12} % dark background
+\definecolor{codeframe}{rgb}{0.8, 0.8, 0.8}
+\definecolor{deepblue}{rgb}{0.2, 0.6, 1}    % keywords
+\definecolor{deepred}{rgb}{1, 0.4, 0.4}     % decorators
+\definecolor{deepgreen}{rgb}{0.6, 1, 0.6}   % strings
+\definecolor{deeporange}{rgb}{0.8, 0.8, 0.4} % comments
+\definecolor{deeppurple}{rgb}{0.8, 0.6, 1}   % docstring
+\definecolor{darkcyan}{rgb}{0, 0.8, 0.8}    % numbers
+\definecolor{darkyellow}{rgb}{0.8, 0.8, 0}  % booleans
+\definecolor{uppercasetext}{rgb}{1, 0.4, 0} % uppercase text
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small\color{white}, % white text
+    keywordstyle=\color{deepblue},
+    stringstyle=\color{deepgreen},
+    commentstyle=\color{deeporange}\itshape,
+    identifierstyle=\color{white},  % identifiers in white
+    emphstyle=\color{deepred},   % decorators
+    frame=single,
+    rulecolor=\color{codeframe},
+    backgroundcolor=\color{codebg},
+    showstringspaces=false,
+    breaklines=true,
+    literate={0}{{\textcolor{darkcyan}{0}}}{1}
+             {1}{{\textcolor{darkcyan}{1}}}{1}
+             {2}{{\textcolor{darkcyan}{2}}}{1}
+             {3}{{\textcolor{darkcyan}{3}}}{1}
+             {4}{{\textcolor{darkcyan}{4}}}{1}
+             {5}{{\textcolor{darkcyan}{5}}}{1}
+             {6}{{\textcolor{darkcyan}{6}}}{1}
+             {7}{{\textcolor{darkcyan}{7}}}{1}
+             {8}{{\textcolor{darkcyan}{8}}}{1}
+             {9}{{\textcolor{darkcyan}{9}}}{1}
+             {A}{{\textcolor{uppercasetext}{A}}}{1}
+             {B}{{\textcolor{uppercasetext}{B}}}{1}
+             {C}{{\textcolor{uppercasetext}{C}}}{1}
+             {D}{{\textcolor{uppercasetext}{D}}}{1}
+             {E}{{\textcolor{uppercasetext}{E}}}{1}
+             {F}{{\textcolor{uppercasetext}{F}}}{1}
+             {G}{{\textcolor{uppercasetext}{G}}}{1}
+             {H}{{\textcolor{uppercasetext}{H}}}{1}
+             {I}{{\textcolor{uppercasetext}{I}}}{1}
+             {J}{{\textcolor{uppercasetext}{J}}}{1}
+             {K}{{\textcolor{uppercasetext}{K}}}{1}
+             {L}{{\textcolor{uppercasetext}{L}}}{1}
+             {M}{{\textcolor{uppercasetext}{M}}}{1}
+             {N}{{\textcolor{uppercasetext}{N}}}{1}
+             {O}{{\textcolor{uppercasetext}{O}}}{1}
+             {P}{{\textcolor{uppercasetext}{P}}}{1}
+             {Q}{{\textcolor{uppercasetext}{Q}}}{1}
+             {R}{{\textcolor{uppercasetext}{R}}}{1}
+             {S}{{\textcolor{uppercasetext}{S}}}{1}
+             {T}{{\textcolor{uppercasetext}{T}}}{1}
+             {U}{{\textcolor{uppercasetext}{U}}}{1}
+             {V}{{\textcolor{uppercasetext}{V}}}{1}
+             {W}{{\textcolor{uppercasetext}{W}}}{1}
+             {X}{{\textcolor{uppercasetext}{X}}}{1}
+             {Y}{{\textcolor{uppercasetext}{Y}}}{1}
+             {Z}{{\textcolor{uppercasetext}{Z}}}{1}
+             {True}{{\textcolor{darkyellow}{True}}}{4}
+             {False}{{\textcolor{darkyellow}{False}}}{5},
+    morekeywords={class, def, return, if, elif, else, for, while, break, continue, pass, lambda, import, from, as, with, try, except, finally, raise, yield, assert, global, nonlocal, del, or, and, not, in, is, None},
+    emph=[2]{self, __init__, __name__, __main__, __call__, __iter__, __next__, __enter__, __exit__},
+    emphstyle=[2]\color{deeppurple},  % docstring
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+    \pythonstyle
+    \lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+    \pythonstyle
+    \lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
