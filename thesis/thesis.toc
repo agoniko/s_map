@@ -25,18 +25,18 @@
 \contentsline {section}{\numberline {4.1}Software Structure}{13}{}%
 \contentsline {subsection}{\numberline {4.1.1}Detection Node}{14}{}%
 \contentsline {subsubsection}{YOLO}{14}{}%
-\contentsline {subsection}{\numberline {4.1.2}Mask Erosion}{14}{}%
-\contentsline {section}{\numberline {4.2}Eye in hand Calibration}{14}{}%
+\contentsline {subsection}{\numberline {4.1.2}Mask Erosion}{15}{}%
+\contentsline {section}{\numberline {4.2}Eye in hand Calibration}{15}{}%
 \contentsline {subsection}{\numberline {4.2.1}Tools and Software}{15}{}%
 \contentsline {subsection}{\numberline {4.2.2}Prerequisites}{15}{}%
-\contentsline {subsection}{\numberline {4.2.3}Aruco Marker Board}{15}{}%
-\contentsline {subsection}{\numberline {4.2.4}Calibration Procedure}{15}{}%
-\contentsline {subsubsection}{Setup the Environment}{15}{}%
-\contentsline {subsubsection}{Capture Calibration Poses}{15}{}%
+\contentsline {subsection}{\numberline {4.2.3}Aruco Marker Board}{16}{}%
+\contentsline {subsection}{\numberline {4.2.4}Calibration Procedure}{16}{}%
+\contentsline {subsubsection}{Setup the Environment}{16}{}%
+\contentsline {subsubsection}{Capture Calibration Poses}{16}{}%
 \contentsline {subsubsection}{Collect Data}{16}{}%
 \contentsline {subsubsection}{Calibration Computation}{16}{}%
-\contentsline {subsection}{\numberline {4.2.5}Mathematical Formulation}{16}{}%
-\contentsline {subsubsection}{Solving the Calibration}{16}{}%
+\contentsline {subsection}{\numberline {4.2.5}Mathematical Formulation}{17}{}%
+\contentsline {subsubsection}{Solving the Calibration}{17}{}%
 \contentsline {subsection}{\numberline {4.2.6}Verification}{17}{}%
 \contentsline {subsection}{\numberline {4.2.7}Conclusion}{17}{}%
 \contentsline {chapter}{\numberline {5}Results}{19}{}%

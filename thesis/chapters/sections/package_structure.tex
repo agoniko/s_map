@@ -23,11 +23,31 @@ The following nodes are included:
 This node subscribes to the RGB and depth topics, performs instance segmentation, and publishes the results to the ROS network.
 When RGB and depth images are published a callback function is triggered, this function acts a series of steps:
 \subsubsection[YOLO]{YOLO - Instance Segmentation Model}
-The YOLO model is used to perform instance segmentation, for further information about design choices and model details refer to section \ref{sec:instance_segmentation}.
+The YOLO model is used to perform instance segmentation, for further information about 
+design choices and model details refer to section \ref{sec:instance_segmentation}.
 This model has been implemented using the API provided by Ultralytics \cite{ultralytics_yolo_2023}.
 In this application no batching is used since the model is running on a single image at a time.
-This particular implementation offers also an implementation of the ByteTrack algorithm explained in section \ref{sec:byte_track} that allow to extract unique IDs for each detected object.
-
-From this step we take only the segmentation masks, the unique IDs and the labels. 2D bounding boxes are not considered as 3D bounding boxes will be computed by from the objects point clouds.
+This particular implementation offers also an implementation of the ByteTrack algorithm explained in section 
+\ref{sec:byte_track} that allow to extract unique IDs for each detected object.
+To call the YOLO model and the ByteTrack algorithm ultralytics api is called with the following code snippet:
+\begin{python}
+results = self.detector.track(
+                frame,
+                device=self.device,
+                conf=DETECTION_CONFIDENCE,
+                stream=True,
+                persist=True,
+                tracker=TRACKER,
+                verbose=False,
+            )
+\end{python}
+From the result, we extract segmentation masks, track IDs, prediction confidence scores, and class labels:
+\begin{enumerate}
+    \item \textbf{Class Labels}: These are the class labels of the detected objects, and they have shape \( n_{\text{pred}} \).
+    \item \textbf{Segmentation Masks}: They are binary masks of shape \( n_{\text{pred}} \times h_{\text{img}} \times w\_{\text{width}} \) where at index \( [i, h, w] \) we have a 1 if pixel \( [h, w] \) belongs to pred \( i \) and 0 otherwise.
+    \item \textbf{Track IDs}: They are unique IDs for each detected object, used to track objects across frames. They have shape \( n_{\text{pred}} \).
+    \item \textbf{Prediction Confidence Scores}: These are the confidence scores of the model for each detected object, and they have shape \( n_{\text{pred}} \).
+\end{enumerate}
+From this step we do not consider 2D bounding boxes as 3D bounding boxes will be computed by from the objects point clouds.
 \subsection[Mask Erosion]{Mask Erosion}
 Since depth acquired from this particular camera tends to ...

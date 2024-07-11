@@ -181,6 +181,7 @@ class Node:
             )
         )
         if results:
+            print(results.masks.data.shape, results.boxes.cls.shape, results.boxes.id.shape, results.boxes.conf.shape)
             detections = sv.Detections.from_ultralytics(results)
             detections = self.erode_masks(detections)
             frame = self.annotate_frame(frame, detections, image_msg.header)
