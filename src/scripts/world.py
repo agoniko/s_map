@@ -143,14 +143,13 @@ class Obj:
         self.label = self.label if self.score > other.score else other.label
         self.score = max(self.score, other.score)
 
-        # indices = np.where(self.centroids != np.zeros(3))[0]
-        # weights = exponential_weights(len(indices), decay_rate=0.1)
-        # centroid = np.average(self.centroids[indices], axis=0, weights=weights)
-        # quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
-        # rot_matrix = R.from_quat(quaternion).as_matrix()
-        # self.pcd.translate(centroid, relative=False)
-        # self.pcd.rotate(rot_matrix, center=np.zeros(3))
-
+        indices = np.where(self.centroids != np.zeros(3))[0]
+        weights = exponential_weights(len(indices), decay_rate=0.1)
+        centroid = np.average(self.centroids[indices], axis=0, weights=weights)
+        quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
+        rot_matrix = R.from_quat(quaternion).as_matrix()
+        self.pcd.rotate(rot_matrix, center=np.zeros(3))
+        self.pcd.translate(centroid, relative=False)
         self.compute()
 
     def register_pointcloud(self, source, target: "Obj", min_size=100):

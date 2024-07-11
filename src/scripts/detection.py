@@ -22,7 +22,7 @@ import sys
 #Global Configuration Variables
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8s-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 QUEUE_SIZE = 1
@@ -181,9 +181,8 @@ class Node:
             )
         )
         if results:
-            print(results.masks.data.shape, results.boxes.cls.shape, results.boxes.id.shape, results.boxes.conf.shape)
             detections = sv.Detections.from_ultralytics(results)
-            detections = self.erode_masks(detections)
+            #detections = self.erode_masks(detections)
             frame = self.annotate_frame(frame, detections, image_msg.header)
             self.publish_results(detections, depth_msg, depth_msg.header, frame)
             #self.filter_depth(detections, depth_msg)
@@ -197,7 +196,7 @@ class Node:
         for i in range(masks.shape[0]):
             xmin, ymin, xmax, ymax = detections.xyxy[i].astype(np.int32)
             #the bigger the mask the more it erodes
-            kernel_size = int((xmax - xmin + ymax - ymin) / 40)
+            kernel_size = int((xmax - xmin + ymax - ymin) / 50)
             kernel = np.ones((kernel_size, kernel_size), np.uint8)
             masks[i] = cv2.erode(masks[i], kernel, iterations=2)
         
