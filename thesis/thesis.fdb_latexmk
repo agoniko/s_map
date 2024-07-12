@@ -1,11 +1,11 @@
 # Fdb version 4
-["makeindex thesis.idx"] 1720778291.06529 "thesis.idx" "thesis.ind" "thesis" 1720778391.04886 2
-  "thesis.idx" 1720778389.479 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+["makeindex thesis.idx"] 1720778291.06529 "thesis.idx" "thesis.ind" "thesis" 1720778420.20415 2
+  "thesis.idx" 1720778418.63017 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "thesis.ilg"
   "thesis.ind"
   (rewritten before read)
-["pdflatex"] 1720778389.25572 "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" "thesis.pdf" "thesis" 1720778391.05045 2
+["pdflatex"] 1720778418.40689 "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" "thesis.pdf" "thesis" 1720778420.20436 2
   "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" 1720778201.95332 2502 ef3354c868320e3acfe55e604b411dab ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1710106625 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1710106625 2375 baa924870cfb487815765f9094cf3728 ""
@@ -182,15 +182,15 @@
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1710106625 8221866 9aed0a1b2ac5e8bec4cefaf91f11118a ""
   "chapters/abstract.inc.tex" 1720777989.08624 1904 b66b315eb680f5d6b429647066491b14 ""
   "chapters/acknowledgments.inc.tex" 1720777989.08631 127 989dc0eee10a431ef403aa1814c90727 ""
-  "chapters/chapter_acronyms.inc.aux" 1720778390.25189 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
+  "chapters/chapter_acronyms.inc.aux" 1720778419.4521 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
   "chapters/chapter_acronyms.inc.tex" 1720777989.08638 292 9d0f5f8c173479fa6a34211e9cd787b3 ""
-  "chapters/chapter_implementation.inc.aux" 1720778390.92684 1851 40ddf2c60577c546e11dfe5330b69de7 "pdflatex"
+  "chapters/chapter_implementation.inc.aux" 1720778420.08052 1851 40ddf2c60577c546e11dfe5330b69de7 "pdflatex"
   "chapters/chapter_implementation.inc.tex" 1720777989.08651 350 afd277546b4cbd769c8521f8d61a2fad ""
-  "chapters/chapter_intro.inc.aux" 1720778390.61731 3820 9f0345df5fad99d04fc97dbe5a055e7a "pdflatex"
+  "chapters/chapter_intro.inc.aux" 1720778419.81408 3820 9f0345df5fad99d04fc97dbe5a055e7a "pdflatex"
   "chapters/chapter_intro.inc.tex" 1720777989.08667 9653 b60cb58bb33c9a1ae03a622f16e588c8 ""
-  "chapters/chapter_sota.inc.aux" 1720778390.62253 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
+  "chapters/chapter_sota.inc.aux" 1720778419.81869 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
   "chapters/chapter_sota.inc.tex" 1720777989.08679 621 7f6455c798849f720c2b43424e9f0e98 ""
-  "chapters/chapter_tools.inc.aux" 1720778390.62678 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
+  "chapters/chapter_tools.inc.aux" 1720778419.82272 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
   "chapters/chapter_tools.inc.tex" 1720777989.08685 342 6c734068d3cd2c67b28b2440bd838d65 ""
   "chapters/sections/package_structure.tex" 1720778304.23011 7202 a6a082720f780889f4b493c49065beb3 ""
   "figs/SW-struct.png" 1720777989.09047 122698 4957e20bd3b79f6ca198b31a8db2f952 ""
@@ -209,12 +209,12 @@
   "styles/mypython.sty" 1720777989.10316 3757 6f2f03231460fc5e736300dada63e67b ""
   "styles/reallyblank.sty" 1720777989.10322 422 656415b73e8a95929da5af3be7ef6f78 ""
   "styles/tthesis.cls" 1720777989.10328 2872 01b479e8158ff849c17edd29e92ddc21 ""
-  "thesis.aux" 1720778390.92272 992 97f4f484bfa49e5beb21c55064241c54 "pdflatex"
+  "thesis.aux" 1720778420.07647 992 97f4f484bfa49e5beb21c55064241c54 "pdflatex"
   "thesis.ind" 0 -1 0 "makeindex thesis.idx"
-  "thesis.lof" 1720778390.92696 203 4775f1d3fe3aba6c3991ffc1b29784cc "pdflatex"
-  "thesis.lot" 1720778390.92699 215 72a797535886d226b9c5d63813b91dc8 "pdflatex"
+  "thesis.lof" 1720778420.08063 203 4775f1d3fe3aba6c3991ffc1b29784cc "pdflatex"
+  "thesis.lot" 1720778420.08066 215 72a797535886d226b9c5d63813b91dc8 "pdflatex"
   "thesis.tex" 1720778201.95332 2502 ef3354c868320e3acfe55e604b411dab ""
-  "thesis.toc" 1720778390.92693 1418 75a64600f084267175b67d76d4e67c94 "pdflatex"
+  "thesis.toc" 1720778420.08059 1418 75a64600f084267175b67d76d4e67c94 "pdflatex"
   (generated)
   "chapters/chapter_acronyms.inc.aux"
   "chapters/chapter_implementation.inc.aux"
