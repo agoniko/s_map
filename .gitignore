@@ -25,3 +25,6 @@ settings.json
 .*.swp
 *.synctex.gz
 .directory
+notebooks/rgb.txt
+notebooks/rgb.yaml
+notebooks/depth.txt
