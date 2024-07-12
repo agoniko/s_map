@@ -22,7 +22,7 @@ import sys
 #Global Configuration Variables
 DETECTION_RESULTS_TOPIC = "/s_map/detection/results"
 ANNOTATED_IMAGES_TOPIC = "/s_map/annotated_images"
-MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8s-seg.pt"
+MODEL_PATH = rospkg.RosPack().get_path("s_map") + "/models/yolov8l-seg.pt"
 DETECTION_CONFIDENCE = 0.5
 TRACKER = "bytetrack.yaml"
 QUEUE_SIZE = 1
@@ -82,7 +82,6 @@ class Node:
         # Subscribers
         self.image_sub = Subscriber(RGB_TOPIC, Image)
         self.depth_sub = Subscriber(DEPTH_TOPIC, Image)
-        #self.depth_confidence_sub = Subscriber("/realsense/confidence/image_rect_raw", Image)
         self.synchronizer = TimeSynchronizer([self.image_sub, self.depth_sub], QUEUE_SIZE)
         self.synchronizer.registerCallback(self.detection_callback)
 
@@ -148,10 +147,6 @@ class Node:
         except:
             return None
     
-    def preprocess_depth(self, depth_msg, conf_message):
-        conf_image = self.cv_bridge.imgmsg_to_cv2(conf_message, "passthrough")
-        print(conf_image.shape, np.min(conf_image), np.max(conf_image))
-    
     #@time_it
     def detection_callback(self, image_msg, depth_msg):
         """
@@ -181,12 +176,10 @@ class Node:
             )
         )
         if results:
-            print(results.masks.data.shape, results.boxes.cls.shape, results.boxes.id.shape, results.boxes.conf.shape)
             detections = sv.Detections.from_ultralytics(results)
-            #detections = self.erode_masks(detections)
+            detections = self.erode_masks(detections)
             frame = self.annotate_frame(frame, detections, image_msg.header)
             self.publish_results(detections, depth_msg, depth_msg.header, frame)
-            #self.filter_depth(detections, depth_msg)
         else:
             img_msg = self.cv_bridge.cv2_to_imgmsg(frame, "rgb8", image_msg.header)
             self.annotated_image_pub.publish(img_msg)
