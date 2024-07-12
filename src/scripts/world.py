@@ -119,9 +119,7 @@ class Obj:
         self.is_confirmed = self.is_confirmed or other.is_confirmed
         # Euristics: an object is confirmed if it has been seen multiple times
         if not self.is_confirmed:
-            self.is_confirmed = self.last_seen - self.first_seen >= rospy.Duration(
-                TIME_TO_BE_CONFIRMED
-            )
+            self.is_confirmed = self.centroids.shape[0] > 10
 
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
@@ -311,7 +309,7 @@ class World:
         self.index2id[len(self.points_list) - 1] = obj.id
         self._rebuild_kdtree()
 
-    # @time_it
+    #@time_it
     def update_object(self, obj):
         """Updates an existing object in the world."""
 
@@ -396,7 +394,7 @@ class World:
             except:
                 rospy.logerr("Error in rebuilding KDTree")
 
-    # @time_it
+    #@time_it
     def get_world_id(self, obj: Obj, distance_thr=1, iou_thr=0.1):
         """
         Checks if the object already exists in the world by comparing 3D IoU and label of close objects

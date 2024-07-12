@@ -10,19 +10,34 @@ import struct
 import rospkg
 import numpy.matlib as npm
 
-class_names = np.loadtxt(rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt", dtype=str, delimiter=",")
-label_colors = {label.lower().strip(): np.random.randint(0, 255, 3) for label in class_names}
+class_names = np.loadtxt(
+    rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt",
+    dtype=str,
+    delimiter=",",
+)
+label_colors = {
+    label.lower().strip(): np.random.randint(0, 255, 3) for label in class_names
+}
 
 
 def time_it(func):
     import time
 
+    functions = {}
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
-        print(f"time taken by {func.__name__} is {time.time()-start }")
+        if func.__name__ in functions:
+            functions[func.__name__]["time"].append(time.time() - start)
+        else:
+            functions[func.__name__] = {"time": [time.time() - start]}
 
+        mean_time = np.array(functions[func.__name__]["time"]).mean()
+        std = np.std(functions[func.__name__]["time"])
+
+        print(f"Function {func.__name__} mean: {mean_time:.4f} std: {std:.4f}")
         return result
 
     return wrapper
@@ -72,7 +87,7 @@ def create_pointcloud_message(objects, frame, stamp):
         )
         # pc2 = point_cloud2.create_cloud_xyz32(header, points)
         return pc2
-    
+
     except Exception as e:
         rospy.logerr(f"Error creating point cloud message: {e}")
         return None
@@ -91,6 +106,7 @@ def create_delete_marker(frame):
 from visualization_msgs.msg import Marker, MarkerArray
 import rospy
 import numpy as np
+
 
 def create_marker_text(label, position, marker_id, stamp, frame):
     text_marker = Marker()
@@ -116,6 +132,7 @@ def create_marker_text(label, position, marker_id, stamp, frame):
 
     return text_marker
 
+
 def create_marker_array(objects, frame, stamp):
     if len(objects) == 0:
         return None, None
@@ -128,21 +145,23 @@ def create_marker_array(objects, frame, stamp):
         marker = create_marker_vertices(bbox, obj.label, obj.id, stamp, frame)
         if marker is not None:
             msg.markers.append(marker)
-            
+
             # Calculate central position of the bounding box
             central_position = bbox.mean(axis=0)
             if np.sum(np.abs(central_position)) > 0:
-                label_marker = create_marker_text(f"{obj.label}:{obj.id}", central_position, obj.id, stamp, frame)
+                label_marker = create_marker_text(
+                    f"{obj.label}:{obj.id}", central_position, obj.id, stamp, frame
+                )
                 label_msg.markers.append(label_marker)
-            
+
     if label_msg.markers:
         return (msg, label_msg)
     else:
         return (msg, None)
 
+
 # Example usage
 # objects should be a list of objects, each having bbox (list of 8 points), label (string), and id (int) attributes.
-
 
 
 def create_marker_vertices(vertices, label, id, stamp, frame) -> Marker:
@@ -278,52 +297,57 @@ def compute_3d_iou(box1, box2):
 
     return iou
 
+
 """
 Markley, F. Landis, Yang Cheng, John Lucas Crassidis, and Yaakov Oshman. "Averaging quaternions." 
 Journal of Guidance, Control, and Dynamics 30, no. 4 (2007): 1193-1197. 
 Link: https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20070017872.pdf
 """
+
+
 def averageQuaternions(Q):
     # Number of quaternions to average
     M = Q.shape[0]
-    A = npm.zeros(shape=(4,4))
+    A = npm.zeros(shape=(4, 4))
 
-    for i in range(0,M):
-        q = Q[i,:]
+    for i in range(0, M):
+        q = Q[i, :]
         # multiply q with its transposed version q' and add A
-        A = np.outer(q,q) + A
+        A = np.outer(q, q) + A
 
     # scale
-    A = (1.0/M)*A
+    A = (1.0 / M) * A
     # compute eigenvalues and -vectors
     eigenValues, eigenVectors = np.linalg.eig(A)
     # Sort by largest eigenvalue
-    eigenVectors = eigenVectors[:,eigenValues.argsort()[::-1]]
+    eigenVectors = eigenVectors[:, eigenValues.argsort()[::-1]]
     # return the real part of the largest eigenvector (has only real part)
-    return np.real(eigenVectors[:,0].A1)
+    return np.real(eigenVectors[:, 0].A1)
+
 
 def weightedAverageQuaternions(Q, w):
     # Number of quaternions to average
     M = Q.shape[0]
-    A = npm.zeros(shape=(4,4))
+    A = npm.zeros(shape=(4, 4))
     weightSum = 0
 
-    for i in range(0,M):
-        q = Q[i,:]
-        A = w[i] * np.outer(q,q) + A
+    for i in range(0, M):
+        q = Q[i, :]
+        A = w[i] * np.outer(q, q) + A
         weightSum += w[i]
 
     # scale
-    A = (1.0/weightSum) * A
+    A = (1.0 / weightSum) * A
 
     # compute eigenvalues and -vectors
     eigenValues, eigenVectors = np.linalg.eig(A)
 
     # Sort by largest eigenvalue
-    eigenVectors = eigenVectors[:,eigenValues.argsort()[::-1]]
+    eigenVectors = eigenVectors[:, eigenValues.argsort()[::-1]]
 
     # return the real part of the largest eigenvector (has only real part)
-    return np.real(eigenVectors[:,0].A1)
+    return np.real(eigenVectors[:, 0].A1)
+
 
 def create_marker_point(points, stamp, world_frame):
     marker_array = MarkerArray()
