@@ -9,6 +9,7 @@ import numpy as np
 import json
 import rospkg
 from threading import Lock
+from utils import time_it
 
 PREDICTIONS_PATH = rospkg.RosPack().get_path("s_map") + "/predictions.json"
 
@@ -26,22 +27,20 @@ class WorldManager:
         self.clean_up_service = rospy.Service('clean_up', CleanUp, self.handle_clean_up)
         self.export_predictions_service = rospy.Service('export_predictions', Trigger, self.handle_export_predictions)
 
+    @time_it
     def handle_manage_object(self, req):
         points = np.array(req.object.points).reshape(-1, 3)
         obj = Obj(req.object.id, points, req.object.label, req.object.score, req.object.header.stamp)
-        with self.lock:
-            try:
-                self.world.manage_object(obj)
-                return True
-            except Exception as e:
-                rospy.logerr("Error managing object: ", e)
-                return False
+        self.world.manage_object(obj)
+        return True
 
+    #@time_it
     def handle_remove_object(self, req):
         with self.lock:
             self.world.remove_objects(req.object_ids)
             return True
-
+    
+    #@time_it
     def handle_query_objects(self, req):
         with self.lock:
             objects = self.world.query_close_objects_service([req.point.x, req.point.y, req.point.z], req.threshold)
@@ -50,6 +49,7 @@ class WorldManager:
         res.objects = objects
         return res
     
+    #@time_it
     def handle_get_all_objects(self, req):
         with self.lock:
             objects = self.world.get_objects()
@@ -62,6 +62,7 @@ class WorldManager:
         
         return res
     
+    #@time_it
     def handle_clean_up(self, req):
         with self.lock:
             self.world.clean_up()
