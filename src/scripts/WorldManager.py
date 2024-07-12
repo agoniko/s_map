@@ -11,6 +11,7 @@ import rospkg
 from threading import Lock
 from utils import time_it
 
+
 PREDICTIONS_PATH = rospkg.RosPack().get_path("s_map") + "/predictions.json"
 
 class WorldManager:
@@ -27,12 +28,16 @@ class WorldManager:
         self.clean_up_service = rospy.Service('clean_up', CleanUp, self.handle_clean_up)
         self.export_predictions_service = rospy.Service('export_predictions', Trigger, self.handle_export_predictions)
 
-    @time_it
+    #@time_it
     def handle_manage_object(self, req):
-        points = np.array(req.object.points).reshape(-1, 3)
-        obj = Obj(req.object.id, points, req.object.label, req.object.score, req.object.header.stamp)
-        self.world.manage_object(obj)
-        return True
+        try:
+            points = np.array(req.object.points).reshape(-1, 3)
+            obj = Obj(req.object.id, points, req.object.label, req.object.score, req.object.header.stamp)
+            self.world.manage_object(obj)
+            return True
+        except Exception as e:
+            print("HANDLE EXCEPTION:", e)
+            return False
 
     #@time_it
     def handle_remove_object(self, req):

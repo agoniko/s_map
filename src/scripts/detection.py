@@ -190,7 +190,7 @@ class Node:
         for i in range(masks.shape[0]):
             xmin, ymin, xmax, ymax = detections.xyxy[i].astype(np.int32)
             #the bigger the mask the more it erodes
-            kernel_size = int((xmax - xmin + ymax - ymin) / 50)
+            kernel_size = int((xmax - xmin + ymax - ymin) / 40)
             kernel = np.ones((kernel_size, kernel_size), np.uint8)
             masks[i] = cv2.erode(masks[i], kernel, iterations=2)
         

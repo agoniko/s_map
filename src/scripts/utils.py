@@ -9,6 +9,8 @@ from std_msgs.msg import Header
 import struct
 import rospkg
 import numpy.matlib as npm
+from pytorch3d.ops import box3d_overlap
+import torch
 
 class_names = np.loadtxt(
     rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt",
@@ -259,9 +261,55 @@ def bbox_iou(box1, box2):
     # return the intersection over union value
     return iou
 
+def reorder_vertices(box):
+    """
+    A unit cube, defined with the pythorch3d convention, has the following vertices:
+        [0, 0, 0],                    (4) +---------+. (5)
+        [1, 0, 0],                        | ` .     |  ` .
+        [1, 1, 0],                        | (0) +---+-----+ (1)
+        [0, 1, 0],                        |     |   |     |
+        [0, 0, 1],                    (7) +-----+---+. (6)|
+        [1, 0, 1],                        ` .   |     ` . |
+        [1, 1, 1],                        (3) ` +---------+ (2)
+        [0, 1, 1],
+    
+    While the OrientedBoundingBox from Open3D has the following vertices:
+       [0, 0, 0],
+       [1, 0, 0],
+       [0, 1, 0],
+       [0, 0, 1],
+       [1, 1, 1],
+       [0, 1, 1],
+       [1, 0, 1],
+       [1, 1, 0]
+
+    This function reorders the vertices of the OrientedBoundingBox to match the pytorch3d convention.
+    This allows to use the official IoU function from Pytorch3D.
+    """
+    assert box.shape == (8, 3)
+
+    reordered = [
+        box[0], box[1], box[7], box[2],
+        box[3], box[6], box[4], box[5]
+    ]
+    return np.array(reordered)
 
 def compute_3d_iou(box1, box2):
-    """
+    if np.sum(box1) == 0 or np.sum(box2) == 0:
+        return 0.0
+    box1 = reorder_vertices(box1)
+    box2 = reorder_vertices(box2)
+    box1 = torch.tensor(box1, dtype=torch.float32).unsqueeze(0).cpu()
+    box2 = torch.tensor(box2, dtype=torch.float32).unsqueeze(0).cpu()
+    try:
+        vol, IoU =  box3d_overlap(box1, box2)
+    except:
+        return 0.0
+    print(IoU.item())
+    return IoU.item()
+
+
+"""def compute_3d_iou(box1, box2):
     Compute the Intersection over Union (IoU) of two 3D boxes.
 
     Parameters:
@@ -270,7 +318,6 @@ def compute_3d_iou(box1, box2):
 
     Returns:
     - float: the IoU of the two boxes.
-    """
     # Extract the min and max points
     min_point1 = np.min(box1, axis=0)
     max_point1 = np.max(box1, axis=0)
@@ -296,7 +343,7 @@ def compute_3d_iou(box1, box2):
     iou = inter_volume / union_volume if union_volume != 0 else 0
 
     return iou
-
+"""
 
 """
 Markley, F. Landis, Yang Cheng, John Lucas Crassidis, and Yaakov Oshman. "Averaging quaternions." 
