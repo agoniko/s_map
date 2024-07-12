@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  11 JUL 2024 17:50
-=======
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  11 JUL 2024 13:21
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  12 JUL 2024 11:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -388,31 +384,48 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
 ))
+
+/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex:4: LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4 <
+     <<<<<< HEAD
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+Overfull \hbox (94.99762pt too wide) in paragraph at lines 4--11
+[]\T1/lmr/m/n/10.95 <<<<<<< HEAD <<<<<<< HEAD  ======= >>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+ []
+
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
- (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+(/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count303
 \l__pdf_internal_box=\box59
-) (./thesis.aux (./chapters/chapter_acronyms.inc.aux) (./chapters/chapter_intro.inc.aux) (./chapters/chapter_sota.inc.aux) (./chapters/chapter_tools.inc.aux) (./chapters/chapter_implementation.inc.aux))
+) (./thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 30.
+LaTeX Font Info:    ... okay on input line 30.
 \c@lstlisting=\count304
 
 *geometry* driver: auto-detecting
@@ -454,60 +467,60 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 24.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 30.
 (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<ot1.cmap>>
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 24.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 24.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<oms.cmap>>
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 24.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 24.
+(Font)              <10.95> on input line 30.
 <<omx.cmap>>
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 24.
+(Font)              <8> on input line 30.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 24.
-LaTeX Font Info:    Trying to load font information for U+wasy on input line 24.
+(Font)              <6> on input line 30.
+LaTeX Font Info:    Trying to load font information for U+wasy on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/wasysym/uwasy.fd
 File: uwasy.fd 2020/01/19 v2.4 Wasy-2 symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 24.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 24.
+LaTeX Font Info:    Trying to load font information for OT1+lmss on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmss.fd
 File: ot1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 24.
+LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )<<ot1tt.cmap>>
 \symgns@font=\mathgroup7
 LaTeX Font Info:    Overwriting symbol font `gns@font' in version `bold'
-(Font)                  TS1/lmr/m/n --> TS1/lmr/b/n on input line 24.
-Package gensymb Info: Math companion symbols declared on input line 24.
-LaTeX Info: Redefining \degree on input line 24.
-LaTeX Info: Redefining \celsius on input line 24.
-Package gensymb Info: Using text companion symbols for \degree, \celsius and \perthousand on input line 24.
-LaTeX Info: Redefining \ohm on input line 24.
-Package gensymb Info: Using \textohm for \ohm on input line 24.
-LaTeX Info: Redefining \micro on input line 24.
-Package gensymb Info: Using \textmu for \micro on input line 24.
+(Font)                  TS1/lmr/m/n --> TS1/lmr/b/n on input line 30.
+Package gensymb Info: Math companion symbols declared on input line 30.
+LaTeX Info: Redefining \degree on input line 30.
+LaTeX Info: Redefining \celsius on input line 30.
+Package gensymb Info: Using text companion symbols for \degree, \celsius and \perthousand on input line 30.
+LaTeX Info: Redefining \ohm on input line 30.
+Package gensymb Info: Using \textohm for \ohm on input line 30.
+LaTeX Info: Redefining \micro on input line 30.
+Package gensymb Info: Using \textmu for \micro on input line 30.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count305
@@ -526,7 +539,12 @@ Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
-)) (./frontpages/frontpage-ai4st.inc.tex
+)) (./frontpages/frontpage-ai4st.inc.tex [1{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}
+
+] [2
+
+
+]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: a4paper
@@ -559,17 +577,17 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logos/logo-unimi.png, id=7, 40.2303pt x 39.5076pt>
+<logos/logo-unimi.png, id=16, 40.2303pt x 39.5076pt>
 File: logos/logo-unimi.png Graphic file (type png)
 <use logos/logo-unimi.png>
 Package pdftex.def Info: logos/logo-unimi.png  used on input line 23.
 (pdftex.def)             Requested size: 92.73152pt x 91.04872pt.
-<logos/logo-unimib.png, id=9, 38.544pt x 41.4348pt>
+<logos/logo-unimib.png, id=18, 38.544pt x 41.4348pt>
 File: logos/logo-unimib.png Graphic file (type png)
 <use logos/logo-unimib.png>
 Package pdftex.def Info: logos/logo-unimib.png  used on input line 31.
 (pdftex.def)             Requested size: 84.70647pt x 91.04872pt.
-<logos/logo-unipv-bw.png, id=10, 246.6816pt x 246.4407pt>
+<logos/logo-unipv-bw.png, id=19, 246.6816pt x 246.4407pt>
 File: logos/logo-unipv-bw.png Graphic file (type png)
 <use logos/logo-unipv-bw.png>
 Package pdftex.def Info: logos/logo-unipv-bw.png  used on input line 39.
@@ -579,7 +597,7 @@ Overfull \hbox (11.38089pt too wide) in paragraph at lines 19--47
  [][] 
  []
 
-<logos/logo-ai4st.png, id=11, 52.7571pt x 67.452pt>
+<logos/logo-ai4st.png, id=20, 52.7571pt x 67.452pt>
 File: logos/logo-ai4st.png Graphic file (type png)
 <use logos/logo-ai4st.png>
 Package pdftex.def Info: logos/logo-ai4st.png  used on input line 52.
@@ -598,10 +616,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--76
 
 
 
-
-
-
-{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc} <./logos/logo-unimi.png> <./logos/logo-unimib.png> <./logos/logo-unipv-bw.png> <./logos/logo-ai4st.png>]) [2
+ <./logos/logo-unimi.png> <./logos/logo-unimib.png> <./logos/logo-unipv-bw.png> <./logos/logo-ai4st.png>]) [2
 
 
 ] (./chapters/abstract.inc.tex [3
@@ -616,25 +631,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--76
 ] [7]) [8
 
 
-] (./thesis.toc)
+]
+No file thesis.toc.
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
 
- [9] [10
+[9] [10
 
 
-] (./thesis.lof)
+]
+No file thesis.lof.
 \tf@lof=\write5
 \openout5 = `thesis.lof'.
 
- [11] [12
+[11] [12
 
 
-] (./thesis.lot)
+]
+No file thesis.lot.
 \tf@lot=\write6
 \openout6 = `thesis.lot'.
 
- [13] [14
+[13] [14
 
 
 ]
@@ -671,22 +689,42 @@ File: t1fvm.fd 2004/09/07 scalable font definitions for T1/fvm.
 )
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 (Font)              scaled to size 9.85492pt on input line 15.
+
+
+LaTeX Warning: Reference `s:example_section' on page 1 undefined on input line 16.
+
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 24.
- [3{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/base/8r.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
-<figs/logo-unipv-bw.png, id=82, 246.6816pt x 246.4407pt>
+[3{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/base/8r.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
+
+LaTeX Warning: Reference `t:example-table' on page 1 undefined on input line 56.
+
+<figs/logo-unipv-bw.png, id=89, 246.6816pt x 246.4407pt>
 File: figs/logo-unipv-bw.png Graphic file (type png)
 <use figs/logo-unipv-bw.png>
 Package pdftex.def Info: figs/logo-unipv-bw.png  used on input line 85.
 (pdftex.def)             Requested size: 198.0pt x 197.81088pt.
- [4] [5 <./figs/logo-unipv-bw.png>] (/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/listings/lstlang1.sty
+
+LaTeX Warning: Reference `f:logo' on page 1 undefined on input line 89.
+
+[4]
+
+LaTeX Warning: Reference `s:example_section' on page 1 undefined on input line 106.
+
+[5 <./figs/logo-unipv-bw.png>]
+
+LaTeX Warning: Reference `eq:example' on page 1 undefined on input line 116.
+
+
+LaTeX Warning: Reference `lst:example-listing' on page 1 undefined on input line 126.
+
+(/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2024/02/21 1.10 listings language file
 )
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 (Font)              scaled to size 8.09995pt on input line 131.
 LaTeX Font Info:    Font shape `T1/fvm/b/n' will be
 (Font)              scaled to size 8.09995pt on input line 132.
-<<<<<<< HEAD
 
 
 LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 157.
@@ -698,37 +736,89 @@ LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 163
 LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 164.
 
 [6{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
-=======
- [6{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 Overfull \hbox (4.20929pt too wide) in paragraph at lines 180--182
 \T1/lmr/m/n/10.95 Acronyms are very pop-u-lar in sci-en-tific and tech-ni-cal doc-u-ments. We use the \T1/fvm/m/n/10.95 acronym
  []
 
 Package acronym Info: Label `acro:UNIPV' newly defined as it shall be overridden
 although it is yet undefined on input line 185.
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 185.
+
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 185.
+
 Package acronym Info: Label `acro:Robolab' newly defined as it shall be overridden
 although it is yet undefined on input line 185.
+
+Package acronym Warning: Acronym `Robolab' is not defined on input line 185.
+
+
+Package acronym Warning: Acronym `Robolab' is not defined on input line 185.
+
 Package acronym Info: Label `acro:LED' newly defined as it shall be overridden
 although it is yet undefined on input line 185.
+
+Package acronym Warning: Acronym `LED' is not defined on input line 185.
+
+
+Package acronym Warning: Acronym `LED' is not defined on input line 185.
+
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 186.
+
+
+Package acronym Warning: Acronym `Robolab' is not defined on input line 186.
+
+
+Overfull \hbox (10.00366pt too wide) in paragraph at lines 185--187
+[]\T1/lmr/m/n/10.95 Use the acronyms with ^^P  [][][]\T1/lmr/bx/n/10.95 UNIPV! \T1/lmr/m/n/10.95 ([])[]^^Q, ^^P  [][][]\T1/lmr/bx/n/10.95 Robo-lab! \T1/lmr/m/n/10.95 ([])[]^^Q, ^^P  [][][]\T1/lmr/bx/n/10.95 LED!
+ []
+
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 188.
+
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 188.
+
+
+Package acronym Warning: Acronym `UNIPV' is not defined on input line 189.
+
+
+Overfull \hbox (4.93605pt too wide) in paragraph at lines 188--190
+[]\T1/lmr/m/n/10.95 Sometimes you need to use the full ver-sion again, do it with \T1/lmr/bx/n/10.95 UNIPV! \T1/lmr/m/n/10.95 ([])[].
+ []
+
+
+Package acronym Warning: Acronym `LED' is not defined on input line 191.
+
+
+LaTeX Warning: Reference `c:sota' on page 1 undefined on input line 212.
+
+
+LaTeX Warning: Reference `c:tools' on page 1 undefined on input line 213.
+
+
+LaTeX Warning: Reference `c:implementation' on page 1 undefined on input line 214.
+
 
 LaTeX Warning: Reference `c:results' on page 1 undefined on input line 215.
 
 
 LaTeX Warning: Reference `c:conc' on page 1 undefined on input line 216.
 
-) [7] [8]
+) [7]
 \openout2 = `chapters/chapter_sota.inc.aux'.
 
- (./chapters/chapter_sota.inc.tex
-Chapter 2.
-) [9
+ (./chapters/chapter_sota.inc.tex [8
 
 
 
 
 
 ]
+Chapter 2.
+) [9]
 \openout2 = `chapters/chapter_tools.inc.aux'.
 
  (./chapters/chapter_tools.inc.tex [10
@@ -751,7 +841,10 @@ Chapter 3.
 ]
 Chapter 4.
 (./chapters/sections/package_structure.tex
-<figs/SW-struct.png, id=118, 1310.64656pt x 474.27188pt>
+
+LaTeX Warning: Reference `fig:software_structure' on page 13 undefined on input line 3.
+
+<figs/SW-struct.png, id=124, 1310.64656pt x 474.27188pt>
 File: figs/SW-struct.png Graphic file (type png)
 <use figs/SW-struct.png>
 Package pdftex.def Info: figs/SW-struct.png  used on input line 17.
@@ -760,97 +853,83 @@ Package pdftex.def Info: figs/SW-struct.png  used on input line 17.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13]
-<<<<<<< HEAD
 
-LaTeX Warning: Citation `ultralytics_yolo_2023' on page 14 undefined on input line 28.
-=======
-LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
-(Font)              scaled to size 8.99994pt on input line 33.
- [14 <./figs/SW-struct.png>]) (./chapters/sections/hand_eye_calibration.inc.tex [15] [16])) [17]
-\openout2 = `chapters/chapter_results.inc.aux'.
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+LaTeX Warning: Reference `sec:instance_segmentation' on page 14 undefined on input line 27.
+
+
+LaTeX Warning: Reference `sec:instance_segmentation' on page 14 undefined on input line 29.
+
+
+LaTeX Warning: Citation `ultralytics_yolo_2023' on page 14 undefined on input line 30.
+
+
+LaTeX Warning: Reference `sec:byte_track' on page 14 undefined on input line 33.
 
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
-(Font)              scaled to size 8.99994pt on input line 33.
+(Font)              scaled to size 8.99994pt on input line 35.
 [14 <./figs/SW-struct.png>]
 LaTeX Font Info:    Font shape `T1/fvm/m/it' in size <10> not available
-(Font)              Font shape `T1/fvm/m/sl' tried instead on input line 58.
+(Font)              Font shape `T1/fvm/m/sl' tried instead on input line 61.
 LaTeX Font Info:    Font shape `T1/fvm/m/sl' will be
-(Font)              scaled to size 8.99994pt on input line 58.
+(Font)              scaled to size 8.99994pt on input line 61.
  [15]
 
-LaTeX Warning: Reference `fig:depth_bleeding' on page 16 undefined on input line 85.
+LaTeX Warning: Reference `fig:depth_bleeding' on page 16 undefined on input line 88.
 
-<figs/depth_bleeding.png, id=129, 284.06125pt x 463.7325pt>
+<figs/depth_bleeding.png, id=136, 284.06125pt x 463.7325pt>
 File: figs/depth_bleeding.png Graphic file (type png)
 <use figs/depth_bleeding.png>
-Package pdftex.def Info: figs/depth_bleeding.png  used on input line 94.
+Package pdftex.def Info: figs/depth_bleeding.png  used on input line 97.
 (pdftex.def)             Requested size: 158.39758pt x 258.59164pt.
-<figs/mask_no_erosion.png, id=130, 72.27pt x 115.632pt>
+<figs/mask_no_erosion.png, id=137, 72.27pt x 115.632pt>
 File: figs/mask_no_erosion.png Graphic file (type png)
 <use figs/mask_no_erosion.png>
-Package pdftex.def Info: figs/mask_no_erosion.png  used on input line 106.
+Package pdftex.def Info: figs/mask_no_erosion.png  used on input line 109.
 (pdftex.def)             Requested size: 99.0pt x 158.40782pt.
-<figs/mask_erosion.png, id=131, 72.27pt x 115.632pt>
+<figs/mask_erosion.png, id=138, 72.27pt x 115.632pt>
 File: figs/mask_erosion.png Graphic file (type png)
 <use figs/mask_erosion.png>
-Package pdftex.def Info: figs/mask_erosion.png  used on input line 106.
+Package pdftex.def Info: figs/mask_erosion.png  used on input line 109.
 (pdftex.def)             Requested size: 99.0pt x 158.40782pt.
-<figs/pc_no_erosion.png, id=132, 311.1625pt x 341.275pt>
+<figs/pc_no_erosion.png, id=139, 311.1625pt x 341.275pt>
 File: figs/pc_no_erosion.png Graphic file (type png)
 <use figs/pc_no_erosion.png>
-Package pdftex.def Info: figs/pc_no_erosion.png  used on input line 108.
+Package pdftex.def Info: figs/pc_no_erosion.png  used on input line 111.
 (pdftex.def)             Requested size: 99.0pt x 108.58012pt.
-<figs/pc_erosion.png, id=133, 387.4475pt x 336.25626pt>
+<figs/pc_erosion.png, id=140, 387.4475pt x 336.25626pt>
 File: figs/pc_erosion.png Graphic file (type png)
 <use figs/pc_erosion.png>
-Package pdftex.def Info: figs/pc_erosion.png  used on input line 108.
+Package pdftex.def Info: figs/pc_erosion.png  used on input line 111.
 (pdftex.def)             Requested size: 99.0pt x 85.91609pt.
 [16 <./figs/depth_bleeding.png>] [17 <./figs/mask_no_erosion.png> <./figs/mask_erosion.png> <./figs/pc_no_erosion.png> <./figs/pc_erosion.png>] (./thesis.aux (./chapters/chapter_acronyms.inc.aux) (./chapters/chapter_intro.inc.aux) (./chapters/chapter_sota.inc.aux) (./chapters/chapter_tools.inc.aux) (./chapters/chapter_implementation.inc.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
-<<<<<<< HEAD
 
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) ) )
-(\end occurred when \iftrue on line 77 was incomplete)
-(\end occurred when \ifx on line 77 was incomplete)
-(\end occurred when \ifnum on line 77 was incomplete) 
+(\end occurred when \iftrue on line 83 was incomplete)
+(\end occurred when \ifx on line 83 was incomplete)
+(\end occurred when \ifnum on line 83 was incomplete) 
 Here is how much of TeX's memory you used:
- 12639 strings out of 474116
- 222178 string characters out of 5733619
+ 12610 strings out of 474116
+ 221462 string characters out of 5733619
  2024187 words of memory out of 5000000
- 34614 multiletter control sequences out of 15000+600000
+ 34601 multiletter control sequences out of 15000+600000
  671686 words of font info for 129 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  87i,12n,93p,529b,1418s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmro8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr6.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr9.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on thesis.pdf (31 pages, 987088 bytes).
+Output written on thesis.pdf (33 pages, 987187 bytes).
 PDF statistics:
- 208 PDF objects out of 1000 (max. 8388607)
- 128 compressed objects within 2 object streams
+ 214 PDF objects out of 1000 (max. 8388607)
+ 132 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  80 words of extra memory for PDF output out of 10000 (max. 10000000)
-=======
- ) 
-Here is how much of TeX's memory you used:
- 12648 strings out of 474116
- 223976 string characters out of 5733619
- 1977187 words of memory out of 5000000
- 34605 multiletter control sequences out of 15000+600000
- 671031 words of font info for 127 fonts, out of 8000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 87i,10n,93p,579b,1418s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr6.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr9.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on thesis.pdf (37 pages, 673239 bytes).
-PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
- 146 compressed objects within 2 object streams
- 0 named destinations out of 1000 (max. 500000)
- 55 words of extra memory for PDF output out of 10000 (max. 10000000)
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 

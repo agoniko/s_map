@@ -1,37 +1,12 @@
 # Fdb version 4
-<<<<<<< HEAD
-["makeindex thesis.idx"] 1720712909.75682 "thesis.idx" "thesis.ind" "thesis" 1720713010.837 0
-  "thesis.idx" 1720713009.12547 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-=======
-["bibtex thesis"] 1720696916.59888 "thesis.aux" "thesis.bbl" "thesis" 1720696918.63055 0
-  "./biblio.bib" 1720628841.0881 605 d19138157deabc86299354f45ea72134 ""
-  "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/bibtex/bst/base/plain.bst" 1710106625 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "chapters/chapter_acronyms.inc.aux" 1720696917.79122 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
-  "chapters/chapter_conclusions.inc.aux" 1720696918.33971 1063 7dec813b567580263f8b8643c3bf6f9c "pdflatex"
-  "chapters/chapter_implementation.inc.aux" 1720696918.33108 3187 12d069a3f8612ab443f049eb67e467e5 "pdflatex"
-  "chapters/chapter_intro.inc.aux" 1720696918.1953 3820 3ad8165aa5d70d447428396813b77412 "pdflatex"
-  "chapters/chapter_results.inc.aux" 1720696918.33535 1061 e337f2f40784bd3c62f501bf6ca5880b "pdflatex"
-  "chapters/chapter_sota.inc.aux" 1720696918.20011 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
-  "chapters/chapter_tools.inc.aux" 1720696918.20421 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
-  "thesis.aux" 1720696918.34274 1390 1800524dff0536240a6e528b98190779 "pdflatex"
-  (generated)
-  "thesis.bbl"
-  "thesis.blg"
-  (rewritten before read)
-["makeindex thesis.idx"] 1720696914.65214 "thesis.idx" "thesis.ind" "thesis" 1720696918.63038 0
-  "thesis.idx" 1720696916.91562 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+["makeindex thesis.idx"] 1720778291.06529 "thesis.idx" "thesis.ind" "thesis" 1720778314.51382 2
+  "thesis.idx" 1720778312.91713 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "thesis.ilg"
   "thesis.ind"
   (rewritten before read)
-<<<<<<< HEAD
-["pdflatex"] 1720713008.90627 "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" "thesis.pdf" "thesis" 1720713010.83721 0
-  "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" 1720711566.14138 2362 128594cc5a86b1a9685824efe87efbc1 ""
-=======
-["pdflatex"] 1720696916.68161 "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" "thesis.pdf" "thesis" 1720696918.63132 0
-  "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" 1720694386.41986 2340 665a50a2d991e550353f72d053008a38 ""
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+["pdflatex"] 1720778312.48087 "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" "thesis.pdf" "thesis" 1720778314.51404 2
+  "/Users/nicoloagostara/catkin_ws/src/s_map/thesis/thesis.tex" 1720778201.95332 2502 ef3354c868320e3acfe55e604b411dab ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1710106625 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1710106625 2375 baa924870cfb487815765f9094cf3728 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1710106625 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -50,11 +25,8 @@
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmb8t.tfm" 1710106625 1380 e01008d554137b90b1cec573368c3a00 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmr8r.tfm" 1710106625 1292 a0ca2398d40dc5494f22d2fbff33269b ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmr8t.tfm" 1710106625 1380 bb8d389860f8cf35648da78ba6d79918 ""
-<<<<<<< HEAD
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmro8r.tfm" 1710106625 1364 87b6340eb4d070dc77e18d2e50253694 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmro8t.tfm" 1710106625 1448 22ea6bf6a1b076886aae29a9ec1b0b58 ""
-=======
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/cm/cmr10.tfm" 1710106625 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/lm/ec-lmbx10.tfm" 1710106625 12076 b54175e02101bea1addf6b2d0197ed12 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/lm/ec-lmbx12.tfm" 1710106625 12088 d750ac78274fa7c9f73ba09914c04f8a ""
@@ -105,10 +77,7 @@
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/wasy/wasy9.tfm" 1710106625 908 743c39e2976b0d6a1c86f6e64b6dd693 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb" 1710106625 29938 83b46e024faa950b44acb1da7adf85f6 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb" 1710106625 29228 440002646d60f9d1a0cdf5878b9a308f ""
-<<<<<<< HEAD
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmro8a.pfb" 1710106625 31408 3cc3058550ebb9278b55ca32b5ae2f1c ""
-=======
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb" 1710106625 121021 1bf809ce4a594679006bd72263eba59b ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb" 1710106625 116908 1fca96723793882c2e0160350c192fc8 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb" 1710106625 30388 702fae6a5f0e6e9c48a1d872b442ffcf ""
@@ -121,15 +90,9 @@
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb" 1710106625 112593 fda2373ba4420af33949610de4c28fe8 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb" 1710106625 131205 e6b9f0f008cce138627a5f401db34a3b ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb" 1710106625 27863 09ce3735688ffde955e72da27c95b61a ""
-<<<<<<< HEAD
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmb8t.vf" 1710106625 2156 2ffbcc3d25d55597f2891dda61e4040a ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmr8t.vf" 1710106625 2156 58631a68efc4afbec92c522ba77a542f ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmro8t.vf" 1710106625 2260 f70a601cdc049e16e7f630ab6bec05c9 ""
-=======
-  "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy8.pfb" 1710106625 27802 5c876bb2c4040caaf035d60bd74a86bd ""
-  "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmb8t.vf" 1710106625 2156 2ffbcc3d25d55597f2891dda61e4040a ""
-  "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmr8t.vf" 1710106625 2156 58631a68efc4afbec92c522ba77a542f ""
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1710106625 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/babel-english/english.ldf" 1710106625 7008 9ff5fdcc865b01beca2b0fe4a46231d4 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/generic/babel/babel.sty" 1710106625 146276 10a40dabec03ce18494af0c3a51bcbdc ""
@@ -217,70 +180,41 @@
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/tex/latex/xurl/xurl.sty" 1710106625 4675 e4b8c405820368c2dfb03526e16d725a ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/web2c/texmf.cnf" 1710106625 41652 e14926ab86fde7902cad99d9eeaa5ca5 ""
   "/opt/homebrew/Cellar/texlive/20240312/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1710106625 8221866 9aed0a1b2ac5e8bec4cefaf91f11118a ""
-  "chapters/abstract.inc.tex" 1720351384.71897 1904 b66b315eb680f5d6b429647066491b14 ""
-  "chapters/acknowledgments.inc.tex" 1720351384.71997 127 989dc0eee10a431ef403aa1814c90727 ""
-<<<<<<< HEAD
-  "chapters/chapter_acronyms.inc.aux" 1720713009.97877 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
-  "chapters/chapter_acronyms.inc.tex" 1720351384.72029 292 9d0f5f8c173479fa6a34211e9cd787b3 ""
-  "chapters/chapter_implementation.inc.aux" 1720713010.71623 1851 0aecb461f095f456f5e8bb35413bc5f3 "pdflatex"
-  "chapters/chapter_implementation.inc.tex" 1720626542.5991 350 afd277546b4cbd769c8521f8d61a2fad ""
-  "chapters/chapter_intro.inc.aux" 1720713010.44382 3820 3ad8165aa5d70d447428396813b77412 "pdflatex"
-  "chapters/chapter_intro.inc.tex" 1720351384.72118 9653 b60cb58bb33c9a1ae03a622f16e588c8 ""
-  "chapters/chapter_sota.inc.aux" 1720713010.44998 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
-  "chapters/chapter_sota.inc.tex" 1720695464.66854 621 7f6455c798849f720c2b43424e9f0e98 ""
-  "chapters/chapter_tools.inc.aux" 1720713010.45399 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
-  "chapters/chapter_tools.inc.tex" 1720351384.72205 342 6c734068d3cd2c67b28b2440bd838d65 ""
-  "chapters/sections/package_structure.tex" 1720713008.3512 6858 004d5b586d62d07f3b494683c6473561 ""
-=======
-  "chapters/chapter_acronyms.inc.aux" 1720696917.79122 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
-  "chapters/chapter_acronyms.inc.tex" 1720351384.72029 292 9d0f5f8c173479fa6a34211e9cd787b3 ""
-  "chapters/chapter_conclusions.inc.aux" 1720696918.33971 1063 7dec813b567580263f8b8643c3bf6f9c "pdflatex"
-  "chapters/chapter_conclusions.inc.tex" 1720351384.72059 354 175f24eff764c3b9f8f2f3d1af33e480 ""
-  "chapters/chapter_implementation.inc.aux" 1720696918.33108 3187 12d069a3f8612ab443f049eb67e467e5 "pdflatex"
-  "chapters/chapter_implementation.inc.tex" 1720626542.5991 350 afd277546b4cbd769c8521f8d61a2fad ""
-  "chapters/chapter_intro.inc.aux" 1720696918.1953 3820 3ad8165aa5d70d447428396813b77412 "pdflatex"
-  "chapters/chapter_intro.inc.tex" 1720351384.72118 9653 b60cb58bb33c9a1ae03a622f16e588c8 ""
-  "chapters/chapter_results.inc.aux" 1720696918.33535 1061 e337f2f40784bd3c62f501bf6ca5880b "pdflatex"
-  "chapters/chapter_results.inc.tex" 1720351384.72157 327 a41442ccf65e7393f0fc6cbb35106b5f ""
-  "chapters/chapter_sota.inc.aux" 1720696918.20011 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
-  "chapters/chapter_sota.inc.tex" 1720695464.66854 621 7f6455c798849f720c2b43424e9f0e98 ""
-  "chapters/chapter_tools.inc.aux" 1720696918.20421 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
-  "chapters/chapter_tools.inc.tex" 1720351384.72205 342 6c734068d3cd2c67b28b2440bd838d65 ""
-  "chapters/sections/hand_eye_calibration.inc.tex" 1720618477.72949 4540 0173397518a88b3bf5b4fc4edaaeb5e4 ""
-  "chapters/sections/package_structure.tex" 1720696916.21621 3734 ef9bb2873ce1cfa68eabe52f4b2348fa ""
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
-  "figs/SW-struct.png" 1720626336.69053 122698 4957e20bd3b79f6ca198b31a8db2f952 ""
-  "figs/depth_bleeding.png" 1720705360.55884 273335 97df9fb780cccce2f2af290639d4ca97 ""
-  "figs/logo-unipv-bw.png" 1720351384.72268 89182 b6a904d88344abe99d4f84702d965703 ""
-  "figs/mask_erosion.png" 1720710528.11692 30862 b29480035cc1cd71b72465c81e7d6f9b ""
-  "figs/mask_no_erosion.png" 1720710585.00792 30309 a78147ea967c5048d7f40a102ec74aa8 ""
-  "figs/pc_erosion.png" 1720710289.77857 84475 c702541b6cd97fd34d09aceb7d8e1160 ""
-  "figs/pc_no_erosion.png" 1720709611.84475 62399 2f122369b26a482be9791faaae78e607 ""
-  "frontpages/frontpage-ai4st.inc.tex" 1720351384.72302 1637 3259e323ecc6f12d80c277398531188b ""
-  "logos/logo-ai4st.png" 1720351384.72387 27361 c3a5f3a38c72890813124ba37cd1e613 ""
-  "logos/logo-unimi.png" 1720351384.7242 27334 61aa2f7e9b81a2f1fdc58cf4bccbc95f ""
-  "logos/logo-unimib.png" 1720351384.72448 15800 2d1a2b3ff7e4d646b5d4563c991880a6 ""
-  "logos/logo-unipv-bw.png" 1720351384.72479 89182 b6a904d88344abe99d4f84702d965703 ""
-  "styles/layaureo.sty" 1720351384.72609 3297 c3f932cf20b8b0c42d8a3d7ffd2454c6 ""
-  "styles/mypython.sty" 1720695371.36574 3757 6f2f03231460fc5e736300dada63e67b ""
-  "styles/reallyblank.sty" 1720351384.72645 422 656415b73e8a95929da5af3be7ef6f78 ""
-  "styles/tthesis.cls" 1720694282.50157 2872 01b479e8158ff849c17edd29e92ddc21 ""
-<<<<<<< HEAD
-  "thesis.aux" 1720713010.71191 992 97f4f484bfa49e5beb21c55064241c54 "pdflatex"
-  "thesis.ind" 1720712909.82311 0 d41d8cd98f00b204e9800998ecf8427e "makeindex thesis.idx"
-  "thesis.lof" 1720713010.71632 203 4775f1d3fe3aba6c3991ffc1b29784cc "pdflatex"
-  "thesis.lot" 1720713010.71636 215 72a797535886d226b9c5d63813b91dc8 "pdflatex"
-  "thesis.tex" 1720711566.14138 2362 128594cc5a86b1a9685824efe87efbc1 ""
-  "thesis.toc" 1720713010.71629 1418 21d16289ec29a61ae3e25498100bbca2 "pdflatex"
-=======
-  "thesis.aux" 1720696918.34274 1390 1800524dff0536240a6e528b98190779 "pdflatex"
-  "thesis.bbl" 1720696916.67197 332 900c63b7b0bd48d51af8d2413f2dfebf "bibtex thesis"
-  "thesis.ind" 1720696914.71919 0 d41d8cd98f00b204e9800998ecf8427e "makeindex thesis.idx"
-  "thesis.lof" 1720696918.35015 346 22ae71a4cca3cd857a2f41eb8c49f12e "pdflatex"
-  "thesis.lot" 1720696918.35019 275 4d3cdd99bc0bbc8517c418ce0b861ff3 "pdflatex"
-  "thesis.tex" 1720694386.41986 2340 665a50a2d991e550353f72d053008a38 ""
-  "thesis.toc" 1720696918.35007 2759 71a8dadb86c5618ab737fdd575cf0250 "pdflatex"
->>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
+  "chapters/abstract.inc.tex" 1720777989.08624 1904 b66b315eb680f5d6b429647066491b14 ""
+  "chapters/acknowledgments.inc.tex" 1720777989.08631 127 989dc0eee10a431ef403aa1814c90727 ""
+  "chapters/chapter_acronyms.inc.aux" 1720778313.6982 993 c9e1fbd0132b60815f4ad5c343b9cc41 "pdflatex"
+  "chapters/chapter_acronyms.inc.tex" 1720777989.08638 292 9d0f5f8c173479fa6a34211e9cd787b3 ""
+  "chapters/chapter_implementation.inc.aux" 1720778314.38516 1851 40ddf2c60577c546e11dfe5330b69de7 "pdflatex"
+  "chapters/chapter_implementation.inc.tex" 1720777989.08651 350 afd277546b4cbd769c8521f8d61a2fad ""
+  "chapters/chapter_intro.inc.aux" 1720778314.1156 3820 9f0345df5fad99d04fc97dbe5a055e7a "pdflatex"
+  "chapters/chapter_intro.inc.tex" 1720777989.08667 9653 b60cb58bb33c9a1ae03a622f16e588c8 ""
+  "chapters/chapter_sota.inc.aux" 1720778314.12083 1513 8f138f380bfd8ef68bd7f50c7fc24ab6 "pdflatex"
+  "chapters/chapter_sota.inc.tex" 1720777989.08679 621 7f6455c798849f720c2b43424e9f0e98 ""
+  "chapters/chapter_tools.inc.aux" 1720778314.12499 1067 778f3acba46381f40fe27c0d0d08fc69 "pdflatex"
+  "chapters/chapter_tools.inc.tex" 1720777989.08685 342 6c734068d3cd2c67b28b2440bd838d65 ""
+  "chapters/sections/package_structure.tex" 1720778304.23011 7202 a6a082720f780889f4b493c49065beb3 ""
+  "figs/SW-struct.png" 1720777989.09047 122698 4957e20bd3b79f6ca198b31a8db2f952 ""
+  "figs/depth_bleeding.png" 1720777989.09148 273335 97df9fb780cccce2f2af290639d4ca97 ""
+  "figs/logo-unipv-bw.png" 1720777989.09171 89182 b6a904d88344abe99d4f84702d965703 ""
+  "figs/mask_erosion.png" 1720777989.09186 30862 b29480035cc1cd71b72465c81e7d6f9b ""
+  "figs/mask_no_erosion.png" 1720777989.09201 30309 a78147ea967c5048d7f40a102ec74aa8 ""
+  "figs/pc_erosion.png" 1720777989.09285 84475 c702541b6cd97fd34d09aceb7d8e1160 ""
+  "figs/pc_no_erosion.png" 1720777989.09314 62399 2f122369b26a482be9791faaae78e607 ""
+  "frontpages/frontpage-ai4st.inc.tex" 1720777989.09326 1637 3259e323ecc6f12d80c277398531188b ""
+  "logos/logo-ai4st.png" 1720777989.09351 27361 c3a5f3a38c72890813124ba37cd1e613 ""
+  "logos/logo-unimi.png" 1720777989.09362 27334 61aa2f7e9b81a2f1fdc58cf4bccbc95f ""
+  "logos/logo-unimib.png" 1720777989.0938 15800 2d1a2b3ff7e4d646b5d4563c991880a6 ""
+  "logos/logo-unipv-bw.png" 1720777989.09399 89182 b6a904d88344abe99d4f84702d965703 ""
+  "styles/layaureo.sty" 1720777989.10309 3297 c3f932cf20b8b0c42d8a3d7ffd2454c6 ""
+  "styles/mypython.sty" 1720777989.10316 3757 6f2f03231460fc5e736300dada63e67b ""
+  "styles/reallyblank.sty" 1720777989.10322 422 656415b73e8a95929da5af3be7ef6f78 ""
+  "styles/tthesis.cls" 1720777989.10328 2872 01b479e8158ff849c17edd29e92ddc21 ""
+  "thesis.aux" 1720778314.38131 992 97f4f484bfa49e5beb21c55064241c54 "pdflatex"
+  "thesis.ind" 0 -1 0 "makeindex thesis.idx"
+  "thesis.lof" 1720778314.38528 203 4775f1d3fe3aba6c3991ffc1b29784cc "pdflatex"
+  "thesis.lot" 1720778314.38531 215 72a797535886d226b9c5d63813b91dc8 "pdflatex"
+  "thesis.tex" 1720778201.95332 2502 ef3354c868320e3acfe55e604b411dab ""
+  "thesis.toc" 1720778314.38524 1418 75a64600f084267175b67d76d4e67c94 "pdflatex"
   (generated)
   "chapters/chapter_acronyms.inc.aux"
   "chapters/chapter_implementation.inc.aux"
@@ -295,3 +229,8 @@
   "thesis.pdf"
   "thesis.toc"
   (rewritten before read)
+  "chapters/chapter_acronyms.inc.aux"
+  "chapters/chapter_implementation.inc.aux"
+  "chapters/chapter_intro.inc.aux"
+  "chapters/chapter_sota.inc.aux"
+  "chapters/chapter_tools.inc.aux"

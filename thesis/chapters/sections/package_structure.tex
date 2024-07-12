@@ -25,6 +25,8 @@ When RGB and depth images are published a callback function is triggered, this f
 \subsubsection[YOLO]{YOLO - Instance Segmentation Model}
 The YOLO model is used to perform instance segmentation, for further information about 
 design choices and model details refer to section \ref{sec:instance_segmentation}.
+The YOLO model is used to perform instance segmentation, for further information about 
+design choices and model details refer to section \ref{sec:instance_segmentation}.
 This model has been implemented using the API provided by Ultralytics \cite{ultralytics_yolo_2023}.
 In this application no batching is used since the model is running on a single image at a time.
 This particular implementation offers also an implementation of the ByteTrack algorithm explained in section 
