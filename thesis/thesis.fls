@@ -430,6 +430,7 @@ INPUT ./figs/SW-struct.png
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmr8t.tfm
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmr8t.vf
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmr8r.tfm
+<<<<<<< HEAD
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmro8t.tfm
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/vf/public/bera/fvmro8t.vf
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/tfm/public/bera/fvmro8r.tfm
@@ -458,6 +459,26 @@ INPUT ./figs/pc_erosion.png
 INPUT ./figs/pc_erosion.png
 INPUT ./figs/pc_erosion.png
 INPUT ./figs/pc_erosion.png
+=======
+INPUT ./chapters/sections/hand_eye_calibration.inc.tex
+INPUT ./chapters/sections/hand_eye_calibration.inc.tex
+INPUT chapters/sections/hand_eye_calibration.inc.tex
+INPUT ./chapters/chapter_results.inc.tex
+OUTPUT chapters/chapter_results.inc.aux
+INPUT ./chapters/chapter_results.inc.tex
+INPUT ./chapters/chapter_results.inc.tex
+INPUT ./chapters/chapter_results.inc.tex
+INPUT chapters/chapter_results.inc.tex
+INPUT ./chapters/chapter_conclusions.inc.tex
+OUTPUT chapters/chapter_conclusions.inc.aux
+INPUT ./chapters/chapter_conclusions.inc.tex
+INPUT ./chapters/chapter_conclusions.inc.tex
+INPUT ./chapters/chapter_conclusions.inc.tex
+INPUT chapters/chapter_conclusions.inc.tex
+INPUT ./thesis.bbl
+INPUT ./thesis.bbl
+INPUT thesis.bbl
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 INPUT thesis.aux
 INPUT ./chapters/chapter_acronyms.inc.aux
 INPUT ./chapters/chapter_acronyms.inc.aux
@@ -474,9 +495,20 @@ INPUT chapters/chapter_tools.inc.aux
 INPUT ./chapters/chapter_implementation.inc.aux
 INPUT ./chapters/chapter_implementation.inc.aux
 INPUT chapters/chapter_implementation.inc.aux
+<<<<<<< HEAD
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmro8a.pfb
+=======
+INPUT ./chapters/chapter_results.inc.aux
+INPUT ./chapters/chapter_results.inc.aux
+INPUT chapters/chapter_results.inc.aux
+INPUT ./chapters/chapter_conclusions.inc.aux
+INPUT ./chapters/chapter_conclusions.inc.aux
+INPUT chapters/chapter_conclusions.inc.aux
+INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb
+INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb
@@ -489,3 +521,7 @@ INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb
 INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb
+<<<<<<< HEAD
+=======
+INPUT /opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy8.pfb
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03

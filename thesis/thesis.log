@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  11 JUL 2024 17:50
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Homebrew) (preloaded format=pdflatex 2024.3.20)  11 JUL 2024 13:21
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -682,6 +686,7 @@ LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 (Font)              scaled to size 8.09995pt on input line 131.
 LaTeX Font Info:    Font shape `T1/fvm/b/n' will be
 (Font)              scaled to size 8.09995pt on input line 132.
+<<<<<<< HEAD
 
 
 LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 157.
@@ -693,6 +698,9 @@ LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 163
 LaTeX Warning: Citation `example-citation' on page 6 undefined on input line 164.
 
 [6{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
+=======
+ [6{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 Overfull \hbox (4.20929pt too wide) in paragraph at lines 180--182
 \T1/lmr/m/n/10.95 Acronyms are very pop-u-lar in sci-en-tific and tech-ni-cal doc-u-ments. We use the \T1/fvm/m/n/10.95 acronym
  []
@@ -752,8 +760,15 @@ Package pdftex.def Info: figs/SW-struct.png  used on input line 17.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13]
+<<<<<<< HEAD
 
 LaTeX Warning: Citation `ultralytics_yolo_2023' on page 14 undefined on input line 28.
+=======
+LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
+(Font)              scaled to size 8.99994pt on input line 33.
+ [14 <./figs/SW-struct.png>]) (./chapters/sections/hand_eye_calibration.inc.tex [15] [16])) [17]
+\openout2 = `chapters/chapter_results.inc.aux'.
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 
 LaTeX Font Info:    Font shape `T1/fvm/m/n' will be
 (Font)              scaled to size 8.99994pt on input line 33.
@@ -796,6 +811,7 @@ Package pdftex.def Info: figs/pc_erosion.png  used on input line 108.
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
+<<<<<<< HEAD
 
 
 LaTeX Warning: There were undefined references.
@@ -819,4 +835,22 @@ PDF statistics:
  128 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  80 words of extra memory for PDF output out of 10000 (max. 10000000)
+=======
+ ) 
+Here is how much of TeX's memory you used:
+ 12648 strings out of 474116
+ 223976 string characters out of 5733619
+ 1977187 words of memory out of 5000000
+ 34605 multiletter control sequences out of 15000+600000
+ 671031 words of font info for 127 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 87i,10n,93p,579b,1418s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmb8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/bera/fvmr8a.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr12.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr17.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr6.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr8.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmr9.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmri10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmro10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></opt/homebrew/Cellar/texlive/20240312/share/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
+Output written on thesis.pdf (37 pages, 673239 bytes).
+PDF statistics:
+ 222 PDF objects out of 1000 (max. 8388607)
+ 146 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 55 words of extra memory for PDF output out of 10000 (max. 10000000)
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
 

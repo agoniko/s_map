@@ -49,6 +49,7 @@ From the result, we extract segmentation masks, track IDs, prediction confidence
     \item \textbf{Prediction Confidence Scores}: These are the confidence scores of the model for each detected object, and they have shape \( n_{\text{pred}} \).
 \end{enumerate}
 From this step we do not consider 2D bounding boxes as 3D bounding boxes will be computed by from the objects point clouds.
+<<<<<<< HEAD
 
 \subsubsection[Detection Message]{Detection Message}
 In order to publish the detection results to the ROS network, a custom message is defined.
@@ -113,3 +114,7 @@ For this reason we apply a morphological operation called erosion to the segment
 \end{table}
 
 \end{document}
+=======
+\subsection[Mask Erosion]{Mask Erosion}
+Since depth acquired from this particular camera tends to ...
+>>>>>>> cec88a7498d01c8161e2bd2d222022f28b949c03
