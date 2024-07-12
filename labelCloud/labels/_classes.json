@@ -59,6 +59,11 @@
             "name": "scissors",
             "id": 12,
             "color": "#7d00cc"
+        },
+        {
+            "name": "mug",
+            "id": 13,
+            "color": "#2700ff"
         }
     ],
     "default": 1,

@@ -2,9 +2,17 @@
     <arg name="rviz"       default="true" />
     <arg name="rtabmap_viz" default="false" />
     <arg name="world_frame" default="mir/odom" />
+    <arg name="raw_depth" default="/realsense/aligned_depth_to_color/image_raw"/>
+    <arg name="clean_depth" default="/realsense/aligned_depth_to_color/image_clean"/>
+
     <rosparam>
         use_sim_time: false
     </rosparam>
+
+    <node pkg="s_map" type="depth_clip.py" name="depth_clip"  output="screen">
+        <param name="raw_depth_topic" value="$(arg raw_depth)"/>
+        <param name="cleaned_depth_topic" value="$(arg clean_depth)"/>
+    </node>
 
     <node pkg="s_map" type="accumulate_laser.py" name="laser_rtabmap_save"  output="screen">
         <param name="world_frame" value="$(arg world_frame)"/>
@@ -21,12 +29,13 @@
         <arg name="rgbd" type="bool" value="true" />
         <arg name="odom_topic" value="/odom"/>
         <arg name="map_frame" value="$(arg world_frame)" />
+        <arg name="depth_topic" value="$(arg clean_depth)"/>
     </include>
 
     <node pkg="s_map" type="detection.py" name="s_map_detection"  output="screen">
         <param name="camera_name" value="front"/>
         <param name="rgb_topic" value="realsense/rgb/image_raw"/>
-        <param name="depth_topic" value="realsense/aligned_depth_to_color/image_raw"/>
+        <param name="depth_topic" value="$(arg clean_depth)"/>
         <param name="camera_info_topic" value="realsense/rgb/camera_info"/>
     </node>
 

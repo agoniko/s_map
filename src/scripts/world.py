@@ -11,9 +11,11 @@ import copy
 import threading
 from s_map.msg import Object, ObjectList
 from compas.geometry import oriented_bounding_box_numpy
+import traceback
 
 
-TIME_TO_BE_CONFIRMED = 1.0
+
+MIN_DETECTION_FOR_CONFIRMATION = 10
 EXPIRY_TIME_MOVING_OBJECTS = 0.0
 STD_THR = 0.6
 VOXEL_SIZE = 0.03
@@ -69,9 +71,9 @@ class Obj:
             raise ValueError("Points should be a 2D array with shape (N, 3)")
 
         # If points are too much, randomly sample n points
-        if len(points) > 3000:
-            idx = np.random.choice(len(points), 3000, replace=False)
-            points = points[idx]
+        #if len(points) > 3000:
+        #    idx = np.random.choice(len(points), 3000, replace=False)
+        #    points = points[idx]
 
         try:
             self.pcd.point.positions = o3d.core.Tensor(
@@ -90,7 +92,9 @@ class Obj:
 
         r = self.pcd.cpu().to_legacy().get_rotation_matrix_from_xyz((0, 0, 0))
         self.quaternions = np.array([R.from_matrix(r).as_quat()])
-        self.compute()
+        self.bbox = self.pcd.get_oriented_bounding_box().get_box_points().cpu().numpy()
+        self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+        #self.compute()
 
     def to_msg(self):
         """Returns the object in the format of the Object message."""
@@ -119,7 +123,7 @@ class Obj:
         self.is_confirmed = self.is_confirmed or other.is_confirmed
         # Euristics: an object is confirmed if it has been seen multiple times
         if not self.is_confirmed:
-            self.is_confirmed = self.centroids.shape[0] > 10
+            self.is_confirmed = self.centroids.shape[0] > MIN_DETECTION_FOR_CONFIRMATION
 
         # Use more sophisticated logic for updating point cloud data
         if self.label == other.label and self.label in MOVING_CLASSES:
@@ -141,13 +145,13 @@ class Obj:
         self.label = self.label if self.score > other.score else other.label
         self.score = max(self.score, other.score)
 
-        indices = np.where(self.centroids != np.zeros(3))[0]
-        weights = exponential_weights(len(indices), decay_rate=0.1)
-        centroid = np.average(self.centroids[indices], axis=0, weights=weights)
-        quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
-        rot_matrix = R.from_quat(quaternion).as_matrix()
-        self.pcd.rotate(rot_matrix, center=np.zeros(3))
-        self.pcd.translate(centroid, relative=False)
+        #indices = np.where(self.centroids != np.zeros(3))[0]
+        #weights = exponential_weights(len(indices), decay_rate=0.1)
+        #centroid = np.average(self.centroids[indices], axis=0, weights=weights)
+        #quaternion = weightedAverageQuaternions(self.quaternions[indices], weights)
+        #rot_matrix = R.from_quat(quaternion).as_matrix()
+        #self.pcd.rotate(rot_matrix, center=np.zeros(3))
+        #self.pcd.translate(centroid, relative=False)
         self.compute()
 
     def register_pointcloud(self, source, target: "Obj", min_size=100):
@@ -198,6 +202,7 @@ class Obj:
                 clean = self.pcd
 
             self.bbox = self.compute_minimum_oriented_box(clean)
+
             self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
             return
         else:
@@ -224,10 +229,14 @@ class Obj:
         return f"Obj(id={self.id}, label={self.label}, score={self.score}, centroid={self.centroid}, last_seen={self.last_seen})"
 
     def compute_minimum_oriented_box(self, pcd):
-        points = pcd.point.positions.cpu().numpy()
-        box = np.array(oriented_bounding_box_numpy(points))
-        obb = o3d.geometry.OrientedBoundingBox.create_from_points(o3d.utility.Vector3dVector(box))
-        return np.asarray(obb.get_box_points())
+        try:
+            points = pcd.point.positions.cpu().numpy()
+            box = np.array(oriented_bounding_box_numpy(points))
+            obb = o3d.geometry.OrientedBoundingBox.create_from_points(o3d.utility.Vector3dVector(box))
+            return np.asarray(obb.get_box_points())
+        except Exception as e:
+            rospy.logwarn(f"Error in computing minimum oriented box: {e}, using OBB instead")
+            return self.compute_oriented_bounding_box(pcd)
 
     def compute_z_oriented_bounding_box(self, pcd):
         temp = pcd.cpu().to_legacy()
@@ -259,7 +268,16 @@ class Obj:
         return np.asarray(aabb.get_box_points())
 
     def compute_oriented_bounding_box(self, pcd):
-        bbox = self.pcd.get_oriented_bounding_box()
+        try:
+            bbox = self.pcd.get_oriented_bounding_box()
+        except:
+            rospy.logwarn("Error in computing oriented bounding box, defaulting to axis aligned bounding box")
+            try:
+                bbox = self.pcd.get_axis_aligned_bounding_box()
+            except:
+                rospy.logwarn("Error in computing axis aligned bounding box, defaulting to zero box")
+                return np.zeros((8, 3))
+        
         return bbox.get_box_points().cpu().numpy()
 
     def dynamic_voxel_downsample(self, factor=0.15):
@@ -406,7 +424,6 @@ class World:
         """
         close_objects = self.query_by_distance(obj.centroid, distance_thr)
         for close_obj in close_objects:
-            # distance = np.median(obj.pcd.compute_point_cloud_distance(close_obj.pcd))
             if (
                 obj.id != close_obj.id
                 and obj.label == close_obj.label
@@ -421,7 +438,7 @@ class World:
                 and obj.label != close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() < 1.0
             ):
-                if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.8:
+                if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.3:
                     return close_obj.id
 
         return obj.id
@@ -450,6 +467,7 @@ class World:
 
         except Exception as e:
             rospy.logerr(f"Error in managing object: {e}")
+            rospy.logerr(traceback.format_exc())
             if obj.id in self.objects:
                 self.remove_objects([obj.id])
 
