@@ -6,7 +6,7 @@
     <arg name="clean_depth" default="/realsense/aligned_depth_to_color/image_clean"/>
 
     <rosparam>
-        use_sim_time: false
+        use_sim_time: true
     </rosparam>
 
     <node pkg="s_map" type="depth_clip.py" name="depth_clip"  output="screen">
