@@ -20,7 +20,7 @@ EXPIRY_TIME_MOVING_OBJECTS = 0.0
 STD_THR = 0.6
 VOXEL_SIZE = 0.03
 MOVING_CLASSES = []
-IOU_THR = 0.0
+IOU_THR = 0.000005
 
 
 def exponential_weights(length, decay_rate=0.1):
@@ -191,24 +191,35 @@ class Obj:
     def compute(self):
         """Computes bounding box and centroid for the point cloud."""
         self.downsample()
-        if len(self.pcd.point.positions) > 40:
+        try:         
+            if len(self.pcd.point.positions) < 10:
+                raise ValueError("Point cloud is too small")
 
             self.pcd.estimate_normals(max_nn=30, radius=0.1)
-            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
+            final_pcd = self.pcd
 
-            if len(self.pcd.point.positions) > 30:
-                clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
+            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
+            if len(self.pcd.point.positions) < 15:
+                self.pcd = final_pcd
             else:
-                clean = self.pcd
+                final_pcd = self.pcd
+
+            clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
+            if len(clean.point.positions) < 15:
+                clean = final_pcd
+            else:
+                final_pcd = clean
 
             self.bbox = self.compute_minimum_oriented_box(clean)
-
             self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
             return
-        else:
+        
+        except Exception as e:
+            rospy.logwarn(f"Error in computing bounding box: {e}")
             self.bbox = np.zeros((8, 3))
             self.centroid = np.zeros(3)
-        
+            return
+            
            
 
     def downsample(self):
@@ -424,12 +435,14 @@ class World:
         """
         close_objects = self.query_by_distance(obj.centroid, distance_thr)
         for close_obj in close_objects:
+            iou = compute_3d_iou(obj.bbox, close_obj.bbox)
             if (
                 obj.id != close_obj.id
                 and obj.label == close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() > 1.0
             ):
-                if compute_3d_iou(obj.bbox, close_obj.bbox) > iou_thr:
+                if iou > iou_thr:
+                    rospy.loginfo(f"ReID IoU: {iou} for {obj.label} and {close_obj.label}")
                     return close_obj.id
 
             # If the object was detected but misclassified
@@ -438,7 +451,8 @@ class World:
                 and obj.label != close_obj.label
                 and abs(obj.last_seen - close_obj.last_seen).to_sec() < 1.0
             ):
-                if compute_3d_iou(obj.bbox, close_obj.bbox) > 0.3:
+                if iou > 0.5:
+                    print(f"Misclassified IoU: {iou}, {obj.label} and {close_obj.label}")
                     return close_obj.id
 
         return obj.id

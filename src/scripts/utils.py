@@ -305,7 +305,6 @@ def compute_3d_iou(box1, box2):
         vol, IoU =  box3d_overlap(box1, box2)
     except:
         return 0.0
-    print(IoU.item())
     return IoU.item()
 
 
