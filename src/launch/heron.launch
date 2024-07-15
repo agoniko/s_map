@@ -1,10 +1,9 @@
 <launch>
     <arg name="rviz"       default="true" />
     <arg name="rtabmap_viz" default="false" />
-    <arg name="world_frame" default="map_new" />
+    <arg name="world_frame" default="mir/odom" />
     <arg name="raw_depth" default="/realsense/aligned_depth_to_color/image_raw"/>
     <arg name="clean_depth" default="/realsense/aligned_depth_to_color/image_clean"/>
-
     <rosparam>
         use_sim_time: true
     </rosparam>
