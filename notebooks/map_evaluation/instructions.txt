@@ -1,8 +1,8 @@
 After running rtabmap with ROS the db is saved. 
 Running the evaluate_ate and evaluate_rpe scripts with the following args:
 
-python evaluate_ate.py reports/rtabmap_slam.txt reports/rtabmap_odom.txt --plot ate.pdf --verbose
-python evaluate_rpe.py reports/rtabmap_odom.txt reports/rtabmap_odom.txt --plot rpe.pdf --fixed_delta --verbose
+python3 evaluate_rpe.py reports/rtabmap_slam_scene3.txt reports/rtabmap_odom_scene3.txt --plot rpe_scene3.pdf --verbose --fixed_delta
+python3 evaluate_ate.py reports/rtabmap_slam_scene3.txt reports/rtabmap_odom_scene3.txt --plot ate_scene3.pdf --verbose
 
 will generate pdfs.
 The error is this low because we provide odometry to the rtabmap algorithm. 
