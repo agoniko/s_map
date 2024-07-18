@@ -28,3 +28,5 @@ settings.json
 notebooks/rgb.txt
 notebooks/rgb.yaml
 notebooks/depth.txt
+notebooks/box_estimation/SUNRGBD
+notebooks/box_estimation/Pointnet_Pointnet2_pytorch
