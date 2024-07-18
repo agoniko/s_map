@@ -1,1 +1,331 @@
-{"folder": "pointclouds", "filename": "rtabmap_cloud.ply", "path": "pointclouds/rtabmap_cloud.ply", "objects": [{"name": "laptop", "centroid": {"x": -3.64792596, "y": -1.37497909, "z": 0.8711551}, "dimensions": {"length": 0.46472818, "width": 0.50338278, "height": 0.24739177}, "rotations": {"x": 0, "y": 0, "z": 87.0}}, {"name": "tv", "centroid": {"x": -4.46458547, "y": -3.98508907, "z": 1.64739556}, "dimensions": {"length": 1.14870303, "width": 0.19339695, "height": 0.65285877}, "rotations": {"x": 0, "y": 0, "z": 293.4037354}}, {"name": "chair", "centroid": {"x": -7.11770716, "y": -2.05770639, "z": 0.7681999}, "dimensions": {"length": 0.6257658, "width": 0.46647788, "height": 0.90042451}, "rotations": {"x": 0, "y": 0, "z": 72.0704401}}, {"name": "chair", "centroid": {"x": -7.17852392, "y": -4.26766603, "z": 0.60655703}, "dimensions": {"length": 0.9, "width": 0.55, "height": 0.33}, "rotations": {"x": 0, "y": 0, "z": 0}}, {"name": "tv", "centroid": {"x": -1.5999819, "y": -3.72682853, "z": 1.64204064}, "dimensions": {"length": 1.23930945, "width": 0.16391503, "height": 0.75055343}, "rotations": {"x": 0, "y": 0, "z": 325.69271926}}, {"name": "chair", "centroid": {"x": -1.35201248, "y": -3.40677153, "z": 0.77505583}, "dimensions": {"length": 0.50512372, "width": 0.36762329, "height": 0.83576117}, "rotations": {"x": 0, "y": 0, "z": 336.76261751}}, {"name": "chair", "centroid": {"x": -0.47973042, "y": -2.47724109, "z": 0.64057833}, "dimensions": {"length": 0.50648238, "width": 0.42906567, "height": 0.80107468}, "rotations": {"x": 0, "y": 0, "z": 32.05999089}}, {"name": "chair", "centroid": {"x": -2.75474074, "y": -3.35933007, "z": 0.65127823}, "dimensions": {"length": 0.62351132, "width": 0.53954932, "height": 0.46792932}, "rotations": {"x": 0, "y": 0, "z": 337.28491019}}, {"name": "tv", "centroid": {"x": -7.80132797, "y": -6.77750499, "z": 1.1122594}, "dimensions": {"length": 0.68461892, "width": 0.1798185, "height": 0.3460136}, "rotations": {"x": 0, "y": 0, "z": 285.78071491}}, {"name": "dining table", "centroid": {"x": -3.60074848, "y": -1.31185776, "z": 0.72321196}, "dimensions": {"length": 0.74833109, "width": 0.6788767, "height": 0.1699626}, "rotations": {"x": 0, "y": 0, "z": 80.33844497}}, {"name": "tv", "centroid": {"x": -4.89916331, "y": -5.20610324, "z": 1.07674713}, "dimensions": {"length": 0.61765845, "width": 0.12604591, "height": 0.35113351}, "rotations": {"x": 0, "y": 0, "z": 350.56349474}}, {"name": "mouse", "centroid": {"x": -4.92878404, "y": -5.66727689, "z": 0.73482616}, "dimensions": {"length": 0.07575037, "width": 0.19368252, "height": 0.08678088}, "rotations": {"x": 0, "y": 0, "z": 97.91015577}}, {"name": "keyboard", "centroid": {"x": -4.91875603, "y": -5.47658726, "z": 0.70664773}, "dimensions": {"length": 0.1701223, "width": 0.43964328, "height": 0.0527234}, "rotations": {"x": 0, "y": 0, "z": 81.2347419}}, {"name": "chair", "centroid": {"x": -5.0283372, "y": -6.16295494, "z": 0.66103168}, "dimensions": {"length": 0.52400902, "width": 0.39124629, "height": 0.8005702}, "rotations": {"x": 0, "y": 0, "z": 80.19569562}}, {"name": "chair", "centroid": {"x": -5.21561704, "y": -6.76895974, "z": 0.44260629}, "dimensions": {"length": 0.51063277, "width": 0.59538884, "height": 0.82750974}, "rotations": {"x": 0, "y": 0, "z": 355.0850182}}, {"name": "couch", "centroid": {"x": -7.48017903, "y": 3.45777271, "z": 0.46339809}, "dimensions": {"length": 0.94207921, "width": 0.99036001, "height": 0.66118655}, "rotations": {"x": 0, "y": 0, "z": 359.34696686}}, {"name": "bottle", "centroid": {"x": -7.02946794, "y": -3.57771165, "z": 0.85314836}, "dimensions": {"length": 0.07861801, "width": 0.15230177, "height": 0.22900914}, "rotations": {"x": 0, "y": 0, "z": 292.12739207}}, {"name": "dining table", "centroid": {"x": -6.85432631, "y": -3.26955926, "z": 0.74421884}, "dimensions": {"length": 0.76092618, "width": 0.52024016, "height": 0.06208195}, "rotations": {"x": 0, "y": 0, "z": 87.28366931}}]}
+{
+	"folder": "pointclouds",
+	"filename": "rtabmap_cloud.ply",
+	"path": "pointclouds/rtabmap_cloud.ply",
+	"objects": [
+		{
+			"name": "laptop",
+			"centroid": {
+				"x": -3.64792596,
+				"y": -1.40497909,
+				"z": 0.9311551
+			},
+			"dimensions": {
+				"length": 0.46472818,
+				"width": 0.50338278,
+				"height": 0.24739177
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 78.5
+			}
+		},
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -4.49211733,
+				"y": -3.9970053,
+				"z": 1.64739556
+			},
+			"dimensions": {
+				"length": 1.14870303,
+				"width": 0.25339695,
+				"height": 0.65285877
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 293.4037354
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -7.0942002,
+				"y": -2.03378103,
+				"z": 0.7531999
+			},
+			"dimensions": {
+				"length": 0.5657658,
+				"width": 0.55647788,
+				"height": 0.75042451
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 72.0704401
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -7.08852392,
+				"y": -4.31266603,
+				"z": 0.72655703
+			},
+			"dimensions": {
+				"length": 0.72,
+				"width": 0.52,
+				"height": 0.57
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			}
+		},
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -1.58097752,
+				"y": -3.70361574,
+				"z": 1.64204064
+			},
+			"dimensions": {
+				"length": 1.23930945,
+				"width": 0.22391503,
+				"height": 0.75055343
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 320.69271926
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -1.36480651,
+				"y": -3.43619853,
+				"z": 0.83505583
+			},
+			"dimensions": {
+				"length": 0.50512372,
+				"width": 0.66762329,
+				"height": 0.59576117
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 328.76261751
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -0.50361673,
+				"y": -2.43910392,
+				"z": 0.74557833
+			},
+			"dimensions": {
+				"length": 0.50648238,
+				"width": 0.51906567,
+				"height": 0.59107468
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 32.05999089
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -2.75474074,
+				"y": -3.35933007,
+				"z": 0.65127823
+			},
+			"dimensions": {
+				"length": 0.62351132,
+				"width": 0.53954932,
+				"height": 0.46792932
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 337.28491019
+			}
+		},
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -7.78908993,
+				"y": -6.82080892,
+				"z": 1.1122594
+			},
+			"dimensions": {
+				"length": 0.59461892,
+				"width": 0.1798185,
+				"height": 0.3460136
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 285.78071491
+			}
+		},
+		{
+			"name": "dining table",
+			"centroid": {
+				"x": -3.60074848,
+				"y": -1.31185776,
+				"z": 0.72321196
+			},
+			"dimensions": {
+				"length": 0.74833109,
+				"width": 0.6788767,
+				"height": 0.1699626
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 80.33844497
+			}
+		},
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -4.89916331,
+				"y": -5.20610324,
+				"z": 1.07674713
+			},
+			"dimensions": {
+				"length": 0.61765845,
+				"width": 0.12604591,
+				"height": 0.35113351
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 350.56349474
+			}
+		},
+		{
+			"name": "mouse",
+			"centroid": {
+				"x": -4.92878404,
+				"y": -5.66727689,
+				"z": 0.73482616
+			},
+			"dimensions": {
+				"length": 0.07575037,
+				"width": 0.19368252,
+				"height": 0.08678088
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 97.91015577
+			}
+		},
+		{
+			"name": "keyboard",
+			"centroid": {
+				"x": -4.91875603,
+				"y": -5.47658726,
+				"z": 0.70664773
+			},
+			"dimensions": {
+				"length": 0.1701223,
+				"width": 0.43964328,
+				"height": 0.0527234
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 81.2347419
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -5.0466508,
+				"y": -6.14348005,
+				"z": 0.69103168
+			},
+			"dimensions": {
+				"length": 0.52400902,
+				"width": 0.57124629,
+				"height": 0.6205702
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 74.19569562
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -5.21561704,
+				"y": -6.76895974,
+				"z": 0.44260629
+			},
+			"dimensions": {
+				"length": 0.51063277,
+				"width": 0.59538884,
+				"height": 0.82750974
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 355.0850182
+			}
+		},
+		{
+			"name": "couch",
+			"centroid": {
+				"x": -7.48017903,
+				"y": 3.45777271,
+				"z": 0.46339809
+			},
+			"dimensions": {
+				"length": 0.94207921,
+				"width": 0.99036001,
+				"height": 0.66118655
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 359.34696686
+			}
+		},
+		{
+			"name": "bottle",
+			"centroid": {
+				"x": -7.02946794,
+				"y": -3.57771165,
+				"z": 0.85314836
+			},
+			"dimensions": {
+				"length": 0.07861801,
+				"width": 0.15230177,
+				"height": 0.22900914
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 292.12739207
+			}
+		},
+		{
+			"name": "dining table",
+			"centroid": {
+				"x": -6.85432631,
+				"y": -3.26955926,
+				"z": 0.74421884
+			},
+			"dimensions": {
+				"length": 0.76092618,
+				"width": 0.52024016,
+				"height": 0.06208195
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 87.28366931
+			}
+		}
+	]
+}
