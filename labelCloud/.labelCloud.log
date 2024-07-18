@@ -1,264 +1,1013 @@
-2024-07-15 17:26:19,696 - WARNING : Unknown export strategy 'binary'. Proceeding with default (centroid_abs)!
-2024-07-15 17:26:19,697 - INFO    : Set export strategy to CentroidFormat.
-2024-07-15 17:26:19,697 - INFO    : Saving rotations absolutely to positve x-axis in degrees (0..360°).
-2024-07-15 17:26:21,660 - INFO    : Loading next point cloud...
-2024-07-15 17:26:21,660 - INFO    : Loading point cloud from pointclouds/cloud_couch.ply using Open3DHandler.
-2024-07-15 17:26:21,745 - INFO    : Loading segmentation labels from labels/segmentation/cloud_couch.bin.
-2024-07-15 17:26:21,746 - INFO    : ================================================================================================================================ Loading cloud_couch.ply =================================================================================================================================
-2024-07-15 17:26:21,765 - INFO    : Successfully loaded point cloud from pointclouds/cloud_couch.ply!
-2024-07-15 17:26:21,765 - INFO    : Number of Points:       582180         
-2024-07-15 17:26:21,765 - INFO    : Number of Colors:       582180         
-2024-07-15 17:26:21,765 - INFO    : Point Cloud Center:     [-5.78 -2.75  0.98]     
-2024-07-15 17:26:21,765 - INFO    : Point Cloud Minimums:   [-10.7   -8.96  -0.41]  
-2024-07-15 17:26:21,765 - INFO    : Point Cloud Maximums:   [0.94 1.93 2.8 ]        
-2024-07-15 17:26:21,765 - INFO    : Initial Translation:    [  5.78   2.75 -17.24]  
-2024-07-15 17:26:21,766 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:21,766 - INFO    : Imported 0 labels from labels/cloud_couch.json.
-2024-07-15 17:26:21,766 - INFO    : Loaded 0 bboxes!
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,766 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:21,840 - INFO    : Intialized widget.
-2024-07-15 17:26:21,923 - INFO    : Resized widget.
-2024-07-15 17:26:21,938 - INFO    : Showing GUI...
-2024-07-15 17:26:23,274 - INFO    : Resized widget.
-2024-07-15 17:26:24,723 - INFO    : File labels/cloud_couch.json already exists, replacing file ...
-2024-07-15 17:26:24,724 - INFO    : Exported 0 labels to labels/cloud_couch.json in CentroidFormat formatting!
-2024-07-15 17:26:24,731 - INFO    : Writing segmentation labels to labels/segmentation/cloud_couch.bin
-2024-07-15 17:26:24,731 - INFO    : Loading next point cloud...
-2024-07-15 17:26:24,731 - INFO    : Loading point cloud from pointclouds/cloud_scene1.ply using Open3DHandler.
-2024-07-15 17:26:24,813 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene1.bin.
-2024-07-15 17:26:24,813 - INFO    : ================================================================================================================================ Loading cloud_scene1.ply ================================================================================================================================
-2024-07-15 17:26:24,850 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene1.ply!
-2024-07-15 17:26:24,851 - INFO    : Number of Points:       668355         
-2024-07-15 17:26:24,851 - INFO    : Number of Colors:       668355         
-2024-07-15 17:26:24,851 - INFO    : Point Cloud Center:     [-5.79 -3.21  1.03]     
-2024-07-15 17:26:24,851 - INFO    : Point Cloud Minimums:   [-10.55  -8.15  -0.42]  
-2024-07-15 17:26:24,851 - INFO    : Point Cloud Maximums:   [-0.93  1.71  2.8 ]     
-2024-07-15 17:26:24,851 - INFO    : Initial Translation:    [  5.79   3.21 -15.18]  
-2024-07-15 17:26:24,851 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:24,852 - INFO    : Imported 0 labels from labels/cloud_scene1.json.
-2024-07-15 17:26:24,852 - INFO    : Loaded 0 bboxes!
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:24,852 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,076 - INFO    : File labels/cloud_scene1.json already exists, replacing file ...
-2024-07-15 17:26:25,076 - INFO    : Exported 0 labels to labels/cloud_scene1.json in CentroidFormat formatting!
-2024-07-15 17:26:25,090 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene1.bin
-2024-07-15 17:26:25,091 - INFO    : Loading next point cloud...
-2024-07-15 17:26:25,091 - INFO    : Loading point cloud from pointclouds/cloud_scene2.ply using Open3DHandler.
-2024-07-15 17:26:25,174 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene2.bin.
-2024-07-15 17:26:25,174 - INFO    : ================================================================================================================================ Loading cloud_scene2.ply ================================================================================================================================
-2024-07-15 17:26:25,209 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene2.ply!
-2024-07-15 17:26:25,210 - INFO    : Number of Points:       659121         
-2024-07-15 17:26:25,210 - INFO    : Number of Colors:       659121         
-2024-07-15 17:26:25,210 - INFO    : Point Cloud Center:     [-6.48 -3.94  1.04]     
-2024-07-15 17:26:25,210 - INFO    : Point Cloud Minimums:   [-11.12  -9.01  -0.37]  
-2024-07-15 17:26:25,210 - INFO    : Point Cloud Maximums:   [-1.73  1.51  2.8 ]     
-2024-07-15 17:26:25,210 - INFO    : Initial Translation:    [  6.48   3.94 -15.49]  
-2024-07-15 17:26:25,210 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:25,210 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,210 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,210 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,210 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,210 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:25,211 - INFO    : Imported 0 labels from labels/cloud_scene2.json.
-2024-07-15 17:26:25,211 - INFO    : Loaded 0 bboxes!
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,211 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,436 - INFO    : File labels/cloud_scene2.json already exists, replacing file ...
-2024-07-15 17:26:25,436 - INFO    : Exported 0 labels to labels/cloud_scene2.json in CentroidFormat formatting!
-2024-07-15 17:26:25,450 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene2.bin
-2024-07-15 17:26:25,451 - INFO    : Loading next point cloud...
-2024-07-15 17:26:25,451 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
-2024-07-15 17:26:25,605 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
-2024-07-15 17:26:25,606 - INFO    : ================================================================================================================================ Loading cloud_scene3.ply ================================================================================================================================
-2024-07-15 17:26:25,666 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
-2024-07-15 17:26:25,667 - INFO    : Number of Points:       1137835        
-2024-07-15 17:26:25,667 - INFO    : Number of Colors:       1137835        
-2024-07-15 17:26:25,667 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
-2024-07-15 17:26:25,667 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
-2024-07-15 17:26:25,667 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
-2024-07-15 17:26:25,667 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
-2024-07-15 17:26:25,667 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,667 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,668 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:25,668 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
-2024-07-15 17:26:25,668 - INFO    : Loaded 13 bboxes!
-2024-07-15 17:26:25,668 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,668 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:25,668 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,062 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
-2024-07-15 17:26:26,063 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
-2024-07-15 17:26:26,069 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
-2024-07-15 17:26:26,069 - INFO    : Loading next point cloud...
-2024-07-15 17:26:26,070 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
-2024-07-15 17:26:26,152 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
-2024-07-15 17:26:26,152 - INFO    : ================================================================================================================================ Loading cloud_scene5.ply ================================================================================================================================
-2024-07-15 17:26:26,190 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
-2024-07-15 17:26:26,191 - INFO    : Number of Points:       723273         
-2024-07-15 17:26:26,191 - INFO    : Number of Colors:       723273         
-2024-07-15 17:26:26,191 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
-2024-07-15 17:26:26,191 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
-2024-07-15 17:26:26,191 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
-2024-07-15 17:26:26,191 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
-2024-07-15 17:26:26,191 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:26,191 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,191 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,191 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:26,192 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
-2024-07-15 17:26:26,192 - INFO    : Loaded 13 bboxes!
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,192 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,211 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
-2024-07-15 17:26:26,214 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
-2024-07-15 17:26:26,219 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
-2024-07-15 17:26:26,219 - INFO    : Loading next point cloud...
-2024-07-15 17:26:26,219 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
-2024-07-15 17:26:26,416 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
-2024-07-15 17:26:26,417 - INFO    : ================================================================================================================================ Loading cloud_scene6.ply ================================================================================================================================
-2024-07-15 17:26:26,505 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
-2024-07-15 17:26:26,506 - INFO    : Number of Points:       1651144        
-2024-07-15 17:26:26,506 - INFO    : Number of Colors:       1651144        
-2024-07-15 17:26:26,506 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
-2024-07-15 17:26:26,506 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
-2024-07-15 17:26:26,506 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
-2024-07-15 17:26:26,506 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
-2024-07-15 17:26:26,506 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:26,506 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,506 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,506 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:26,507 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
-2024-07-15 17:26:26,507 - INFO    : Loaded 28 bboxes!
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,507 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,528 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
-2024-07-15 17:26:26,528 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
-2024-07-15 17:26:26,536 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
-2024-07-15 17:26:26,536 - INFO    : Loading next point cloud...
-2024-07-15 17:26:26,536 - INFO    : Loading point cloud from pointclouds/cloud_scene7.ply using Open3DHandler.
-2024-07-15 17:26:26,687 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene7.bin.
-2024-07-15 17:26:26,687 - INFO    : ================================================================================================================================ Loading cloud_scene7.ply ================================================================================================================================
-2024-07-15 17:26:26,758 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene7.ply!
-2024-07-15 17:26:26,758 - INFO    : Number of Points:       1332322        
-2024-07-15 17:26:26,758 - INFO    : Number of Colors:       1332322        
-2024-07-15 17:26:26,758 - INFO    : Point Cloud Center:     [-10.77  -4.44   1.26]  
-2024-07-15 17:26:26,758 - INFO    : Point Cloud Minimums:   [-16.8  -12.62  -0.4 ]  
-2024-07-15 17:26:26,758 - INFO    : Point Cloud Maximums:   [-4.1   3.3   2.77]     
-2024-07-15 17:26:26,758 - INFO    : Initial Translation:    [ 10.77   4.44 -21.88]  
-2024-07-15 17:26:26,758 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:26,759 - INFO    : Imported 23 labels from labels/cloud_scene7.json.
-2024-07-15 17:26:26,759 - INFO    : Loaded 23 bboxes!
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:26,759 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,413 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
-2024-07-15 17:26:27,413 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
-2024-07-15 17:26:27,419 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
-2024-07-15 17:26:27,419 - INFO    : Loading next point cloud...
-2024-07-15 17:26:27,419 - INFO    : Loading point cloud from pointclouds/cropped_scene1.ply using Open3DHandler.
-2024-07-15 17:26:27,447 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene1.bin.
-2024-07-15 17:26:27,448 - INFO    : =============================================================================================================================== Loading cropped_scene1.ply ===============================================================================================================================
-2024-07-15 17:26:27,464 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene1.ply!
-2024-07-15 17:26:27,465 - INFO    : Number of Points:      304639        
-2024-07-15 17:26:27,465 - INFO    : Number of Colors:      304639        
-2024-07-15 17:26:27,465 - INFO    : Point Cloud Center:    [-6.09 -4.12  1.  ]    
-2024-07-15 17:26:27,465 - INFO    : Point Cloud Minimums:  [-8.   -7.8  -0.17]    
-2024-07-15 17:26:27,465 - INFO    : Point Cloud Maximums:  [-4. -1.  2.]          
-2024-07-15 17:26:27,465 - INFO    : Initial Translation:   [ 6.09  4.12 -9.19]    
-2024-07-15 17:26:27,465 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:27,465 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,465 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,465 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:27,466 - INFO    : Imported 11 labels from labels/cropped_scene1.json.
-2024-07-15 17:26:27,466 - INFO    : Loaded 11 bboxes!
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:27,466 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,120 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
-2024-07-15 17:26:29,120 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
-2024-07-15 17:26:29,123 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
-2024-07-15 17:26:29,123 - INFO    : Loading next point cloud...
-2024-07-15 17:26:29,123 - INFO    : Loading point cloud from pointclouds/cropped_scene2.ply using Open3DHandler.
-2024-07-15 17:26:29,157 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene2.bin.
-2024-07-15 17:26:29,168 - INFO    : =============================================================================================================================== Loading cropped_scene2.ply ===============================================================================================================================
-2024-07-15 17:26:29,185 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene2.ply!
-2024-07-15 17:26:29,185 - INFO    : Number of Points:      375760        
-2024-07-15 17:26:29,186 - INFO    : Number of Colors:      375760        
-2024-07-15 17:26:29,186 - INFO    : Point Cloud Center:    [-6.57 -3.38  0.89]    
-2024-07-15 17:26:29,186 - INFO    : Point Cloud Minimums:  [-8.5  -6.   -0.37]    
-2024-07-15 17:26:29,186 - INFO    : Point Cloud Maximums:  [-3.5 -0.5  2. ]       
-2024-07-15 17:26:29,186 - INFO    : Initial Translation:   [ 6.57  3.38 -8.69]    
-2024-07-15 17:26:29,186 - INFO    : ==========================================================================================================================================================================================================================================================================================
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,186 - INFO    : Alignmode was changed to False!
-2024-07-15 17:26:29,187 - INFO    : Imported 11 labels from labels/cropped_scene2.json.
-2024-07-15 17:26:29,187 - INFO    : Loaded 11 bboxes!
-2024-07-15 17:26:29,187 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,187 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:29,187 - WARNING : There is currently no active bounding box to manipulate.
-2024-07-15 17:26:44,018 - INFO    : Enabled spanning mode.
-2024-07-15 17:27:30,980 - INFO    : Enabled spanning mode.
-2024-07-15 17:28:41,684 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
-2024-07-15 17:28:41,684 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
-2024-07-15 17:28:41,688 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
-2024-07-15 17:28:42,941 - INFO    : Closing window after saving ...
-2024-07-15 17:28:42,942 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
-2024-07-15 17:28:42,943 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
-2024-07-15 17:28:42,947 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-18 16:40:07,020 - WARNING : Unknown export strategy 'binary'. Proceeding with default (centroid_abs)!
+2024-07-18 16:40:07,021 - INFO    : Set export strategy to CentroidFormat.
+2024-07-18 16:40:07,021 - INFO    : Saving rotations absolutely to positve x-axis in degrees (0..360°).
+2024-07-18 16:40:08,785 - INFO    : Loading next point cloud...
+2024-07-18 16:40:08,785 - INFO    : Loading point cloud from pointclouds/cloud_couch.ply using Open3DHandler.
+2024-07-18 16:40:08,874 - INFO    : Loading segmentation labels from labels/segmentation/cloud_couch.bin.
+2024-07-18 16:40:08,874 - INFO    : ============================================================================================= Loading cloud_couch.ply =============================================================================================
+2024-07-18 16:40:08,890 - INFO    : Successfully loaded point cloud from pointclouds/cloud_couch.ply!
+2024-07-18 16:40:08,891 - INFO    : Number of Points:       582180         
+2024-07-18 16:40:08,891 - INFO    : Number of Colors:       582180         
+2024-07-18 16:40:08,891 - INFO    : Point Cloud Center:     [-5.78 -2.75  0.98]     
+2024-07-18 16:40:08,891 - INFO    : Point Cloud Minimums:   [-10.7   -8.96  -0.41]  
+2024-07-18 16:40:08,891 - INFO    : Point Cloud Maximums:   [0.94 1.93 2.8 ]        
+2024-07-18 16:40:08,891 - INFO    : Initial Translation:    [  5.78   2.75 -17.24]  
+2024-07-18 16:40:08,891 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - INFO    : Alignmode was changed to False!
+2024-07-18 16:40:08,891 - INFO    : Imported 0 labels from labels/cloud_couch.json.
+2024-07-18 16:40:08,891 - INFO    : Loaded 0 bboxes!
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,891 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,892 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:08,898 - INFO    : Intialized widget.
+2024-07-18 16:40:08,908 - INFO    : Resized widget.
+2024-07-18 16:40:08,937 - INFO    : Showing GUI...
+2024-07-18 16:40:10,275 - INFO    : Resized widget.
+2024-07-18 16:40:13,808 - INFO    : File labels/cloud_couch.json already exists, replacing file ...
+2024-07-18 16:40:13,808 - INFO    : Exported 0 labels to labels/cloud_couch.json in CentroidFormat formatting!
+2024-07-18 16:40:13,812 - INFO    : Writing segmentation labels to labels/segmentation/cloud_couch.bin
+2024-07-18 16:40:13,812 - INFO    : Loading next point cloud...
+2024-07-18 16:40:13,812 - INFO    : Loading point cloud from pointclouds/cloud_scene1.ply using Open3DHandler.
+2024-07-18 16:40:13,938 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene1.bin.
+2024-07-18 16:40:13,938 - INFO    : ============================================================================================ Loading cloud_scene1.ply =============================================================================================
+2024-07-18 16:40:13,966 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene1.ply!
+2024-07-18 16:40:13,967 - INFO    : Number of Points:       668355         
+2024-07-18 16:40:13,967 - INFO    : Number of Colors:       668355         
+2024-07-18 16:40:13,967 - INFO    : Point Cloud Center:     [-5.79 -3.21  1.03]     
+2024-07-18 16:40:13,967 - INFO    : Point Cloud Minimums:   [-10.55  -8.15  -0.42]  
+2024-07-18 16:40:13,967 - INFO    : Point Cloud Maximums:   [-0.93  1.71  2.8 ]     
+2024-07-18 16:40:13,967 - INFO    : Initial Translation:    [  5.79   3.21 -15.18]  
+2024-07-18 16:40:13,967 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:40:13,967 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - INFO    : Alignmode was changed to False!
+2024-07-18 16:40:13,968 - INFO    : Imported 0 labels from labels/cloud_scene1.json.
+2024-07-18 16:40:13,968 - INFO    : Loaded 0 bboxes!
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:13,968 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,053 - INFO    : File labels/cloud_scene1.json already exists, replacing file ...
+2024-07-18 16:40:14,053 - INFO    : Exported 0 labels to labels/cloud_scene1.json in CentroidFormat formatting!
+2024-07-18 16:40:14,058 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene1.bin
+2024-07-18 16:40:14,058 - INFO    : Loading next point cloud...
+2024-07-18 16:40:14,058 - INFO    : Loading point cloud from pointclouds/cloud_scene2.ply using Open3DHandler.
+2024-07-18 16:40:14,180 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene2.bin.
+2024-07-18 16:40:14,180 - INFO    : ============================================================================================ Loading cloud_scene2.ply =============================================================================================
+2024-07-18 16:40:14,207 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene2.ply!
+2024-07-18 16:40:14,207 - INFO    : Number of Points:       659121         
+2024-07-18 16:40:14,207 - INFO    : Number of Colors:       659121         
+2024-07-18 16:40:14,207 - INFO    : Point Cloud Center:     [-6.48 -3.94  1.04]     
+2024-07-18 16:40:14,207 - INFO    : Point Cloud Minimums:   [-11.12  -9.01  -0.37]  
+2024-07-18 16:40:14,207 - INFO    : Point Cloud Maximums:   [-1.73  1.51  2.8 ]     
+2024-07-18 16:40:14,207 - INFO    : Initial Translation:    [  6.48   3.94 -15.49]  
+2024-07-18 16:40:14,207 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,208 - INFO    : Alignmode was changed to False!
+2024-07-18 16:40:14,208 - INFO    : Imported 0 labels from labels/cloud_scene2.json.
+2024-07-18 16:40:14,208 - INFO    : Loaded 0 bboxes!
+2024-07-18 16:40:14,208 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,209 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,209 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,209 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,209 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,209 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,296 - INFO    : File labels/cloud_scene2.json already exists, replacing file ...
+2024-07-18 16:40:14,296 - INFO    : Exported 0 labels to labels/cloud_scene2.json in CentroidFormat formatting!
+2024-07-18 16:40:14,301 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene2.bin
+2024-07-18 16:40:14,301 - INFO    : Loading next point cloud...
+2024-07-18 16:40:14,301 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 16:40:14,532 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 16:40:14,532 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 16:40:14,582 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 16:40:14,583 - INFO    : Number of Points:       1137835        
+2024-07-18 16:40:14,583 - INFO    : Number of Colors:       1137835        
+2024-07-18 16:40:14,583 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 16:40:14,583 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 16:40:14,583 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 16:40:14,583 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 16:40:14,583 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:40:14,583 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,583 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,583 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - INFO    : Alignmode was changed to False!
+2024-07-18 16:40:14,584 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 16:40:14,584 - INFO    : Loaded 13 bboxes!
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,584 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,743 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 16:40:14,744 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 16:40:14,751 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 16:40:14,751 - INFO    : Loading next point cloud...
+2024-07-18 16:40:14,751 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 16:40:14,834 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 16:40:14,835 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 16:40:14,864 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 16:40:14,865 - INFO    : Number of Points:       723273         
+2024-07-18 16:40:14,865 - INFO    : Number of Colors:       723273         
+2024-07-18 16:40:14,865 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 16:40:14,865 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 16:40:14,865 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 16:40:14,865 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 16:40:14,865 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:40:14,865 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,865 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,865 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - INFO    : Alignmode was changed to False!
+2024-07-18 16:40:14,866 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 16:40:14,866 - INFO    : Loaded 13 bboxes!
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:40:14,866 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:29,047 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 16:43:29,047 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 16:43:29,052 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 16:43:30,207 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 16:43:30,208 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 16:43:30,213 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 16:43:30,213 - INFO    : Loading next point cloud...
+2024-07-18 16:43:30,214 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 16:43:30,603 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 16:43:30,606 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 16:43:30,684 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 16:43:30,684 - INFO    : Number of Points:       1651144        
+2024-07-18 16:43:30,684 - INFO    : Number of Colors:       1651144        
+2024-07-18 16:43:30,684 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 16:43:30,684 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 16:43:30,684 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 16:43:30,684 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 16:43:30,684 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,685 - INFO    : Alignmode was changed to False!
+2024-07-18 16:43:30,686 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 16:43:30,686 - INFO    : Loaded 28 bboxes!
+2024-07-18 16:43:30,686 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,686 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:43:30,686 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:44:09,779 - INFO    : Selected bounding box 3.
+2024-07-18 16:50:18,921 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 16:50:18,923 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 16:50:18,940 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 16:50:19,991 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 16:50:19,992 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 16:50:20,005 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 16:50:20,005 - INFO    : Loading next point cloud...
+2024-07-18 16:50:20,006 - INFO    : Loading point cloud from pointclouds/cloud_scene7.ply using Open3DHandler.
+2024-07-18 16:50:20,316 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene7.bin.
+2024-07-18 16:50:20,318 - INFO    : ============================================================================================ Loading cloud_scene7.ply =============================================================================================
+2024-07-18 16:50:20,373 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene7.ply!
+2024-07-18 16:50:20,374 - INFO    : Number of Points:       1332322        
+2024-07-18 16:50:20,374 - INFO    : Number of Colors:       1332322        
+2024-07-18 16:50:20,374 - INFO    : Point Cloud Center:     [-10.77  -4.44   1.26]  
+2024-07-18 16:50:20,374 - INFO    : Point Cloud Minimums:   [-16.8  -12.62  -0.4 ]  
+2024-07-18 16:50:20,374 - INFO    : Point Cloud Maximums:   [-4.1   3.3   2.77]     
+2024-07-18 16:50:20,374 - INFO    : Initial Translation:    [ 10.77   4.44 -21.88]  
+2024-07-18 16:50:20,374 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:50:20,375 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,375 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,375 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,376 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,376 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,376 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,376 - INFO    : Alignmode was changed to False!
+2024-07-18 16:50:20,376 - INFO    : Imported 23 labels from labels/cloud_scene7.json.
+2024-07-18 16:50:20,377 - INFO    : Loaded 23 bboxes!
+2024-07-18 16:50:20,377 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,377 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:20,377 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:29,546 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
+2024-07-18 16:50:29,547 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
+2024-07-18 16:50:29,556 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
+2024-07-18 16:50:29,556 - INFO    : Loading previous point cloud...
+2024-07-18 16:50:29,556 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 16:50:29,954 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 16:50:29,955 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 16:50:30,027 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 16:50:30,027 - INFO    : Number of Points:       1651144        
+2024-07-18 16:50:30,027 - INFO    : Number of Colors:       1651144        
+2024-07-18 16:50:30,027 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 16:50:30,027 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 16:50:30,027 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 16:50:30,027 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 16:50:30,028 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,028 - INFO    : Alignmode was changed to False!
+2024-07-18 16:50:30,029 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 16:50:30,029 - INFO    : Loaded 28 bboxes!
+2024-07-18 16:50:30,029 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,029 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:30,029 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,626 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 16:50:46,627 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 16:50:46,638 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 16:50:46,638 - INFO    : Loading next point cloud...
+2024-07-18 16:50:46,638 - INFO    : Loading point cloud from pointclouds/cloud_scene7.ply using Open3DHandler.
+2024-07-18 16:50:46,917 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene7.bin.
+2024-07-18 16:50:46,917 - INFO    : ============================================================================================ Loading cloud_scene7.ply =============================================================================================
+2024-07-18 16:50:46,971 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene7.ply!
+2024-07-18 16:50:46,972 - INFO    : Number of Points:       1332322        
+2024-07-18 16:50:46,972 - INFO    : Number of Colors:       1332322        
+2024-07-18 16:50:46,972 - INFO    : Point Cloud Center:     [-10.77  -4.44   1.26]  
+2024-07-18 16:50:46,972 - INFO    : Point Cloud Minimums:   [-16.8  -12.62  -0.4 ]  
+2024-07-18 16:50:46,972 - INFO    : Point Cloud Maximums:   [-4.1   3.3   2.77]     
+2024-07-18 16:50:46,972 - INFO    : Initial Translation:    [ 10.77   4.44 -21.88]  
+2024-07-18 16:50:46,972 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,973 - INFO    : Alignmode was changed to False!
+2024-07-18 16:50:46,973 - INFO    : Imported 23 labels from labels/cloud_scene7.json.
+2024-07-18 16:50:46,974 - INFO    : Loaded 23 bboxes!
+2024-07-18 16:50:46,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:50:46,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:22,415 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
+2024-07-18 16:58:22,416 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
+2024-07-18 16:58:22,425 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
+2024-07-18 16:58:23,681 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
+2024-07-18 16:58:23,682 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
+2024-07-18 16:58:23,691 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
+2024-07-18 16:58:23,691 - INFO    : Loading next point cloud...
+2024-07-18 16:58:23,691 - INFO    : Loading point cloud from pointclouds/cropped_scene1.ply using Open3DHandler.
+2024-07-18 16:58:23,734 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene1.bin.
+2024-07-18 16:58:23,735 - INFO    : =========================================================================================== Loading cropped_scene1.ply ============================================================================================
+2024-07-18 16:58:23,747 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene1.ply!
+2024-07-18 16:58:23,747 - INFO    : Number of Points:      304639        
+2024-07-18 16:58:23,747 - INFO    : Number of Colors:      304639        
+2024-07-18 16:58:23,747 - INFO    : Point Cloud Center:    [-6.09 -4.12  1.  ]    
+2024-07-18 16:58:23,747 - INFO    : Point Cloud Minimums:  [-8.   -7.8  -0.17]    
+2024-07-18 16:58:23,747 - INFO    : Point Cloud Maximums:  [-4. -1.  2.]          
+2024-07-18 16:58:23,747 - INFO    : Initial Translation:   [ 6.09  4.12 -9.19]    
+2024-07-18 16:58:23,747 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,748 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,749 - INFO    : Alignmode was changed to False!
+2024-07-18 16:58:23,749 - INFO    : Imported 11 labels from labels/cropped_scene1.json.
+2024-07-18 16:58:23,749 - INFO    : Loaded 11 bboxes!
+2024-07-18 16:58:23,749 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,749 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 16:58:23,749 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:32,240 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-18 17:00:32,241 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-18 17:00:32,243 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-18 17:00:33,654 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-18 17:00:33,655 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-18 17:00:33,657 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-18 17:00:33,657 - INFO    : Loading next point cloud...
+2024-07-18 17:00:33,657 - INFO    : Loading point cloud from pointclouds/cropped_scene2.ply using Open3DHandler.
+2024-07-18 17:00:33,701 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene2.bin.
+2024-07-18 17:00:33,702 - INFO    : =========================================================================================== Loading cropped_scene2.ply ============================================================================================
+2024-07-18 17:00:33,716 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene2.ply!
+2024-07-18 17:00:33,716 - INFO    : Number of Points:      375760        
+2024-07-18 17:00:33,716 - INFO    : Number of Colors:      375760        
+2024-07-18 17:00:33,716 - INFO    : Point Cloud Center:    [-6.57 -3.38  0.89]    
+2024-07-18 17:00:33,716 - INFO    : Point Cloud Minimums:  [-8.5  -6.   -0.37]    
+2024-07-18 17:00:33,716 - INFO    : Point Cloud Maximums:  [-3.5 -0.5  2. ]       
+2024-07-18 17:00:33,716 - INFO    : Initial Translation:   [ 6.57  3.38 -8.69]    
+2024-07-18 17:00:33,716 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - INFO    : Alignmode was changed to False!
+2024-07-18 17:00:33,717 - INFO    : Imported 13 labels from labels/cropped_scene2.json.
+2024-07-18 17:00:33,717 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:00:33,717 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:14,810 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-18 17:03:14,811 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-18 17:03:14,814 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-18 17:03:16,137 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-18 17:03:16,138 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-18 17:03:16,140 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-18 17:03:16,140 - INFO    : Loading next point cloud...
+2024-07-18 17:03:16,140 - INFO    : Loading point cloud from pointclouds/rtabmap_cloud.ply using Open3DHandler.
+2024-07-18 17:03:16,248 - INFO    : Loading segmentation labels from labels/segmentation/rtabmap_cloud.bin.
+2024-07-18 17:03:16,251 - INFO    : ============================================================================================ Loading rtabmap_cloud.ply ============================================================================================
+2024-07-18 17:03:16,286 - INFO    : Successfully loaded point cloud from pointclouds/rtabmap_cloud.ply!
+2024-07-18 17:03:16,286 - INFO    : Number of Points:       894473         
+2024-07-18 17:03:16,286 - INFO    : Number of Colors:       894473         
+2024-07-18 17:03:16,286 - INFO    : Point Cloud Center:     [-4.76 -3.09  1.23]     
+2024-07-18 17:03:16,286 - INFO    : Point Cloud Minimums:   [-11.11 -10.33  -0.27]  
+2024-07-18 17:03:16,286 - INFO    : Point Cloud Maximums:   [0.84 4.83 2.89]        
+2024-07-18 17:03:16,286 - INFO    : Initial Translation:    [  4.76   3.09 -20.79]  
+2024-07-18 17:03:16,286 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,287 - INFO    : Alignmode was changed to False!
+2024-07-18 17:03:16,288 - INFO    : Imported 18 labels from labels/rtabmap_cloud.json.
+2024-07-18 17:03:16,288 - INFO    : Loaded 18 bboxes!
+2024-07-18 17:03:16,288 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,288 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:03:16,288 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,847 - INFO    : File labels/rtabmap_cloud.json already exists, replacing file ...
+2024-07-18 17:07:22,848 - INFO    : Exported 18 labels to labels/rtabmap_cloud.json in CentroidFormat formatting!
+2024-07-18 17:07:22,854 - INFO    : Writing segmentation labels to labels/segmentation/rtabmap_cloud.bin
+2024-07-18 17:07:22,854 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:22,854 - INFO    : Loading point cloud from pointclouds/cropped_scene2.ply using Open3DHandler.
+2024-07-18 17:07:22,902 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene2.bin.
+2024-07-18 17:07:22,903 - INFO    : =========================================================================================== Loading cropped_scene2.ply ============================================================================================
+2024-07-18 17:07:22,937 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene2.ply!
+2024-07-18 17:07:22,937 - INFO    : Number of Points:      375760        
+2024-07-18 17:07:22,938 - INFO    : Number of Colors:      375760        
+2024-07-18 17:07:22,938 - INFO    : Point Cloud Center:    [-6.57 -3.38  0.89]    
+2024-07-18 17:07:22,938 - INFO    : Point Cloud Minimums:  [-8.5  -6.   -0.37]    
+2024-07-18 17:07:22,938 - INFO    : Point Cloud Maximums:  [-3.5 -0.5  2. ]       
+2024-07-18 17:07:22,938 - INFO    : Initial Translation:   [ 6.57  3.38 -8.69]    
+2024-07-18 17:07:22,938 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,939 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:22,940 - INFO    : Imported 13 labels from labels/cropped_scene2.json.
+2024-07-18 17:07:22,940 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:22,940 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,940 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:22,940 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,106 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-18 17:07:26,106 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-18 17:07:26,109 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-18 17:07:26,109 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:26,109 - INFO    : Loading point cloud from pointclouds/cropped_scene1.ply using Open3DHandler.
+2024-07-18 17:07:26,149 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene1.bin.
+2024-07-18 17:07:26,150 - INFO    : =========================================================================================== Loading cropped_scene1.ply ============================================================================================
+2024-07-18 17:07:26,162 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene1.ply!
+2024-07-18 17:07:26,162 - INFO    : Number of Points:      304639        
+2024-07-18 17:07:26,162 - INFO    : Number of Colors:      304639        
+2024-07-18 17:07:26,162 - INFO    : Point Cloud Center:    [-6.09 -4.12  1.  ]    
+2024-07-18 17:07:26,162 - INFO    : Point Cloud Minimums:  [-8.   -7.8  -0.17]    
+2024-07-18 17:07:26,162 - INFO    : Point Cloud Maximums:  [-4. -1.  2.]          
+2024-07-18 17:07:26,162 - INFO    : Initial Translation:   [ 6.09  4.12 -9.19]    
+2024-07-18 17:07:26,162 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:26,163 - INFO    : Imported 11 labels from labels/cropped_scene1.json.
+2024-07-18 17:07:26,163 - INFO    : Loaded 11 bboxes!
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:26,163 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,183 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-18 17:07:27,184 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-18 17:07:27,186 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-18 17:07:27,186 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:27,186 - INFO    : Loading point cloud from pointclouds/cloud_scene7.ply using Open3DHandler.
+2024-07-18 17:07:27,459 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene7.bin.
+2024-07-18 17:07:27,459 - INFO    : ============================================================================================ Loading cloud_scene7.ply =============================================================================================
+2024-07-18 17:07:27,517 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene7.ply!
+2024-07-18 17:07:27,518 - INFO    : Number of Points:       1332322        
+2024-07-18 17:07:27,518 - INFO    : Number of Colors:       1332322        
+2024-07-18 17:07:27,518 - INFO    : Point Cloud Center:     [-10.77  -4.44   1.26]  
+2024-07-18 17:07:27,518 - INFO    : Point Cloud Minimums:   [-16.8  -12.62  -0.4 ]  
+2024-07-18 17:07:27,518 - INFO    : Point Cloud Maximums:   [-4.1   3.3   2.77]     
+2024-07-18 17:07:27,518 - INFO    : Initial Translation:    [ 10.77   4.44 -21.88]  
+2024-07-18 17:07:27,518 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:27,518 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,518 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,518 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:27,519 - INFO    : Imported 23 labels from labels/cloud_scene7.json.
+2024-07-18 17:07:27,519 - INFO    : Loaded 23 bboxes!
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:27,519 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:28,732 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
+2024-07-18 17:07:28,735 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
+2024-07-18 17:07:28,743 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
+2024-07-18 17:07:28,744 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:28,744 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 17:07:29,112 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 17:07:29,113 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 17:07:29,183 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 17:07:29,184 - INFO    : Number of Points:       1651144        
+2024-07-18 17:07:29,184 - INFO    : Number of Colors:       1651144        
+2024-07-18 17:07:29,184 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 17:07:29,184 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 17:07:29,184 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 17:07:29,184 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 17:07:29,184 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:29,184 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,184 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,184 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:29,185 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 17:07:29,185 - INFO    : Loaded 28 bboxes!
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:29,185 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,800 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 17:07:34,801 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 17:07:34,812 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 17:07:34,812 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:34,812 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:07:34,956 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:07:34,956 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:07:34,983 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:07:34,984 - INFO    : Number of Points:       723273         
+2024-07-18 17:07:34,984 - INFO    : Number of Colors:       723273         
+2024-07-18 17:07:34,984 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:07:34,984 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:07:34,984 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:07:34,984 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:07:34,984 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:34,984 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:34,985 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:07:34,985 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:34,985 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:38,985 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:07:38,986 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:07:38,991 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:07:38,991 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:38,991 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 17:07:39,211 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 17:07:39,212 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 17:07:39,258 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 17:07:39,259 - INFO    : Number of Points:       1137835        
+2024-07-18 17:07:39,259 - INFO    : Number of Colors:       1137835        
+2024-07-18 17:07:39,259 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 17:07:39,259 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 17:07:39,259 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 17:07:39,259 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 17:07:39,259 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:39,259 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,259 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,259 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:39,260 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 17:07:39,260 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:39,260 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,175 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 17:07:56,175 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 17:07:56,183 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 17:07:56,183 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:56,183 - INFO    : Loading point cloud from pointclouds/cloud_scene2.ply using Open3DHandler.
+2024-07-18 17:07:56,315 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene2.bin.
+2024-07-18 17:07:56,316 - INFO    : ============================================================================================ Loading cloud_scene2.ply =============================================================================================
+2024-07-18 17:07:56,342 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene2.ply!
+2024-07-18 17:07:56,342 - INFO    : Number of Points:       659121         
+2024-07-18 17:07:56,342 - INFO    : Number of Colors:       659121         
+2024-07-18 17:07:56,342 - INFO    : Point Cloud Center:     [-6.48 -3.94  1.04]     
+2024-07-18 17:07:56,342 - INFO    : Point Cloud Minimums:   [-11.12  -9.01  -0.37]  
+2024-07-18 17:07:56,342 - INFO    : Point Cloud Maximums:   [-1.73  1.51  2.8 ]     
+2024-07-18 17:07:56,342 - INFO    : Initial Translation:    [  6.48   3.94 -15.49]  
+2024-07-18 17:07:56,342 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:56,343 - INFO    : Imported 0 labels from labels/cloud_scene2.json.
+2024-07-18 17:07:56,343 - INFO    : Loaded 0 bboxes!
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,343 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,344 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:56,344 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,454 - INFO    : File labels/cloud_scene2.json already exists, replacing file ...
+2024-07-18 17:07:57,454 - INFO    : Exported 0 labels to labels/cloud_scene2.json in CentroidFormat formatting!
+2024-07-18 17:07:57,458 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene2.bin
+2024-07-18 17:07:57,458 - INFO    : Loading next point cloud...
+2024-07-18 17:07:57,459 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 17:07:57,673 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 17:07:57,673 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 17:07:57,722 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 17:07:57,723 - INFO    : Number of Points:       1137835        
+2024-07-18 17:07:57,723 - INFO    : Number of Colors:       1137835        
+2024-07-18 17:07:57,723 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 17:07:57,723 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 17:07:57,723 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 17:07:57,723 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 17:07:57,723 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:57,724 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 17:07:57,724 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,724 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:57,882 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 17:07:57,882 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 17:07:57,890 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 17:07:57,890 - INFO    : Loading next point cloud...
+2024-07-18 17:07:57,890 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:07:57,975 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:07:57,976 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:07:58,006 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:07:58,006 - INFO    : Number of Points:       723273         
+2024-07-18 17:07:58,006 - INFO    : Number of Colors:       723273         
+2024-07-18 17:07:58,006 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:07:58,006 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:07:58,006 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:07:58,006 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:07:58,006 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,007 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:58,008 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:07:58,008 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:58,008 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,008 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,008 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,010 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:07:58,011 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:07:58,015 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:07:58,015 - INFO    : Loading next point cloud...
+2024-07-18 17:07:58,015 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 17:07:58,393 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 17:07:58,394 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 17:07:58,471 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 17:07:58,472 - INFO    : Number of Points:       1651144        
+2024-07-18 17:07:58,472 - INFO    : Number of Colors:       1651144        
+2024-07-18 17:07:58,472 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 17:07:58,472 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 17:07:58,472 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 17:07:58,472 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 17:07:58,472 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:58,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:58,473 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 17:07:58,473 - INFO    : Loaded 28 bboxes!
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:58,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,294 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 17:07:59,295 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 17:07:59,306 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 17:07:59,306 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:59,306 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:07:59,442 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:07:59,442 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:07:59,471 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:07:59,471 - INFO    : Number of Points:       723273         
+2024-07-18 17:07:59,471 - INFO    : Number of Colors:       723273         
+2024-07-18 17:07:59,471 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:07:59,471 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:07:59,471 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:07:59,471 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:07:59,471 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,472 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:59,473 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:07:59,473 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:59,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,473 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,594 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:07:59,594 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:07:59,599 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:07:59,599 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:59,599 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 17:07:59,812 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 17:07:59,812 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 17:07:59,859 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 17:07:59,859 - INFO    : Number of Points:       1137835        
+2024-07-18 17:07:59,859 - INFO    : Number of Colors:       1137835        
+2024-07-18 17:07:59,860 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 17:07:59,860 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 17:07:59,860 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 17:07:59,860 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 17:07:59,860 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:59,860 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,860 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,860 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:59,861 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 17:07:59,861 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,861 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,863 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 17:07:59,864 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 17:07:59,871 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 17:07:59,871 - INFO    : Loading previous point cloud...
+2024-07-18 17:07:59,871 - INFO    : Loading point cloud from pointclouds/cloud_scene2.ply using Open3DHandler.
+2024-07-18 17:07:59,947 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene2.bin.
+2024-07-18 17:07:59,948 - INFO    : ============================================================================================ Loading cloud_scene2.ply =============================================================================================
+2024-07-18 17:07:59,973 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene2.ply!
+2024-07-18 17:07:59,974 - INFO    : Number of Points:       659121         
+2024-07-18 17:07:59,974 - INFO    : Number of Colors:       659121         
+2024-07-18 17:07:59,974 - INFO    : Point Cloud Center:     [-6.48 -3.94  1.04]     
+2024-07-18 17:07:59,974 - INFO    : Point Cloud Minimums:   [-11.12  -9.01  -0.37]  
+2024-07-18 17:07:59,974 - INFO    : Point Cloud Maximums:   [-1.73  1.51  2.8 ]     
+2024-07-18 17:07:59,974 - INFO    : Initial Translation:    [  6.48   3.94 -15.49]  
+2024-07-18 17:07:59,974 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:07:59,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,974 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - INFO    : Alignmode was changed to False!
+2024-07-18 17:07:59,975 - INFO    : Imported 0 labels from labels/cloud_scene2.json.
+2024-07-18 17:07:59,975 - INFO    : Loaded 0 bboxes!
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:07:59,975 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,092 - INFO    : File labels/cloud_scene2.json already exists, replacing file ...
+2024-07-18 17:08:01,093 - INFO    : Exported 0 labels to labels/cloud_scene2.json in CentroidFormat formatting!
+2024-07-18 17:08:01,097 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene2.bin
+2024-07-18 17:08:01,097 - INFO    : Loading next point cloud...
+2024-07-18 17:08:01,097 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 17:08:01,252 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 17:08:01,253 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 17:08:01,312 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 17:08:01,312 - INFO    : Number of Points:       1137835        
+2024-07-18 17:08:01,312 - INFO    : Number of Colors:       1137835        
+2024-07-18 17:08:01,312 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 17:08:01,312 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 17:08:01,312 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 17:08:01,312 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 17:08:01,312 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:01,313 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 17:08:01,313 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:01,313 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,368 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 17:08:02,369 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 17:08:02,376 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 17:08:02,376 - INFO    : Loading next point cloud...
+2024-07-18 17:08:02,376 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:08:02,465 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:08:02,465 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:08:02,495 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:08:02,496 - INFO    : Number of Points:       723273         
+2024-07-18 17:08:02,496 - INFO    : Number of Colors:       723273         
+2024-07-18 17:08:02,496 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:08:02,496 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:08:02,496 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:08:02,496 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:08:02,496 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:02,497 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:08:02,497 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:02,497 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,299 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:08:03,300 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:08:03,304 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:08:03,304 - INFO    : Loading next point cloud...
+2024-07-18 17:08:03,305 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 17:08:03,677 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 17:08:03,678 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 17:08:03,754 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 17:08:03,754 - INFO    : Number of Points:       1651144        
+2024-07-18 17:08:03,754 - INFO    : Number of Colors:       1651144        
+2024-07-18 17:08:03,754 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 17:08:03,754 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 17:08:03,754 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 17:08:03,754 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 17:08:03,754 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,755 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:03,757 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 17:08:03,757 - INFO    : Loaded 28 bboxes!
+2024-07-18 17:08:03,757 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,757 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:03,757 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:04,978 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 17:08:04,978 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 17:08:04,990 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 17:08:04,990 - INFO    : Loading previous point cloud...
+2024-07-18 17:08:04,990 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:08:05,129 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:08:05,130 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:08:05,160 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:08:05,160 - INFO    : Number of Points:       723273         
+2024-07-18 17:08:05,160 - INFO    : Number of Colors:       723273         
+2024-07-18 17:08:05,160 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:08:05,160 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:08:05,160 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:08:05,160 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:08:05,160 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,161 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:05,162 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:08:05,162 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:05,162 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,162 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,162 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,284 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:08:05,285 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:08:05,290 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:08:05,290 - INFO    : Loading previous point cloud...
+2024-07-18 17:08:05,290 - INFO    : Loading point cloud from pointclouds/cloud_scene3.ply using Open3DHandler.
+2024-07-18 17:08:05,492 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene3.bin.
+2024-07-18 17:08:05,493 - INFO    : ============================================================================================ Loading cloud_scene3.ply =============================================================================================
+2024-07-18 17:08:05,539 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene3.ply!
+2024-07-18 17:08:05,539 - INFO    : Number of Points:       1137835        
+2024-07-18 17:08:05,539 - INFO    : Number of Colors:       1137835        
+2024-07-18 17:08:05,539 - INFO    : Point Cloud Center:     [-1.54 -1.17  1.11]     
+2024-07-18 17:08:05,539 - INFO    : Point Cloud Minimums:   [-9.8  -6.64 -0.54]     
+2024-07-18 17:08:05,539 - INFO    : Point Cloud Maximums:   [1.63 3.08 2.76]        
+2024-07-18 17:08:05,539 - INFO    : Initial Translation:    [  1.54   1.17 -16.48]  
+2024-07-18 17:08:05,539 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,540 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:05,541 - INFO    : Imported 13 labels from labels/cloud_scene3.json.
+2024-07-18 17:08:05,541 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:05,541 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,541 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:05,541 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,736 - INFO    : File labels/cloud_scene3.json already exists, replacing file ...
+2024-07-18 17:08:14,737 - INFO    : Exported 13 labels to labels/cloud_scene3.json in CentroidFormat formatting!
+2024-07-18 17:08:14,744 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene3.bin
+2024-07-18 17:08:14,744 - INFO    : Loading next point cloud...
+2024-07-18 17:08:14,744 - INFO    : Loading point cloud from pointclouds/cloud_scene5.ply using Open3DHandler.
+2024-07-18 17:08:14,878 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene5.bin.
+2024-07-18 17:08:14,879 - INFO    : ============================================================================================ Loading cloud_scene5.ply =============================================================================================
+2024-07-18 17:08:14,907 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene5.ply!
+2024-07-18 17:08:14,908 - INFO    : Number of Points:       723273         
+2024-07-18 17:08:14,908 - INFO    : Number of Colors:       723273         
+2024-07-18 17:08:14,908 - INFO    : Point Cloud Center:     [-8.27 -5.91  1.2 ]     
+2024-07-18 17:08:14,908 - INFO    : Point Cloud Minimums:   [-12.45 -10.25  -0.39]  
+2024-07-18 17:08:14,908 - INFO    : Point Cloud Maximums:   [-3.74  4.26  2.78]     
+2024-07-18 17:08:14,908 - INFO    : Initial Translation:    [  8.27   5.91 -18.42]  
+2024-07-18 17:08:14,908 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:14,908 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:14,909 - INFO    : Imported 13 labels from labels/cloud_scene5.json.
+2024-07-18 17:08:14,909 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:14,909 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,485 - INFO    : File labels/cloud_scene5.json already exists, replacing file ...
+2024-07-18 17:08:15,485 - INFO    : Exported 13 labels to labels/cloud_scene5.json in CentroidFormat formatting!
+2024-07-18 17:08:15,490 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene5.bin
+2024-07-18 17:08:15,490 - INFO    : Loading next point cloud...
+2024-07-18 17:08:15,490 - INFO    : Loading point cloud from pointclouds/cloud_scene6.ply using Open3DHandler.
+2024-07-18 17:08:15,853 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene6.bin.
+2024-07-18 17:08:15,854 - INFO    : ============================================================================================ Loading cloud_scene6.ply =============================================================================================
+2024-07-18 17:08:15,929 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene6.ply!
+2024-07-18 17:08:15,929 - INFO    : Number of Points:       1651144        
+2024-07-18 17:08:15,929 - INFO    : Number of Colors:       1651144        
+2024-07-18 17:08:15,930 - INFO    : Point Cloud Center:     [-11.46  -3.34   1.26]  
+2024-07-18 17:08:15,930 - INFO    : Point Cloud Minimums:   [-18.8  -11.5   -0.26]  
+2024-07-18 17:08:15,930 - INFO    : Point Cloud Maximums:   [-3.71  3.94  2.78]     
+2024-07-18 17:08:15,930 - INFO    : Initial Translation:    [ 11.46   3.34 -23.06]  
+2024-07-18 17:08:15,930 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:15,930 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,930 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,930 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,930 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,930 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,931 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,931 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:15,931 - INFO    : Imported 28 labels from labels/cloud_scene6.json.
+2024-07-18 17:08:15,931 - INFO    : Loaded 28 bboxes!
+2024-07-18 17:08:15,931 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,931 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:15,931 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,541 - INFO    : File labels/cloud_scene6.json already exists, replacing file ...
+2024-07-18 17:08:17,542 - INFO    : Exported 28 labels to labels/cloud_scene6.json in CentroidFormat formatting!
+2024-07-18 17:08:17,554 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene6.bin
+2024-07-18 17:08:17,554 - INFO    : Loading next point cloud...
+2024-07-18 17:08:17,554 - INFO    : Loading point cloud from pointclouds/cloud_scene7.ply using Open3DHandler.
+2024-07-18 17:08:17,729 - INFO    : Loading segmentation labels from labels/segmentation/cloud_scene7.bin.
+2024-07-18 17:08:17,730 - INFO    : ============================================================================================ Loading cloud_scene7.ply =============================================================================================
+2024-07-18 17:08:17,787 - INFO    : Successfully loaded point cloud from pointclouds/cloud_scene7.ply!
+2024-07-18 17:08:17,788 - INFO    : Number of Points:       1332322        
+2024-07-18 17:08:17,788 - INFO    : Number of Colors:       1332322        
+2024-07-18 17:08:17,788 - INFO    : Point Cloud Center:     [-10.77  -4.44   1.26]  
+2024-07-18 17:08:17,788 - INFO    : Point Cloud Minimums:   [-16.8  -12.62  -0.4 ]  
+2024-07-18 17:08:17,788 - INFO    : Point Cloud Maximums:   [-4.1   3.3   2.77]     
+2024-07-18 17:08:17,788 - INFO    : Initial Translation:    [ 10.77   4.44 -21.88]  
+2024-07-18 17:08:17,788 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:17,789 - INFO    : Imported 23 labels from labels/cloud_scene7.json.
+2024-07-18 17:08:17,789 - INFO    : Loaded 23 bboxes!
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:17,789 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,696 - INFO    : File labels/cloud_scene7.json already exists, replacing file ...
+2024-07-18 17:08:19,697 - INFO    : Exported 23 labels to labels/cloud_scene7.json in CentroidFormat formatting!
+2024-07-18 17:08:19,706 - INFO    : Writing segmentation labels to labels/segmentation/cloud_scene7.bin
+2024-07-18 17:08:19,706 - INFO    : Loading next point cloud...
+2024-07-18 17:08:19,706 - INFO    : Loading point cloud from pointclouds/cropped_scene1.ply using Open3DHandler.
+2024-07-18 17:08:19,738 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene1.bin.
+2024-07-18 17:08:19,738 - INFO    : =========================================================================================== Loading cropped_scene1.ply ============================================================================================
+2024-07-18 17:08:19,751 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene1.ply!
+2024-07-18 17:08:19,751 - INFO    : Number of Points:      304639        
+2024-07-18 17:08:19,751 - INFO    : Number of Colors:      304639        
+2024-07-18 17:08:19,751 - INFO    : Point Cloud Center:    [-6.09 -4.12  1.  ]    
+2024-07-18 17:08:19,751 - INFO    : Point Cloud Minimums:  [-8.   -7.8  -0.17]    
+2024-07-18 17:08:19,751 - INFO    : Point Cloud Maximums:  [-4. -1.  2.]          
+2024-07-18 17:08:19,751 - INFO    : Initial Translation:   [ 6.09  4.12 -9.19]    
+2024-07-18 17:08:19,751 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:19,752 - INFO    : Imported 11 labels from labels/cropped_scene1.json.
+2024-07-18 17:08:19,752 - INFO    : Loaded 11 bboxes!
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,752 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:19,753 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,398 - INFO    : File labels/cropped_scene1.json already exists, replacing file ...
+2024-07-18 17:08:21,398 - INFO    : Exported 11 labels to labels/cropped_scene1.json in CentroidFormat formatting!
+2024-07-18 17:08:21,400 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene1.bin
+2024-07-18 17:08:21,400 - INFO    : Loading next point cloud...
+2024-07-18 17:08:21,400 - INFO    : Loading point cloud from pointclouds/cropped_scene2.ply using Open3DHandler.
+2024-07-18 17:08:21,439 - INFO    : Loading segmentation labels from labels/segmentation/cropped_scene2.bin.
+2024-07-18 17:08:21,439 - INFO    : =========================================================================================== Loading cropped_scene2.ply ============================================================================================
+2024-07-18 17:08:21,454 - INFO    : Successfully loaded point cloud from pointclouds/cropped_scene2.ply!
+2024-07-18 17:08:21,454 - INFO    : Number of Points:      375760        
+2024-07-18 17:08:21,454 - INFO    : Number of Colors:      375760        
+2024-07-18 17:08:21,454 - INFO    : Point Cloud Center:    [-6.57 -3.38  0.89]    
+2024-07-18 17:08:21,454 - INFO    : Point Cloud Minimums:  [-8.5  -6.   -0.37]    
+2024-07-18 17:08:21,454 - INFO    : Point Cloud Maximums:  [-3.5 -0.5  2. ]       
+2024-07-18 17:08:21,454 - INFO    : Initial Translation:   [ 6.57  3.38 -8.69]    
+2024-07-18 17:08:21,454 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:21,455 - INFO    : Imported 13 labels from labels/cropped_scene2.json.
+2024-07-18 17:08:21,455 - INFO    : Loaded 13 bboxes!
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:21,455 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,098 - INFO    : File labels/cropped_scene2.json already exists, replacing file ...
+2024-07-18 17:08:23,098 - INFO    : Exported 13 labels to labels/cropped_scene2.json in CentroidFormat formatting!
+2024-07-18 17:08:23,101 - INFO    : Writing segmentation labels to labels/segmentation/cropped_scene2.bin
+2024-07-18 17:08:23,101 - INFO    : Loading next point cloud...
+2024-07-18 17:08:23,101 - INFO    : Loading point cloud from pointclouds/rtabmap_cloud.ply using Open3DHandler.
+2024-07-18 17:08:23,200 - INFO    : Loading segmentation labels from labels/segmentation/rtabmap_cloud.bin.
+2024-07-18 17:08:23,201 - INFO    : ============================================================================================ Loading rtabmap_cloud.ply ============================================================================================
+2024-07-18 17:08:23,236 - INFO    : Successfully loaded point cloud from pointclouds/rtabmap_cloud.ply!
+2024-07-18 17:08:23,236 - INFO    : Number of Points:       894473         
+2024-07-18 17:08:23,236 - INFO    : Number of Colors:       894473         
+2024-07-18 17:08:23,236 - INFO    : Point Cloud Center:     [-4.76 -3.09  1.23]     
+2024-07-18 17:08:23,236 - INFO    : Point Cloud Minimums:   [-11.11 -10.33  -0.27]  
+2024-07-18 17:08:23,236 - INFO    : Point Cloud Maximums:   [0.84 4.83 2.89]        
+2024-07-18 17:08:23,236 - INFO    : Initial Translation:    [  4.76   3.09 -20.79]  
+2024-07-18 17:08:23,236 - INFO    : ===================================================================================================================================================================================================================
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,237 - INFO    : Alignmode was changed to False!
+2024-07-18 17:08:23,238 - INFO    : Imported 18 labels from labels/rtabmap_cloud.json.
+2024-07-18 17:08:23,238 - INFO    : Loaded 18 bboxes!
+2024-07-18 17:08:23,238 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,238 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:08:23,238 - WARNING : There is currently no active bounding box to manipulate.
+2024-07-18 17:11:26,531 - INFO    : File labels/rtabmap_cloud.json already exists, replacing file ...
+2024-07-18 17:11:26,532 - INFO    : Exported 18 labels to labels/rtabmap_cloud.json in CentroidFormat formatting!
+2024-07-18 17:11:26,538 - INFO    : Writing segmentation labels to labels/segmentation/rtabmap_cloud.bin
+2024-07-18 17:11:28,706 - INFO    : Closing window after saving ...
+2024-07-18 17:11:28,706 - INFO    : File labels/rtabmap_cloud.json already exists, replacing file ...
+2024-07-18 17:11:28,707 - INFO    : Exported 18 labels to labels/rtabmap_cloud.json in CentroidFormat formatting!
+2024-07-18 17:11:28,712 - INFO    : Writing segmentation labels to labels/segmentation/rtabmap_cloud.bin

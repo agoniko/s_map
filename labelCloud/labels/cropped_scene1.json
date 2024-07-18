@@ -1,1 +1,205 @@
-{"folder": "pointclouds", "filename": "cropped_scene1.ply", "path": "pointclouds/cropped_scene1.ply", "objects": [{"name": "tv", "centroid": {"x": -5.86450683, "y": -5.23847305, "z": 1.584969}, "dimensions": {"length": 1.19789646, "width": 0.13224509, "height": 0.71091726}, "rotations": {"x": 0, "y": 0, "z": 359.23206651}}, {"name": "tv", "centroid": {"x": -4.31993017, "y": -3.49412436, "z": 1.56775082}, "dimensions": {"length": 1.27585963, "width": 0.15742753, "height": 0.71790982}, "rotations": {"x": 0, "y": 0, "z": 88.85482599}}, {"name": "backpack", "centroid": {"x": -6.63137438, "y": -2.17109146, "z": 1.00311165}, "dimensions": {"length": 0.3952174, "width": 0.24665005, "height": 0.540839}, "rotations": {"x": 0, "y": 0, "z": 251.8394687}}, {"name": "handbag", "centroid": {"x": -7.34208679, "y": -2.97397181, "z": 0.73314489}, "dimensions": {"length": 0.37021276, "width": 0.13299752, "height": 0.64610854}, "rotations": {"x": 0, "y": 0, "z": 69.64297473}}, {"name": "chair", "centroid": {"x": -7.24237435, "y": -3.01249224, "z": 0.63130673}, "dimensions": {"length": 0.53863672, "width": 0.37119857, "height": 0.81559458}, "rotations": {"x": 0, "y": 0, "z": 69.74581024}}, {"name": "laptop", "centroid": {"x": -7.13133633, "y": -5.16694677, "z": 0.75747677}, "dimensions": {"length": 0.48294323, "width": 0.46939466, "height": 0.18475299}, "rotations": {"x": 0, "y": 0, "z": 325.93154529}}, {"name": "laptop", "centroid": {"x": -7.63012141, "y": -4.05150486, "z": 0.77320412}, "dimensions": {"length": 0.38869787, "width": 0.4248102, "height": 0.15179095}, "rotations": {"x": 0, "y": 0, "z": 87.88011589}}, {"name": "bottle", "centroid": {"x": -7.40105801, "y": -4.83693283, "z": 0.81190152}, "dimensions": {"length": 0.11245239, "width": 0.08916898, "height": 0.20472531}, "rotations": {"x": 0, "y": 0, "z": 297.76026212}}, {"name": "person", "centroid": {"x": -7.59635176, "y": -6.14649345, "z": 0.82199892}, "dimensions": {"length": 0.662284, "width": 0.28366878, "height": 1.69459259}, "rotations": {"x": 0, "y": 0, "z": 323.65226992}}, {"name": "dining table", "centroid": {"x": -7.23628277, "y": -5.0527507, "z": 0.66285282}, "dimensions": {"length": 0.67608925, "width": 0.79479629, "height": 0.14026981}, "rotations": {"x": 0, "y": 0, "z": 57.14003412}}, {"name": "dining table", "centroid": {"x": -7.73345371, "y": -3.77265503, "z": 0.70947573}, "dimensions": {"length": 0.8621145, "width": 0.69435224, "height": 0.13664024}, "rotations": {"x": 0, "y": 0, "z": 90.68405978}}]}
+{
+	"folder": "pointclouds",
+	"filename": "cropped_scene1.ply",
+	"path": "pointclouds/cropped_scene1.ply",
+	"objects": [
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -5.86490891,
+				"y": -5.23847036,
+				"z": 1.584969
+			},
+			"dimensions": {
+				"length": 1.19789646,
+				"width": 0.19224509,
+				"height": 0.71091726
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 359.23206651
+			}
+		},
+		{
+			"name": "tv",
+			"centroid": {
+				"x": -4.31993017,
+				"y": -3.49412436,
+				"z": 1.56775082
+			},
+			"dimensions": {
+				"length": 1.27585963,
+				"width": 0.21742753,
+				"height": 0.71790982
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 88.85482599
+			}
+		},
+		{
+			"name": "backpack",
+			"centroid": {
+				"x": -6.61712158,
+				"y": -2.17576667,
+				"z": 1.00311165
+			},
+			"dimensions": {
+				"length": 0.3952174,
+				"width": 0.27665005,
+				"height": 0.540839
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 251.8394687
+			}
+		},
+		{
+			"name": "handbag",
+			"centroid": {
+				"x": -7.31396049,
+				"y": -2.98440788,
+				"z": 0.73314489
+			},
+			"dimensions": {
+				"length": 0.37021276,
+				"width": 0.25299752,
+				"height": 0.64610854
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 69.64297473
+			}
+		},
+		{
+			"name": "chair",
+			"centroid": {
+				"x": -7.18422937,
+				"y": -3.01687781,
+				"z": 0.69130673
+			},
+			"dimensions": {
+				"length": 0.53863672,
+				"width": 0.61119857,
+				"height": 0.69559458
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 75.24581024
+			}
+		},
+		{
+			"name": "laptop",
+			"centroid": {
+				"x": -7.13133633,
+				"y": -5.16694677,
+				"z": 0.80247677
+			},
+			"dimensions": {
+				"length": 0.48294323,
+				"width": 0.46939466,
+				"height": 0.27475299
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 325.93154529
+			}
+		},
+		{
+			"name": "laptop",
+			"centroid": {
+				"x": -7.63012141,
+				"y": -4.05150486,
+				"z": 0.78820412
+			},
+			"dimensions": {
+				"length": 0.38869787,
+				"width": 0.4248102,
+				"height": 0.18179095
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 87.88011589
+			}
+		},
+		{
+			"name": "bottle",
+			"centroid": {
+				"x": -7.40105801,
+				"y": -4.83693283,
+				"z": 0.81190152
+			},
+			"dimensions": {
+				"length": 0.11245239,
+				"width": 0.08916898,
+				"height": 0.20472531
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 297.76026212
+			}
+		},
+		{
+			"name": "person",
+			"centroid": {
+				"x": -7.57857123,
+				"y": -6.12233041,
+				"z": 0.82199892
+			},
+			"dimensions": {
+				"length": 0.662284,
+				"width": 0.34366878,
+				"height": 1.69459259
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 323.65226992
+			}
+		},
+		{
+			"name": "dining table",
+			"centroid": {
+				"x": -7.23628277,
+				"y": -5.0527507,
+				"z": 0.66285282
+			},
+			"dimensions": {
+				"length": 0.67608925,
+				"width": 0.79479629,
+				"height": 0.14026981
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 57.14003412
+			}
+		},
+		{
+			"name": "dining table",
+			"centroid": {
+				"x": -7.73345371,
+				"y": -3.77265503,
+				"z": 0.70947573
+			},
+			"dimensions": {
+				"length": 0.8621145,
+				"width": 0.69435224,
+				"height": 0.13664024
+			},
+			"rotations": {
+				"x": 0,
+				"y": 0,
+				"z": 90.68405978
+			}
+		}
+	]
+}
