@@ -1,0 +1,76 @@
+{
+    "classes": [
+        {
+            "name": "chair",
+            "id": 1,
+            "color": "#666dcc"
+        },
+        {
+            "name": "dining table",
+            "id": 2,
+            "color": "#cc66ac"
+        },
+        {
+            "name": "tv",
+            "id": 3,
+            "color": "#7fc4ff"
+        },
+        {
+            "name": "laptop",
+            "id": 4,
+            "color": "#cc5e00"
+        },
+        {
+            "name": "bottle",
+            "id": 5,
+            "color": "#00ffc4"
+        },
+        {
+            "name": "keyboard",
+            "id": 6,
+            "color": "#66cc9c"
+        },
+        {
+            "name": "mouse",
+            "id": 7,
+            "color": "#7fc4ff"
+        },
+        {
+            "name": "couch",
+            "id": 8,
+            "color": "#ffd77f"
+        },
+        {
+            "name": "person",
+            "id": 9,
+            "color": "#7fff89"
+        },
+        {
+            "name": "handbag",
+            "id": 10,
+            "color": "#66cc9c"
+        },
+        {
+            "name": "backpack",
+            "id": 11,
+            "color": "#bccc66"
+        },
+        {
+            "name": "scissors",
+            "id": 12,
+            "color": "#7d00cc"
+        },
+        {
+            "name": "mug",
+            "id": 13,
+            "color": "#2700ff"
+        }
+    ],
+    "default": 1,
+    "type": "semantic_segmentation",
+    "format": "binary",
+    "created_with": {
+        "name": "labelCloud",
+        "version": "1.1.0"
+    }
+}
