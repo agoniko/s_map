@@ -1,0 +1,55 @@
+------------------------------------------------- CPU INFO -----------------------------------------------------
+[ros-containers] nick@robotmind2:~/catkin_ws/src/robots/universal_robot/ur_e_description$ lscpu
+Architecture:                       x86_64
+CPU op-mode(s):                     32-bit, 64-bit
+Byte Order:                         Little Endian
+Address sizes:                      43 bits physical, 48 bits virtual
+CPU(s):                             16
+On-line CPU(s) list:                0-15
+Thread(s) per core:                 2
+Core(s) per socket:                 8
+Socket(s):                          1
+NUMA node(s):                       1
+Vendor ID:                          AuthenticAMD
+CPU family:                         23
+Model:                              113
+Model name:                         AMD Ryzen 7 3700X 8-Core Processor
+Stepping:                           0
+Frequency boost:                    enabled
+CPU MHz:                            2199.700
+CPU max MHz:                        3600.0000
+CPU min MHz:                        2200.0000
+BogoMIPS:                           7199.42
+Virtualization:                     AMD-V
+L1d cache:                          256 KiB
+L1i cache:                          256 KiB
+L2 cache:                           4 MiB
+L3 cache:                           32 MiB
+NUMA node0 CPU(s):                  0-15
+------------------------------------------------- RAM INFO -----------------------------------------------------
+free -h
+              total        used        free      shared  buff/cache   available
+Mem:           31Gi       589Mi        29Gi       4.0Mi       1.1Gi        30Gi
+Swap:          31Gi          0B        31Gi
+------------------------------------------------- GPU INFO -----------------------------------------------------
+nvidia-smi
+Mon Jul 22 11:51:11 2024       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 545.23.08              Driver Version: 545.23.08    CUDA Version: 12.3     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 2070        On  | 00000000:2A:00.0 Off |                  N/A |
+|  0%   49C    P8              17W / 175W |      7MiB /  8192MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
++---------------------------------------------------------------------------------------+
+
