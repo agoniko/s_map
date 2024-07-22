@@ -11,6 +11,7 @@ import rospkg
 import numpy.matlib as npm
 from pytorch3d.ops import box3d_overlap
 import torch
+import json
 
 class_names = np.loadtxt(
     rospkg.RosPack().get_path("s_map") + "/src/scripts/names.txt",
@@ -20,6 +21,8 @@ class_names = np.loadtxt(
 label_colors = {
     label.lower().strip(): np.random.randint(0, 255, 3) for label in class_names
 }
+
+stat_file_path = rospkg.RosPack().get_path("s_map") + "/FUNCNAME_real_time_WCET_analysis.json"
 
 
 def time_it(func):
@@ -36,10 +39,20 @@ def time_it(func):
         else:
             functions[func.__name__] = {"time": [time.time() - start]}
 
-        mean_time = np.array(functions[func.__name__]["time"]).mean()
+        mean_time = np.median(np.array(functions[func.__name__]["time"]))
         std = np.std(functions[func.__name__]["time"])
+        max_time, min_time = np.max(functions[func.__name__]["time"]), np.min(
+            functions[func.__name__]["time"]
+        )
+        functions[func.__name__]["mean"] = mean_time
+        functions[func.__name__]["std"] = std
+        functions[func.__name__]["max"] = max_time
+        functions[func.__name__]["min"] = min_time
+        file_path = stat_file_path
+        file_path = file_path.replace("FUNCNAME", func.__name__)
+        json.dump(functions, open(file_path, "w"))
 
-        print(f"Function {func.__name__} mean: {mean_time:.4f} std: {std:.4f}")
+        #print(f"Function {func.__name__} median: {mean_time:.4f} std: {std:.4f}, min: {min_time:.4f}, max: {max_time:.4f}")
         return result
 
     return wrapper
