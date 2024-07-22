@@ -1,0 +1,6 @@
+If you want to load the URDF model of heron robot without building any environment,
+inside s_map/descriptions/ folder there is a robot_description.yaml file.
+
+rosparam load robot_description.yaml
+
+The you are ready with the robot model plugin
