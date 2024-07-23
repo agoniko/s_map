@@ -4,3 +4,9 @@ inside s_map/descriptions/ folder there is a robot_description.yaml file.
 rosparam load robot_description.yaml
 
 The you are ready with the robot model plugin
+
+to run a demo with both the recording of the robot and the s_map sw running do:
+
+rosbag play heron_scene1.bag pred_scene1.bag 
+
+(scene1 the best)
