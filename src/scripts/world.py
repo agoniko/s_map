@@ -198,20 +198,21 @@ class Obj:
             self.pcd.estimate_normals(max_nn=30, radius=0.1)
             final_pcd = self.pcd
 
-            self.pcd, _ = self.pcd.remove_radius_outliers(10, VOXEL_SIZE * 2)
+            self.pcd, _ = self.pcd.remove_radius_outliers(50, VOXEL_SIZE * 10)
             if len(self.pcd.point.positions) < 15:
                 self.pcd = final_pcd
             else:
                 final_pcd = self.pcd
 
-            clean, _ = self.pcd.remove_statistical_outliers(20, 1.0)
+            clean, _ = self.pcd.remove_statistical_outliers(50, 0.5)
             if len(clean.point.positions) < 15:
                 clean = final_pcd
             else:
                 final_pcd = clean
 
-            self.bbox = self.compute_minimum_oriented_box(clean)
+            self.bbox = self.compute_minimum_oriented_box(final_pcd)
             self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
+            self.pcd = final_pcd
             return
         
         except Exception as e:
