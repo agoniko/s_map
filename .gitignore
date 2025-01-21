@@ -1,6 +1,5 @@
 models
 *.pyc
-.vscode/
 settings.json
 *.aux
 *.dvi
@@ -24,9 +23,4 @@ settings.json
 *.ps
 .*.swp
 *.synctex.gz
-.directory
-notebooks/rgb.txt
-notebooks/rgb.yaml
-notebooks/depth.txt
-notebooks/box_estimation/SUNRGBD
-notebooks/box_estimation/Pointnet_Pointnet2_pytorch
+
