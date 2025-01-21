@@ -1,5 +1,6 @@
 models
 *.pyc
+.vscode/
 settings.json
 *.aux
 *.dvi
@@ -23,4 +24,5 @@ settings.json
 *.ps
 .*.swp
 *.synctex.gz
+.DS_Store
 
