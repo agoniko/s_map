@@ -210,7 +210,8 @@ class Obj:
             else:
                 final_pcd = clean
 
-            self.bbox = self.compute_minimum_oriented_box(final_pcd)
+            #self.bbox = self.compute_minimum_oriented_box(final_pcd) too slow
+            self.bbox = final_pcd.get_oriented_bounding_box().get_box_points().cpu().numpy()
             self.centroid = self.pcd.point.positions.cpu().numpy().mean(axis=0)
             self.pcd = final_pcd
             return

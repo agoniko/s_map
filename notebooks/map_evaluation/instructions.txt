@@ -7,3 +7,17 @@ python3 evaluate_ate.py reports/rtabmap_slam_scene3.txt reports/rtabmap_odom_sce
 will generate pdfs.
 The error is this low because we provide odometry to the rtabmap algorithm. 
 In this way we heavily rely o the odometry from the Mir200 robot.
+
+compared_pose_pairs 996 pairs
+translational_error.rmse 0.051299 m
+translational_error.mean 0.040192 m
+translational_error.median 0.032806 m
+translational_error.std 0.031878 m
+translational_error.min 0.000086 m
+translational_error.max 0.173246 m
+rotational_error.rmse 2.754485 deg
+rotational_error.mean 2.152562 deg
+rotational_error.median 1.748910 deg
+rotational_error.std 1.718623 deg
+rotational_error.min 0.002152 deg
+rotational_error.max 10.155773 deg

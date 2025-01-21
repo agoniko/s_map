@@ -13,7 +13,7 @@
         </rosparam>
         <arg name="rviz"       default="true" />
     </group>
-
+    
     <node pkg="s_map" type="depth_clip.py" name="depth_clip"  output="screen"> <!-- It also performs depth erosion to mitigate depth bleeding artifact-->
         <param name="raw_depth_topic" value="$(arg raw_depth)"/>
         <param name="cleaned_depth_topic" value="$(arg clean_depth)"/>
